@@ -23,6 +23,10 @@
 ![Main UI](img-assets/MainUI.png)
 ![Edit UI](img-assets/EditUI.png)
 
+## User Stories
+
+![User Stories](img-assets/UserStories.png)
+
 ## Description of Tests
 
 ### Backend
