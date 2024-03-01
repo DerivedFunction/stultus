@@ -33,7 +33,7 @@ other's ideas. All relavant information about new updates and releases are in [`
 
 [CSE 216 Dokku tutorial link](https://www.cse.lehigh.edu/~stevelu/spear-tutorials/viewer.html#cse216_dokku/tut.md)
 
-```
+```bash
 # the following is to be done on your **local** host
 # start from the root folder of the master branch
 git checkout master
@@ -53,7 +53,8 @@ git checkout master
 git branch -D backend-dokku
 git checkout -b backend-dokku origin/backend-dokku
 
-# we are now ready to deploy to dokku with: git push dokku backend-dokku:master
+# we are now ready to deploy to dokku with:
+git push dokku backend-dokku:master
 ```
 
 ## Useful Dokku commands
