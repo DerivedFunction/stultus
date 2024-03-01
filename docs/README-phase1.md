@@ -32,6 +32,10 @@ change my ideas based on feedback
 ![Main UI](img-assets/MainUI.png)
 ![Edit UI](img-assets/EditUI.png)
 
+## User Stories
+
+![User Stories](img-assets/UserStories.png)
+
 ## Description of Tests
 
 ### Backend
