@@ -1,9 +1,7 @@
 package edu.lehigh.cse216.del226.backend;
 
 import edu.lehigh.cse216.del226.backend.Database.RowData;
-import edu.lehigh.cse216.del226.backend.App;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Random;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -41,11 +39,8 @@ public class DataRowTest extends TestCase {
   public static void testApp() {
 
     int num = Integer.parseInt(System.getenv("NUM_TESTS"));
-    // String user = env.get("POSTGRES_USER");
-    // String pass = env.get("POSTGRES_PASS");
 
     // // Connect to database
-    // Database db = Database.getDatabase(ip, port, "", user, pass);
     Database db = App.getDatabaseConnection();
     ArrayList<RowData> sub = new ArrayList<>();
     ArrayList<String> subject = new ArrayList<>();
