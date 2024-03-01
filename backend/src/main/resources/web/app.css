@@ -1,0 +1,79 @@
+body {
+    font-family: 'Fresca', sans-serif;
+    margin: 0;
+}
+
+/* Change the header of the display */
+h3 {
+    background-color: #DDD;
+    font-size: 24pt;
+    font-weight: bold;
+    height: 42px;
+    text-align: center;
+}
+
+/* "Add Message" appears on top right above header */
+#showFormButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+/* Add some space before displaying the table of data */
+#messageList {
+    margin-left: 15px;
+}
+
+/* Make the table wide */
+table {
+    width: 500px;
+}
+
+/* alternate color of table rows */
+tr:nth-child(even) {
+    background: #CCC
+}
+
+tr:nth-child(odd) {
+    background: #888
+}
+
+/* make table row height a bit taller */
+tr {
+    height: 20px;
+}
+
+/* make the "title" column of the table wide */
+td:nth-child(2) {
+    width: 75%;
+}
+
+
+/* make the form elements wide,
+* and make the Edit entry stack vertical
+* Add some space between them
+ */
+input,
+label,
+textarea {
+    display: block;
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+
+/* put some left space before form elements */
+label,
+input,
+textarea,
+#addButton,
+#editButton {
+    margin-left: 15px;
+}
+
+/* custom formatting for the span where we put the creation date */
+#editCreated {
+    display: block;
+    margin-bottom: 5px;
+    margin-left: 15px;
+}

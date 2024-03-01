@@ -1,0 +1,55 @@
+package edu.lehigh.cse216.del226.backend;
+
+import java.util.Date;
+
+/**
+ * Data row holds a row of info, consisting of an id, title, content,
+ * and creation date.
+ *
+ * Since this is be converted to JSON, the fields are public, not using
+ * setters and getters yet
+ */
+public class DataRow {
+  /**
+   * The id of the element (unchanged)
+   */
+  public final int mId;
+
+  /**
+   * The title  of the element
+   */
+  public String mTitle;
+
+  /**
+   * The content  of the element
+   */
+  public String mContent;
+
+  /**
+   * The title  of the element (unchanged)
+   */
+  public final Date mCreated;
+
+  /**
+   * Create a new DataRow with id, title, content, and the current date
+   * @param id
+   * @param title
+   * @param content
+   * */
+  DataRow(int id, String title, String content) {
+    mId = id;
+    mTitle = title;
+    mContent = content;
+    mCreated = new Date();
+  }
+
+  /**
+   * Copy constructor to create a datarow from another
+   * */
+  DataRow(DataRow data) {
+    mId = data.mId;
+    mTitle = data.mTitle;
+    mContent = data.mContent;
+    mCreated = data.mCreated;
+  }
+}
