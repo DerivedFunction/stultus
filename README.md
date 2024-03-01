@@ -10,7 +10,10 @@ other's ideas. All relavant information about new updates and releases are in [`
 - Semester: Spring 2024
 - Team Number: 21
 - Team Name: stultus
-- Bitbucket Repository: <https://bitbucket.org/sml3/cse216_sp24_team_21>
+- Bitbucket Repository:
+  - On the web: <https://bitbucket.org/sml3/cse216_sp24_team_21>
+  - SSH: `git clone git@bitbucket.org:sml3/cse216_sp24_team_21.git`
+  - https: `git clone https://del226@bitbucket.org/sml3/cse216_sp24_team_21.git`
 - Jira Link: <https://cse216-24sp-del226.atlassian.net/jira/software/projects/T2/boards/2>
 - Backend URL: <https://2024sp-team-stultus.dokku.cse.lehigh.edu/>
 
@@ -28,7 +31,7 @@ other's ideas. All relavant information about new updates and releases are in [`
 3. Create an executable `.jar` file with dependencies and manifest.
 4. Setup a new git branch `backend-dokku` for dokku.
 
-[CSE 216 Dokku tutorial](https://www.cse.lehigh.edu/~stevelu/spear-tutorials/viewer.html#cse216_dokku/tut.md)
+[CSE 216 Dokku tutorial link](https://www.cse.lehigh.edu/~stevelu/spear-tutorials/viewer.html#cse216_dokku/tut.md)
 
 ```
 # the following is to be done on your **local** host
