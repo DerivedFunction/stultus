@@ -54,3 +54,4 @@ Thumbs.db
 .settings/
 target/
 **/node_modules/**
+*.sh

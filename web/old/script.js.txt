@@ -1,0 +1,33 @@
+window.alert("Hello world");
+console.log(0);
+console.log("Hello world");
+let x = { name: "Denny", profession: "Student", hometown: "Allentown" };
+console.log(x);
+
+// Get a unique id for each new item
+let counter = 0;
+
+// Add a new label when add button is clicked
+function add() {
+    // Create a new div element with id
+    let node = document.createElement("div");
+    node.id = "div" + counter++;
+
+    // Add text to input box and append it when button is pressed
+    let edit = document.createElement("input");
+    edit.type = "text";
+    edit.value = "This is element " + (counter - 1);
+    node.appendChild(edit);
+    // Create a button with option to remove the text
+    let rmv = document.createElement("button");
+    rmv.innerHTML = "Remove";
+    // Remove the text and button. Since button is a child of the node
+    // It wil get removed too.
+    rmv.addEventListener("click", (e) => {
+        let n = document.getElementById(node.id);
+        document.body.removeChild(n);
+    });
+    // Add the button to the node and append the node to document
+    node.appendChild(rmv);
+    document.body.appendChild(node);
+}
