@@ -8,20 +8,20 @@
 
 ## UML Diagram
 
-![UML Diagram](img-assets\UML.png)
+![UML Diagram](img-assets/UML.png)
 
 ## Admin FSM
 
-![Admin FSM Diagram](img-assets\AdminFSM.png)
+![Admin FSM Diagram](img-assets/AdminFSM.png)
 
 ## Web FSM
 
-![Web FSM Diagram](img-assets\WebFSM.png)
+![Web FSM Diagram](img-assets/WebFSM.png)
 
 ## Mock User Interface
 
-![Main UI](img-assets\MainUI.png)
-![Edit UI](img-assets\EditUI.png)
+![Main UI](img-assets/MainUI.png)
+![Edit UI](img-assets/EditUI.png)
 
 ## Description of Tests
 
