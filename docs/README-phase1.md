@@ -40,6 +40,19 @@ change my ideas based on feedback
 
 ### Backend
 
+Old Tests from `dennyli/tutorials`
+
+- Add NUM_TEST rows to DB
+- Execute `selectAll()` and compare if newly added rows exist in DB
+
 ### Admin
 
+Old Tests from `dennyli/tutorials`
+
+- Add NUM_TEST rows to DB
+- Execute `selectAll()` and compare if newly added rows exist in DB
+
 ### Web (and Mobile)
+
+- Add button hides lists of rows
+- Check if tests values are in text boxes.
