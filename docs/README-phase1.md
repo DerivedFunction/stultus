@@ -56,3 +56,7 @@ Old Tests from `dennyli/tutorials`
 
 - Add button hides lists of rows
 - Check if tests values are in text boxes.
+
+## Routes and details
+
+![Routes List](img-assets/RouteList.png)
