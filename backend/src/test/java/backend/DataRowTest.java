@@ -1,8 +1,11 @@
-package edu.lehigh.cse216.del226.backend;
+package backend;
 
-import edu.lehigh.cse216.del226.backend.Database.RowData;
+import backend.Database.RowData;
 import java.util.ArrayList;
 import java.util.Random;
+
+import backend.App;
+import backend.Database;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
