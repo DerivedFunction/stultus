@@ -24,7 +24,7 @@ other's ideas. All relavant information about new updates and releases are in [`
 - Backend: **Robert Kilsdonk**, [rok326@lehigh.edu](mailto:rok326@lehigh.edu)
 - Front End: **Patrick Boles**, [pjb325@lehigh.edu](mailto:pjb325@lehigh.edu)
 
-## How to build and run on Dokku
+### How to build and run on Dokku
 
 1. Navigate to [`backend`](backend) branch
 2. Create the requisite `Procfile`
@@ -57,7 +57,13 @@ git checkout -b backend-dokku origin/backend-dokku
 git push dokku backend-dokku:master
 ```
 
-## Useful Dokku commands
+### Dokku configurations
+- POSTGRES URL: <postgres://***:***@salt.db.elephantsql.com/***>
+- POSTGRES Port: 5432
+- PORT: 8998
+
+
+### Useful Dokku commands
 
 `'$COMMAND 2024sp-team-stultus'`
 
