@@ -5,7 +5,6 @@ import java.util.Map;
 import com.google.gson.*;
 
 import spark.Response;
-import spark.Route;
 import spark.Spark;
 
 public class App {
@@ -59,7 +58,17 @@ public class App {
      * GET route that returns all messages and ids.
      * Converts StructuredResponses to JSON
      */
-    Spark.get(CONTEXT + "/:id", getFromId(gson, db));
+    Spark.get(CONTEXT + "/:id", (request, response) -> {
+      int idx = Integer.parseInt(request.params("id"));
+      extractResponse(response);
+      Database.RowData data = db.selectOne(idx);
+      if (data == null) {
+        return gson.toJson(
+            new StructuredResponse("error", idx + " not found", null));
+      } else {
+        return gson.toJson(new StructuredResponse("ok", null, data));
+      }
+    });
 
     /*
      * POST route that adds a new element to DataStore.
@@ -67,13 +76,35 @@ public class App {
      * SimpleRequest object, extracting the title and msg,
      * and also the object.
      */
-    Spark.post(CONTEXT, postIdea(gson, db));
+    Spark.post(CONTEXT, (request, response) -> {
+      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+      extractResponse(response);
+      // createEntry checks for null title/message (-1)
+      int newId = db.insertRow(req.mTitle, req.mMessage);
+      if (newId == -1) {
+        return gson.toJson(new StructuredResponse(
+            "error", "error performing insertion", null));
+      } else {
+        return gson.toJson(new StructuredResponse("ok", "" + newId, null));
+      }
+    });
 
     /*
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
      */
-    Spark.put(CONTEXT + "/:id", putID(gson, db));
+    Spark.put(CONTEXT + "/:id", (request, response) -> {
+      int idx = Integer.parseInt(request.params("id"));
+      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+      extractResponse(response);
+      int result = db.updateOne(idx, req.mTitle, req.mMessage);
+      if (result < 1) {
+        return gson.toJson(new StructuredResponse(
+            "error", "unable to update row " + idx, null));
+      } else {
+        return gson.toJson(new StructuredResponse("ok", null, result));
+      }
+    });
 
     /*
      * Delete route for removing a row from DataStore
@@ -90,50 +121,6 @@ public class App {
         return gson.toJson(new StructuredResponse("ok", null, null));
       }
     });
-  }
-
-  private static Route putID(final Gson gson, Database db) {
-    return (request, response) -> {
-      int idx = Integer.parseInt(request.params("id"));
-      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
-      extractResponse(response);
-      int result = db.updateOne(idx, req.mTitle, req.mMessage);
-      if (result < 1) {
-        return gson.toJson(new StructuredResponse(
-            "error", "unable to update row " + idx, null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", null, result));
-      }
-    };
-  }
-
-  private static Route postIdea(final Gson gson, Database db) {
-    return (request, response) -> {
-      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
-      extractResponse(response);
-      // createEntry checks for null title/message (-1)
-      int newId = db.insertRow(req.mTitle, req.mMessage);
-      if (newId == -1) {
-        return gson.toJson(new StructuredResponse(
-            "error", "error performing insertion", null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", "" + newId, null));
-      }
-    };
-  }
-
-  private static Route getFromId(final Gson gson, Database db) {
-    return (request, response) -> {
-      int idx = Integer.parseInt(request.params("id"));
-      extractResponse(response);
-      Database.RowData data = db.selectOne(idx);
-      if (data == null) {
-        return gson.toJson(
-            new StructuredResponse("error", idx + " not found", null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", null, data));
-      }
-    };
   }
 
   private static void extractResponse(Response response) {
