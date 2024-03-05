@@ -53,7 +53,7 @@ public class AppTest extends TestCase {
     for (int i = 0; i < 5; i++) {
       String subject = "Subject" + rngString();
       String message = "Message" + rngString();
-      sub.add(new RowData(i, subject, message));
+      sub.add(new RowData(i, subject, message, 0));
       assertTrue(db.insertRow(subject, message) == 1); // add new element
     }
     ArrayList<RowData> res = db.selectAll();
