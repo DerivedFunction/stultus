@@ -12,7 +12,7 @@ public class App {
   private static final String DEFAULT_PORT_DB = "5432";
   private static final int DEFAULT_PORT_SPARK = 4567;
 
-  private static final String CONTEXT = "/messages";
+  private static final String CONTEXT = "/posts";
 
   public App() {
 
@@ -72,6 +72,11 @@ public class App {
     Spark.put(CONTEXT + "/:id", putWithID(gson, db));
 
     /*
+     * PUT route for adding a like, 
+     */
+    Spark.put(CONTEXT+"/:id/like",putLike(gson, db));
+
+    /*
      * Delete route for removing a row from DataStore
      */
     Spark.delete(CONTEXT + "/:id", deleteWithID(gson, db));
@@ -103,6 +108,19 @@ public class App {
             "error", "unable to update row " + idx, null));
       } else {
         return gson.toJson(new StructuredResponse("ok", null, result));
+      }
+    };
+  }
+  private static Route putLike(final Gson gson, Database db)
+  {
+    return (request, response)->{
+      int idx = Integer.parseInt(request.params("id"));
+      int result =db.toggleLike(idx);
+      if (result == -1) {
+        return gson.toJson(new StructuredResponse(
+            "error", "error performing insertion", null));
+      } else {
+        return gson.toJson(new StructuredResponse("ok", null, null));
       }
     };
   }
