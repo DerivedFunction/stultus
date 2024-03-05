@@ -1,4 +1,4 @@
-package edu.lehigh.cse216.del226.admin;
+package admin;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -62,6 +62,12 @@ public class Database {
      * The ID of this row of the database
      * */
     int mId;
+
+    /**
+     * Likes for comments/posts
+     * 
+     */
+    int mLikes;
 
     /**
      * The subject stored in this row
@@ -128,7 +134,8 @@ public class Database {
           db.mConnection.prepareStatement("CREATE TABLE tblData ("
                                           + "id SERIAL PRIMARY KEY,"
                                           + "subject VARCHAR(50) NOT NULL,"
-                                          + "message VARCHAR(500) NOT NULL)");
+                                          + "message VARCHAR(500) NOT NULL)"
+                                          + "likes INT DEFAULT 0");
       db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
 
       // Standard CRUD operations
@@ -137,7 +144,7 @@ public class Database {
       db.mInsertOne = db.mConnection.prepareStatement(
           "INSERT INTO tblData VALUES (default, ?, ?)");
       db.mSelectAll = db.mConnection.prepareStatement(
-          "SELECT id, subject, message FROM tblData");
+          "SELECT * FROM tblData");
       db.mSelectOne =
           db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
       db.mUpdateOne = db.mConnection.prepareStatement(

@@ -1,6 +1,6 @@
-package edu.lehigh.cse216.del226.admin;
+package admin;
 
-import edu.lehigh.cse216.del226.admin.Database.RowData;
+import admin.Database.RowData;
 
 import java.util.ArrayList;
 import java.util.Map;
