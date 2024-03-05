@@ -65,7 +65,6 @@ public class Database {
 
     /**
      * Likes for comments/posts
-     * 
      */
     int mLikes;
 
@@ -82,10 +81,11 @@ public class Database {
     /**
      * Construct a RowData object by providing values for its fields
      * */
-    public RowData(int id, String subject, String message) {
+    public RowData(int id, String subject, String message, int likes) {
       mId = id;
       mSubject = subject;
       mMessage = message;
+      mLikes = likes;
     }
     @Override
     public boolean equals(Object other) {
@@ -142,7 +142,7 @@ public class Database {
       db.mDeleteOne =
           db.mConnection.prepareStatement("DELETE FROM tblData WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO tblData VALUES (default, ?, ?)");
+          "INSERT INTO tblData VALUES (default, ?, ?, 0)");
       db.mSelectAll = db.mConnection.prepareStatement(
           "SELECT * FROM tblData");
       db.mSelectOne =
@@ -207,7 +207,7 @@ public class Database {
       ResultSet rs = mSelectAll.executeQuery();
       while (rs.next()) {
         res.add(new RowData(rs.getInt("id"), rs.getString("subject"),
-                            rs.getString("message")));
+                            rs.getString("message"), rs.getInt("likes")));
       }
       rs.close();
       return res;
@@ -230,7 +230,7 @@ public class Database {
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
         res = new RowData(rs.getInt("id"), rs.getString("subject"),
-                          rs.getString("message"));
+                          rs.getString("message"), rs.getInt("likes"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
