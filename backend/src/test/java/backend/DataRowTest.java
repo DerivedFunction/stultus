@@ -41,7 +41,7 @@ public class DataRowTest extends TestCase {
 
   public static void testApp() {
 
-
+    int num = App.getIntFromEnv("NUM_TESTS",1);
     // // Connect to database
     Database db = App.getDatabaseConnection();
     ArrayList<RowData> sub = new ArrayList<>();
