@@ -39,25 +39,40 @@ public class AppTest extends TestCase {
   }
 
   public void testApp() {
-    // get the Postgres configuration from the environment
+    // get the Postgres configuration and tests from the environment
     Map<String, String> env = System.getenv();
     String ip = env.get("POSTGRES_IP");
     String port = env.get("POSTGRES_PORT");
     String user = env.get("POSTGRES_USER");
     String pass = env.get("POSTGRES_PASS");
-
+    int num = Integer.parseInt(env.get("NUM_TESTS"));
+    
     // Connect to database
     Database db = Database.getDatabase(ip, port, user, pass);
     ArrayList<RowData> sub = new ArrayList<>();
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < num; i++) {
       String subject = "Subject" + rngString();
       String message = "Message" + rngString();
       sub.add(new RowData(i, subject, message, 0));
       assertTrue(db.insertRow(subject, message) == 1); // add new element
     }
+    // Check if database contains all elements we just added
     ArrayList<RowData> res = db.selectAll();
     assertTrue(res.containsAll(sub));
+
+    /**
+     * Get the maxId, the id of the last element we just added
+     * It is in last element of the res ArrayList
+     */
+    int maxId = res.get(res.size() - 1).mId;
+    // Delete the test elements from out Database
+    for (int i = 0; i < num; i++) {
+      assertTrue(db.deleteRow(maxId - i) > 0);
+    }
+    // The test elements should no longer be in our database
+    res = db.selectAll();
+    assertFalse(res.containsAll(sub));
     db.disconnect();
   }
 }

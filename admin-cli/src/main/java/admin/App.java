@@ -133,7 +133,8 @@ public class App {
           Database.RowData res = db.selectOne(id);
           if (res != null) {
             System.out.println(" [" + res.mId + "] " + res.mSubject);
-            System.out.println(" --> " + res.mMessage);
+            System.out.println(" Message: " + res.mMessage);
+            System.out.println(" Likes: " + res.mLikes);
           }
           break;
         }
@@ -143,10 +144,15 @@ public class App {
             continue;
           System.out.println(" Current Database Contents");
           System.out.println(" -------------------------");
-          System.out.printf(" [%3s]  %-20s | %-20s [%3s]%n", "Id", "Subject", "Message", "Likes");
-          for (Database.RowData rd : res)
-            System.out.printf(" [%3s]  %-20s | %-20s [%3s]%n", rd.mId, rd.mSubject, rd.mMessage, rd.mLikes);
-          break;
+          String printfmt = " [%3s] |  %-30s | %-40s | [%3s]%n";
+          System.out.printf(printfmt, "Id", "Subject", "Message", "Likes");
+          System.out.println("--------------------------------------------------------------------------------------------------");
+          for (Database.RowData rd : res) {
+            String subject = rd.mSubject.length() > 30 ? rd.mSubject.substring(0, 30) : rd.mSubject;
+            String message = rd.mMessage.length() > 40 ? rd.mMessage.substring(0, 40) : rd.mMessage;
+            System.out.printf(printfmt, rd.mId, subject, message, rd.mLikes);
+          }
+            break;
         }
         case '-': {
           int id = getInt(in, "Enter the row ID");
@@ -183,3 +189,4 @@ public class App {
     db.disconnect();
   }
 }
+
