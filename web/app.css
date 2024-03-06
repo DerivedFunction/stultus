@@ -32,6 +32,18 @@ h3 {
     height: 100;
 }
 
+#postTitle{
+    font-size: large;
+    font-weight: bold;
+    font-family: 'Madimi One';
+}
+
+#postBody{
+    font-size: medium;
+    font-weight: lighter;
+    font-family: 'Madimi One';
+}
+
 /* Add some space before displaying the table of data */
 #messageList {
     margin-left: 15px;
