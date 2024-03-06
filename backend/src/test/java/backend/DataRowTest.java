@@ -52,8 +52,7 @@ public class DataRowTest extends TestCase {
     for (int i = 0; i < num; i++) {
       subject.add("subject" + rngString());
       message.add("message" + rngString());
-      likes.add((Integer)100*Math.random())
-      sub.add(new RowData(i, subject.get(i), message.get(i)),likes.get(i));
+      sub.add(new RowData(i, subject.get(i), message.get(i),0));
       assertEquals(db.insertRow(subject.get(i), message.get(i)), 1); // add new element
     }
     ArrayList<RowData> res = db.selectAll();
