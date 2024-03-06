@@ -9,7 +9,7 @@ var newEntryForm: NewEntryForm;
 /**
  * Backend server link to dokku
  */
-const backendUrl = "https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
+const backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
 /**
  * Component name to fetch resources
  */
