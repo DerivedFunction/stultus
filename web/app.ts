@@ -320,12 +320,15 @@ class ElementList {
         let tr = document.createElement("tr");
         let td_title = document.createElement("td");
         let td_id = document.createElement("td");
+        let td_like = document.createElement("td");
         td_title.innerHTML = data.mData[i].mSubject;
         td_id.innerHTML = data.mData[i].mId;
-        tr.appendChild(td_id);
+        td_like.innerHTML = data.mData[i].numLikes;
+        tr.appendChild(td_like);
         tr.appendChild(td_title);
         tr.appendChild(this.buttons(data.mData[i].mId));
         table.appendChild(tr);
+
       }
       fragment.appendChild(table);
       elem_messageList.appendChild(fragment);
@@ -438,7 +441,7 @@ class ElementList {
     const id = (<HTMLElement>e.target).getAttribute("data-value");
 
     const doAjax = async () => {
-      await fetch(`${backendUrl}/${componentName}/${id}`, {
+      await fetch(`${backendUrl}/${componentName}/${id}/like`, {
         // Grab the element from "database"
         method: "PUT",
         headers: {

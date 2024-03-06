@@ -15,7 +15,7 @@ other's ideas. All relavant information about new updates and releases are in [`
   - SSH: `git clone git@bitbucket.org:sml3/cse216_sp24_team_21.git`
   - https: `git clone https://del226@bitbucket.org/sml3/cse216_sp24_team_21.git`
 - Jira Link: <https://cse216-24sp-del226.atlassian.net/jira/software/projects/T2/boards/2>
-- Backend URL: <https://2024sp-team-stultus.dokku.cse.lehigh.edu/>
+- Backend URL: <https://team-stultus.dokku.cse.lehigh.edu/>
 
 ## Team Members
 
@@ -61,6 +61,7 @@ git push dokku backend-dokku:master
 - POSTGRES URL: <postgres://***:***@salt.db.elephantsql.com/***>
 - POSTGRES Port: 5432
 - PORT: 8998
+- NUM_TESTS: 5
 
 
 ### Useful Dokku commands

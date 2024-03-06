@@ -44,12 +44,16 @@ table {
 
 /* alternate color of table rows */
 tr:nth-child(even) {
-    background: #CCC
+    background: #303030;
+    border-color: #ffab40;
+    border-width: 3px;
 }
 
 
 tr:nth-child(odd) {
-    background: #888
+    background: #303030;
+    border-color: #ffab40;
+    border-width: 3px;
 }
 
 
