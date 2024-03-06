@@ -143,9 +143,10 @@ public class App {
             continue;
           System.out.println(" Current Database Contents");
           System.out.println(" -------------------------");
-          System.out.printf(" [%3s]  %-20s | %-20s [%3s]%n", "Id", "Subject", "Message", "Likes");
+          String printfmt = " [%3s]  %-30s | %-40s [%3s]%n";
+          System.out.printf(printfmt, "Id", "Subject", "Message", "Likes");
           for (Database.RowData rd : res)
-            System.out.printf(" [%3s]  %-20s | %-20s [%3s]%n", rd.mId, rd.mSubject, rd.mMessage, rd.mLikes);
+            System.out.printf(printfmt, rd.mId, rd.mSubject.substring(0, 30), rd.mMessage.substring(0, 40), rd.mLikes);
           break;
         }
         case '-': {
@@ -183,3 +184,4 @@ public class App {
     db.disconnect();
   }
 }
+
