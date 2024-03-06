@@ -145,6 +145,7 @@ public class App {
           System.out.println(" -------------------------");
           String printfmt = " [%3s]  %-30s | %-40s [%3s]%n";
           System.out.printf(printfmt, "Id", "Subject", "Message", "Likes");
+          System.out.println("--------------------------------------------------------------------------------------------------");
           for (Database.RowData rd : res)
             System.out.printf(printfmt, rd.mId, rd.mSubject.substring(0, 30), rd.mMessage.substring(0, 40), rd.mLikes);
           break;
