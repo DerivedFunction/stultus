@@ -133,8 +133,8 @@ public class Database {
       db.mCreateTable =
           db.mConnection.prepareStatement("CREATE TABLE tblData ("
                                           + "id SERIAL PRIMARY KEY,"
-                                          + "subject VARCHAR(50) NOT NULL,"
-                                          + "message VARCHAR(500) NOT NULL,"
+                                          + "subject VARCHAR(100) NOT NULL,"
+                                          + "message VARCHAR(2048) NOT NULL,"
                                           + "likes INT DEFAULT 0)");
       db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
 

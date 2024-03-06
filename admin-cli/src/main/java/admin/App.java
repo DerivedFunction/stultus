@@ -166,7 +166,15 @@ public class App {
         }
         case '+': {
           String subject = getString(in, "Enter the subject");
+          if(subject.length() > 100){
+            System.out.println("Subject length too long (must not exceed 100 characters)");
+            break;
+          }
           String message = getString(in, "Enter the message");
+          if(message.length() > 2048){
+            System.out.println("Message length too long (must not exceed 2048 characters)");
+            break;
+          }
           if (subject.equals("") || message.equals(""))
             continue;
           int res = db.insertRow(subject, message);
