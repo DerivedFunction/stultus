@@ -178,7 +178,7 @@ public class Database {
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblData WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO tblData VALUES (default, ?, ?,default,default)");
+          "INSERT INTO tblData VALUES (default, ?, ?,default)");
       db.mSelectAll = db.mConnection.prepareStatement(
           "SELECT id, subject, message, likes FROM tblData ORDER BY id DESC");
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
@@ -339,25 +339,7 @@ public class Database {
     }
     return res;
   }
-  /**
-   * Create tblData. If it already exists, print error
-   */
-  void createTable() {
-    try {
-      mCreateTable.execute();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
 
-  /**
-   * Remove tblData from the database, print error if DNE
-   */
-  void dropTable() {
-    try {
-      mDropTable.execute();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
+
+
 }
