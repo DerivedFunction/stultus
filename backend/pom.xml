@@ -57,7 +57,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.6.0</version>
         <configuration>
-          <mainClass>edu.lehigh.cse216.del226.backend.App</mainClass>
+          <mainClass>backend.App</mainClass>
         </configuration>
       </plugin>
       <plugin>
@@ -76,7 +76,7 @@
         </descriptorRefs>
         <archive>
             <manifest>
-                <mainClass>edu.lehigh.cse216.del226.backend.App</mainClass>
+                <mainClass>backend.App</mainClass>
             </manifest>
         </archive>
     </configuration>

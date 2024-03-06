@@ -44,13 +44,23 @@ public class Database {
   /**
    * A Prepared Statement for creating the table from the Database
    */
-  private PreparedStatement mCreateTable;
 
   /**
    * A Prepared Statement for deleting the table from the Database
    */
-  private PreparedStatement mDropTable;
 
+   /** 
+   * A prepared statement for adding a like to a message
+   */
+  private PreparedStatement mAddLike;
+
+  /** 
+   * A prepared statement for removing a like to a message
+   */
+  private PreparedStatement mRemoveLike;
+
+
+  
   /**
    * In the context of the database, RowData represents the data
    * we'd see in a row.
@@ -76,12 +86,18 @@ public class Database {
     String mMessage;
 
     /**
+     * The number of likes on the object
+     */
+    int numLikes;
+
+    /**
      * Construct a RowData object by providing values for its fields
      */
-    public RowData(int id, String subject, String message) {
+    public RowData(int id, String subject, String message, int likes) {
       mId = id;
       mSubject = subject;
       mMessage = message;
+      numLikes=likes;
     }
 
     @Override
@@ -158,21 +174,20 @@ public class Database {
 
   private static Database createPreparedStatements(Database db) {
     try {
-      db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblData ("
-          + "id SERIAL PRIMARY KEY,"
-          + "subject VARCHAR(50) NOT NULL,"
-          + "message VARCHAR(500) NOT NULL)");
-      db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
+
 
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblData WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO tblData VALUES (default, ?, ?)");
+          "INSERT INTO tblData VALUES (default, ?, ?,default)");
       db.mSelectAll = db.mConnection.prepareStatement(
-          "SELECT id, subject, message FROM tblData");
+          "SELECT id, subject, message, likes FROM tblData ORDER BY id DESC");
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
       db.mUpdateOne = db.mConnection.prepareStatement(
           "UPDATE tblData SET subject=?, message=? WHERE id=?");
+      db.mAddLike=db.mConnection.prepareStatement("UPDATE tblData SET likes=likes+1 WHERE id=? AND likes=0");
+      db.mRemoveLike=db.mConnection.prepareStatement("UPDATE tblData SET likes=likes-1 WHERE id=? AND likes=1");
+      
     } catch (SQLException e) {
       System.err.println("Error creating prepared statement");
       e.printStackTrace();
@@ -235,7 +250,7 @@ public class Database {
       ResultSet rs = mSelectAll.executeQuery();
       while (rs.next()) {
         res.add(new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message")));
+            rs.getString("message"),rs.getInt("likes")));
       }
       rs.close();
       return res;
@@ -258,7 +273,7 @@ public class Database {
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
         res = new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message"));
+            rs.getString("message"),rs.getInt("likes"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -277,6 +292,7 @@ public class Database {
     try {
       mDeleteOne.setInt(1, id);
       res = mDeleteOne.executeUpdate();
+      
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -303,26 +319,28 @@ public class Database {
     }
     return res;
   }
-
   /**
-   * Create tblData. If it already exists, print error
+   * Add a like to a row in the database
+   * @param id The id of the row to add the like
+   * @return the number of rows updated
    */
-  void createTable() {
+  int toggleLike(int id)
+   {
+    int res=-1;
     try {
-      mCreateTable.execute();
+      mAddLike.setInt(1,id);
+    res =mAddLike.executeUpdate();
+    if(res ==0)
+      {
+        mRemoveLike.setInt(1, id);
+        res=mRemoveLike.executeUpdate();
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     }
+    return res;
   }
 
-  /**
-   * Remove tblData from the database, print error if DNE
-   */
-  void dropTable() {
-    try {
-      mDropTable.execute();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
+
+
 }

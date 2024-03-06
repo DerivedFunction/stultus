@@ -5,6 +5,7 @@ import java.util.Map;
 import com.google.gson.*;
 
 import spark.Response;
+import spark.Route;
 import spark.Spark;
 
 public class App {
@@ -37,6 +38,13 @@ public class App {
       System.out.println("New location: " + static_location_override);
       Spark.staticFiles.externalLocation(static_location_override);
     }
+    // if CORS enablesd, set backend to accept foriegn requests
+        if ("True".equalsIgnoreCase(System.getenv("CORS_ENABLED"))) {
+        final String acceptCrossOriginRequestsFrom = "*";
+        final String acceptedCrossOriginRoutes = "GET,PUT,POST,DELETE,OPTIONS";
+        final String supportedRequestHeaders = "Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin";
+        enableCORS(acceptCrossOriginRequestsFrom, acceptedCrossOriginRoutes, supportedRequestHeaders);
+    }
 
     // Set up route for serving main page
     Spark.get("/", (req, res) -> {
@@ -48,27 +56,13 @@ public class App {
      * GET route that returns all messages and ids.
      * Converts StructuredResponses to JSON
      */
-    Spark.get(CONTEXT, (request, response) -> {
-      extractResponse(response);
-      return gson.toJson(
-          new StructuredResponse("ok", null, db.selectAll()));
-    });
+    Spark.get(CONTEXT, getAll(gson, db));
 
     /*
      * GET route that returns all messages and ids.
      * Converts StructuredResponses to JSON
      */
-    Spark.get(CONTEXT + "/:id", (request, response) -> {
-      int idx = Integer.parseInt(request.params("id"));
-      extractResponse(response);
-      Database.RowData data = db.selectOne(idx);
-      if (data == null) {
-        return gson.toJson(
-            new StructuredResponse("error", idx + " not found", null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", null, data));
-      }
-    });
+    Spark.get(CONTEXT + "/:id", getWithId(gson, db));
 
     /*
      * POST route that adds a new element to DataStore.
@@ -76,40 +70,27 @@ public class App {
      * SimpleRequest object, extracting the title and msg,
      * and also the object.
      */
-    Spark.post(CONTEXT, (request, response) -> {
-      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
-      extractResponse(response);
-      // createEntry checks for null title/message (-1)
-      int newId = db.insertRow(req.mTitle, req.mMessage);
-      if (newId == -1) {
-        return gson.toJson(new StructuredResponse(
-            "error", "error performing insertion", null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", "" + newId, null));
-      }
-    });
+    Spark.post(CONTEXT, postIdea(gson, db));
 
     /*
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
      */
-    Spark.put(CONTEXT + "/:id", (request, response) -> {
-      int idx = Integer.parseInt(request.params("id"));
-      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
-      extractResponse(response);
-      int result = db.updateOne(idx, req.mTitle, req.mMessage);
-      if (result < 1) {
-        return gson.toJson(new StructuredResponse(
-            "error", "unable to update row " + idx, null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", null, result));
-      }
-    });
+    Spark.put(CONTEXT + "/:id", putWithID(gson, db));
+
+    /*
+     * PUT route for adding a like, 
+     */
+    Spark.put(CONTEXT+"/:id/like",putLike(gson, db));
 
     /*
      * Delete route for removing a row from DataStore
      */
-    Spark.delete(CONTEXT + "/:id", (request, response) -> {
+    Spark.delete(CONTEXT + "/:id", deleteWithID(gson, db));
+  }
+
+  private static Route deleteWithID(final Gson gson, Database db) {
+    return (request, response) -> {
       int idx = Integer.parseInt(request.params("id"));
       extractResponse(response);
       int result = db.deleteRow(idx);
@@ -120,7 +101,72 @@ public class App {
       } else {
         return gson.toJson(new StructuredResponse("ok", null, null));
       }
-    });
+    };
+  }
+
+  private static Route putWithID(final Gson gson, Database db) {
+    return (request, response) -> {
+      int idx = Integer.parseInt(request.params("id"));
+      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+      extractResponse(response);
+      int result = db.updateOne(idx, req.mTitle, req.mMessage);
+      if (result < 1) {
+        return gson.toJson(new StructuredResponse(
+            "error", "unable to update row " + idx, null));
+      } else {
+        return gson.toJson(new StructuredResponse("ok", null, result));
+      }
+    };
+  }
+  private static Route putLike(final Gson gson, Database db)
+  {
+    return (request, response)->{
+      int idx = Integer.parseInt(request.params("id"));
+      int result =db.toggleLike(idx);
+      if (result == -1) {
+        return gson.toJson(new StructuredResponse(
+            "error", "error performing insertion", null));
+      } else {
+        return gson.toJson(new StructuredResponse("ok", null, null));
+      }
+    };
+  }
+
+  private static Route postIdea(final Gson gson, Database db) {
+    return (request, response) -> {
+      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+      extractResponse(response);
+      // createEntry checks for null title/message (-1)
+      int rowsAdded = db.insertRow(req.mTitle, req.mMessage);
+      if (rowsAdded <= 0) {
+        return gson.toJson(new StructuredResponse(
+            "error", "error performing insertion", null));
+      } else {
+        return gson.toJson(new StructuredResponse("ok", "" + rowsAdded, null));
+      }
+    };
+  }
+
+  private static Route getAll(final Gson gson, Database db) {
+    return (request, response) -> {
+      extractResponse(response);
+      return gson.toJson(
+          new StructuredResponse("ok", null, db.selectAll()));
+    };
+  }
+
+  private static Route getWithId(final Gson gson, Database db) {
+    return (request, response) -> {
+      int idx = Integer.parseInt(request.params("id"));
+      extractResponse(response);
+      Database.RowData data = db.selectOne(idx);
+      if (data == null) {
+        return gson.toJson(
+            new StructuredResponse("error", idx + " not found", null));
+      } else {
+        return gson.toJson(new StructuredResponse("ok", null, data));
+      }
+    };
   }
 
   private static void extractResponse(Response response) {
@@ -165,4 +211,36 @@ public class App {
     return defaultVal;
   }
 
+  /**
+ * Set up CORS headers for the OPTIONS verb, and for every response that the
+ * server sends.  This only needs to be called once.
+ * 
+ * @param origin The server that is allowed to send requests to this server
+ * @param methods The allowed HTTP verbs from the above origin
+ * @param headers The headers that can be sent with a request from the above
+ *                origin
+ */
+private static void enableCORS(String origin, String methods, String headers) {
+    // Create an OPTIONS route that reports the allowed CORS headers and methods
+    Spark.options("/*", (request, response) -> {
+        String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+        if (accessControlRequestHeaders != null) {
+            response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+        }
+        String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+        if (accessControlRequestMethod != null) {
+            response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+        }
+        return "OK";
+    });
+
+    // 'before' is a decorator, which will run before any 
+    // get/post/put/delete.  In our case, it will put three extra CORS
+    // headers into the response
+    Spark.before((request, response) -> {
+        response.header("Access-Control-Allow-Origin", origin);
+        response.header("Access-Control-Request-Method", methods);
+        response.header("Access-Control-Allow-Headers", headers);
+    });
+}
 }

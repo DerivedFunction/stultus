@@ -41,17 +41,17 @@ public class DataRowTest extends TestCase {
 
   public static void testApp() {
 
-    int num = Integer.parseInt(System.getenv("NUM_TESTS"));
-
+    int num = App.getIntFromEnv("NUM_TESTS",1);
     // // Connect to database
     Database db = App.getDatabaseConnection();
     ArrayList<RowData> sub = new ArrayList<>();
     ArrayList<String> subject = new ArrayList<>();
     ArrayList<String> message = new ArrayList<>();
+    ArrayList<Integer> likes=new ArrayList<>();
     for (int i = 0; i < num; i++) {
       subject.add("subject" + rngString());
       message.add("message" + rngString());
-      sub.add(new RowData(i, subject.get(i), message.get(i)));
+      sub.add(new RowData(i, subject.get(i), message.get(i),0));
       assertEquals(db.insertRow(subject.get(i), message.get(i)), 1); // add new element
     }
     ArrayList<RowData> res = db.selectAll();
