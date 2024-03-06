@@ -1,0 +1,66 @@
+<!DOCTYPE html />
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- included for testing web frontend -->
+    <script src="jasmine.js"></script>
+    <script src="jasmine-html.js"></script>
+    <script src="boot0.js"></script>
+    <script src="boot1.js"></script>
+    <link rel="stylesheet" href="jasmine.css">
+
+    <script src="apptest.js"></script>
+    <!-- End of tests -->
+
+    <title>Stultus</title>
+    <script defer type="module" src="todo.js"></script>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="todo.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Madimi One' rel='stylesheet'>
+</head>
+
+<body>
+    <div id="addElement">
+        <div id="scrollTitle">
+            <h3>Create A New Idea</h3>
+        </div>
+        <div style="height: 100;"></div>
+        <label>Title</label>
+        <input type="text" id="newTitle" />
+        <label>Message</label>
+        <textarea id="newMessage"></textarea>
+        <button id="addButton">Add</button>
+        <button id="addCancel">Cancel</button>
+    </div>
+    <div id="editElement">
+        <div id = "scrollTitle">
+            <h3>Edit Your Idea</h3>
+        </div>
+        <div style="height: 100;"></div>
+        <label>Title</label>
+        <input type="text" id="editTitle" />
+        <label>Message</label>
+        <textarea id="editMessage"></textarea>
+        <span id="editCreated"></span>
+        <input type="hidden" id="editId" />
+        <button id="editButton">Update</button>
+        <button id="editCancel">Cancel</button>
+    </div>
+    <div id="showElements">
+        <div id="scrollTitle">
+                <h3>Stultus</h3>
+                <button id="showFormButton">New Post</button>
+        </div>
+        <div style="height: 100;"></div>
+        <!--<button id="refreshFormButton">Refresh</button> -->
+    <div id="messageList"></div>
+    </div>
+</body>
+</html>
