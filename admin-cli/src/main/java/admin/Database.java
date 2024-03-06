@@ -1,4 +1,4 @@
-package edu.lehigh.cse216.del226.admin;
+package admin;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -64,6 +64,11 @@ public class Database {
     int mId;
 
     /**
+     * Likes for comments/posts
+     */
+    int mLikes;
+
+    /**
      * The subject stored in this row
      * */
     String mSubject;
@@ -76,10 +81,11 @@ public class Database {
     /**
      * Construct a RowData object by providing values for its fields
      * */
-    public RowData(int id, String subject, String message) {
+    public RowData(int id, String subject, String message, int likes) {
       mId = id;
       mSubject = subject;
       mMessage = message;
+      mLikes = likes;
     }
     @Override
     public boolean equals(Object other) {
@@ -128,16 +134,17 @@ public class Database {
           db.mConnection.prepareStatement("CREATE TABLE tblData ("
                                           + "id SERIAL PRIMARY KEY,"
                                           + "subject VARCHAR(50) NOT NULL,"
-                                          + "message VARCHAR(500) NOT NULL)");
+                                          + "message VARCHAR(500) NOT NULL,"
+                                          + "likes INT DEFAULT 0)");
       db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
 
       // Standard CRUD operations
       db.mDeleteOne =
           db.mConnection.prepareStatement("DELETE FROM tblData WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO tblData VALUES (default, ?, ?)");
+          "INSERT INTO tblData VALUES (default, ?, ?, 0)");
       db.mSelectAll = db.mConnection.prepareStatement(
-          "SELECT id, subject, message FROM tblData");
+          "SELECT * FROM tblData");
       db.mSelectOne =
           db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
       db.mUpdateOne = db.mConnection.prepareStatement(
@@ -200,7 +207,7 @@ public class Database {
       ResultSet rs = mSelectAll.executeQuery();
       while (rs.next()) {
         res.add(new RowData(rs.getInt("id"), rs.getString("subject"),
-                            rs.getString("message")));
+                            rs.getString("message"), rs.getInt("likes")));
       }
       rs.close();
       return res;
@@ -223,7 +230,7 @@ public class Database {
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
         res = new RowData(rs.getInt("id"), rs.getString("subject"),
-                          rs.getString("message"));
+                          rs.getString("message"), rs.getInt("likes"));
       }
     } catch (SQLException e) {
       e.printStackTrace();

@@ -1,4 +1,4 @@
-package edu.lehigh.cse216.del226.admin;
+package admin;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -143,8 +143,9 @@ public class App {
             continue;
           System.out.println(" Current Database Contents");
           System.out.println(" -------------------------");
+          System.out.printf(" [%3s]  %-20s | %-20s [%3s]%n", "Id", "Subject", "Message", "Likes");
           for (Database.RowData rd : res)
-            System.out.printf(" [%3s]  %-20s | %s%n", rd.mId, rd.mSubject, rd.mMessage);
+            System.out.printf(" [%3s]  %-20s | %-20s [%3s]%n", rd.mId, rd.mSubject, rd.mMessage, rd.mLikes);
           break;
         }
         case '-': {

@@ -18,3 +18,8 @@ button {
     /* Slightly larger font */
     font-size: 1.4rem;
 }
+
+#Header{
+    position: fixed;
+    background-color: #009688;
+}

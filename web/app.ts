@@ -9,7 +9,7 @@ var newEntryForm: NewEntryForm;
 /**
  * Backend server link to dokku
  */
-const backendUrl = "https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
+const backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
 /**
  * Component name to fetch resources
  */
@@ -348,6 +348,14 @@ class ElementList {
         mainList.clickEdit(e);
       });
     }
+    const all_likebtns = <HTMLCollectionOf<HTMLInputElement>>(
+      document.getElementsByClassName("likebtn")
+    );
+    for (let i = 0; i < all_likebtns.length; ++i) {
+      all_likebtns[i].addEventListener("click", (e) => {
+        mainList.clickLike(e);
+      });
+    }
   }
 
   /**
@@ -376,6 +384,14 @@ class ElementList {
     td.appendChild(btn);
     fragment.appendChild(td);
 
+    td = document.createElement("td");
+    btn = document.createElement("button");
+    btn.classList.add("likebtn");
+    btn.setAttribute("data-value", id);
+    btn.innerHTML = "Like";
+    td.appendChild(btn);
+    fragment.appendChild(td);
+
     return fragment;
   }
 
@@ -390,6 +406,41 @@ class ElementList {
       await fetch(`${backendUrl}/${componentName}/${id}`, {
         // Grab the element from "database"
         method: "DELETE",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return Promise.resolve(response.json());
+          } else {
+            window.alert(
+              `The server replied not ok: ${response.status}\n` +
+                response.statusText
+            );
+          }
+          return Promise.reject(response);
+        })
+        .then((data) => {
+          mainList.refresh();
+          console.log(data);
+        })
+        .catch((error) => {
+          console.warn("Something went wrong. ", error);
+          window.alert("Unspecified error");
+        });
+    };
+    // post AJAX values to console
+    doAjax().then(console.log).catch(console.log);
+  }
+
+  private clickLike(e: Event) {
+    const id = (<HTMLElement>e.target).getAttribute("data-value");
+
+    const doAjax = async () => {
+      await fetch(`${backendUrl}/${componentName}/${id}`, {
+        // Grab the element from "database"
+        method: "PUT",
         headers: {
           "Content-type": "application/json; charset=UTF-8",
         },
