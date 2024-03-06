@@ -1,22 +1,47 @@
 body {
-    font-family: 'Fresca', sans-serif;
+    font-family: 'Lobster';
     margin: 0;
+    background-color: #212121;
+    color: white
 }
 
 /* Change the header of the display */
 h3 {
-    background-color: #DDD;
-    font-size: 24pt;
+    color: white;
+    font-size: 50pt;
     font-weight: bold;
-    height: 42px;
-    text-align: center;
+    text-align: left;
+    margin-top: 1px;
 }
+
 
 /* "Add Message" appears on top right above header */
 #showFormButton {
+    margin-top: -110px;
     position: absolute;
-    top: 5px;
-    right: 5px;
+    background-color: #ffab40;
+    border: white;
+    size: 30px;
+    right: 15px;
+}
+
+#scrollTitle{
+    background-color: #009688;
+    position: fixed;
+    width: 100%;
+    height: 100;
+}
+
+#postTitle{
+    font-size: large;
+    font-weight: bold;
+    font-family: 'Madimi One';
+}
+
+#postBody{
+    font-size: medium;
+    font-weight: lighter;
+    font-family: 'Madimi One';
 }
 
 /* Add some space before displaying the table of data */
@@ -26,21 +51,27 @@ h3 {
 
 /* Make the table wide */
 table {
-    width: 500px;
+    width: 100%;
 }
 
 /* alternate color of table rows */
 tr:nth-child(even) {
-    background: #CCC
+    background: #303030;
+    border-color: #ffab40;
+    border-width: 3px;
 }
 
+
 tr:nth-child(odd) {
-    background: #888
+    background: #303030;
+    border-color: #ffab40;
+    border-width: 3px;
 }
+
 
 /* make table row height a bit taller */
 tr {
-    height: 20px;
+    height: 150px;
 }
 
 /* make the "title" column of the table wide */

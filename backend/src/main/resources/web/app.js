@@ -42,6 +42,14 @@ var $;
 /** Global variable to be referenced for newEntryForm */
 var newEntryForm;
 /**
+ * Backend server link to dokku
+ */
+var backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
+/**
+ * Component name to fetch resources
+ */
+var componentName = "messages";
+/**
  * NewEntryForm has all the code for the form for adding an entry
  */
 var NewEntryForm = /** @class */ (function () {
@@ -89,7 +97,7 @@ var NewEntryForm = /** @class */ (function () {
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("/messages", {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName), {
                             method: "POST",
                             body: JSON.stringify({
                                 // from backend
@@ -229,7 +237,7 @@ var EditEntryForm = /** @class */ (function () {
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("/messages/".concat(id), {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName, "/").concat(id), {
                             method: "PUT",
                             body: JSON.stringify({
                                 mTitle: title, //mTitle
@@ -310,7 +318,7 @@ var ElementList = /** @class */ (function () {
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("/messages", {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName), {
                             method: "GET",
                             headers: {
                                 "Content-type": "application/json; charset=UTF-8",
@@ -357,9 +365,11 @@ var ElementList = /** @class */ (function () {
                 var tr = document.createElement("tr");
                 var td_title = document.createElement("td");
                 var td_id = document.createElement("td");
-                td_title.innerHTML = data.mData[i].mSubject;
+                var td_like = document.createElement("td");
+                td_title.innerHTML = "<div id = \"postTitle\">" + data.mData[i].mSubject + "</div><br><div id = \"postBody\">" + data.mData[i].mMessage + "</div>";
                 td_id.innerHTML = data.mData[i].mId;
-                tr.appendChild(td_id);
+                td_like.innerHTML = data.mData[i].numLikes;
+                tr.appendChild(td_like);
                 tr.appendChild(td_title);
                 tr.appendChild(this.buttons(data.mData[i].mId));
                 table.appendChild(tr);
@@ -379,6 +389,12 @@ var ElementList = /** @class */ (function () {
         for (var i = 0; i < all_editbtns.length; ++i) {
             all_editbtns[i].addEventListener("click", function (e) {
                 mainList.clickEdit(e);
+            });
+        }
+        var all_likebtns = (document.getElementsByClassName("likebtn"));
+        for (var i = 0; i < all_likebtns.length; ++i) {
+            all_likebtns[i].addEventListener("click", function (e) {
+                mainList.clickLike(e);
             });
         }
     };
@@ -405,6 +421,13 @@ var ElementList = /** @class */ (function () {
         btn.innerHTML = "Delete";
         td.appendChild(btn);
         fragment.appendChild(td);
+        td = document.createElement("td");
+        btn = document.createElement("button");
+        btn.classList.add("likebtn");
+        btn.setAttribute("data-value", id);
+        btn.innerHTML = "Like";
+        td.appendChild(btn);
+        fragment.appendChild(td);
         return fragment;
     };
     /**
@@ -417,9 +440,49 @@ var ElementList = /** @class */ (function () {
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("/messages/".concat(id), {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName, "/").concat(id), {
                             // Grab the element from "database"
                             method: "DELETE",
+                            headers: {
+                                "Content-type": "application/json; charset=UTF-8",
+                            },
+                        })
+                            .then(function (response) {
+                            if (response.ok) {
+                                return Promise.resolve(response.json());
+                            }
+                            else {
+                                window.alert("The server replied not ok: ".concat(response.status, "\n") +
+                                    response.statusText);
+                            }
+                            return Promise.reject(response);
+                        })
+                            .then(function (data) {
+                            mainList.refresh();
+                            console.log(data);
+                        })
+                            .catch(function (error) {
+                            console.warn("Something went wrong. ", error);
+                            window.alert("Unspecified error");
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        // post AJAX values to console
+        doAjax().then(console.log).catch(console.log);
+    };
+    ElementList.prototype.clickLike = function (e) {
+        var _this = this;
+        var id = e.target.getAttribute("data-value");
+        var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName, "/").concat(id, "/like"), {
+                            // Grab the element from "database"
+                            method: "PUT",
                             headers: {
                                 "Content-type": "application/json; charset=UTF-8",
                             },
@@ -462,7 +525,7 @@ var ElementList = /** @class */ (function () {
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("/messages/".concat(id), {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName, "/").concat(id), {
                             method: "GET",
                             headers: {
                                 "Content-type": "application/json; charset=UTF-8",
