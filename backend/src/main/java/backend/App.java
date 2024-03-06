@@ -137,12 +137,12 @@ public class App {
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
       // createEntry checks for null title/message (-1)
-      int newId = db.insertRow(req.mTitle, req.mMessage);
-      if (newId == -1) {
+      int rowsAdded = db.insertRow(req.mTitle, req.mMessage);
+      if (rowsAdded <= 0) {
         return gson.toJson(new StructuredResponse(
             "error", "error performing insertion", null));
       } else {
-        return gson.toJson(new StructuredResponse("ok", "" + newId, null));
+        return gson.toJson(new StructuredResponse("ok", "" + rowsAdded, null));
       }
     };
   }
