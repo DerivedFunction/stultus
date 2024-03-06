@@ -185,8 +185,8 @@ public class Database {
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
       db.mUpdateOne = db.mConnection.prepareStatement(
           "UPDATE tblData SET subject=?, message=? WHERE id=?");
-      db.mAddLike=db.mConnection.prepareStatement("UPDATE tblDatan SET likes=likes+1 WHERE id=? AND likes=0");
-      db.mRemoveLike=db.mConnection.prepareStatement("UPDATE tblDatan SET likes=likes-1 WHERE id=? AND likes=1");
+      db.mAddLike=db.mConnection.prepareStatement("UPDATE tblData SET likes=likes+1 WHERE id=? AND likes=0");
+      db.mRemoveLike=db.mConnection.prepareStatement("UPDATE tblData SET likes=likes-1 WHERE id=? AND likes=1");
       
     } catch (SQLException e) {
       System.err.println("Error creating prepared statement");
