@@ -12,7 +12,7 @@ public class App {
   private static final String DEFAULT_PORT_DB = "5432";
   private static final int DEFAULT_PORT_SPARK = 4567;
 
-  private static final String CONTEXT = "/posts";
+  private static final String CONTEXT = "/messages";
 
   public App() {
 

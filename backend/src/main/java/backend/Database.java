@@ -44,13 +44,12 @@ public class Database {
   /**
    * A Prepared Statement for creating the table from the Database
    */
-  private PreparedStatement mCreateTable;
 
   /**
    * A Prepared Statement for deleting the table from the Database
    */
-  private PreparedStatement mDropTable;
-  /** 
+
+   /** 
    * A prepared statement for adding a like to a message
    */
   private PreparedStatement mAddLike;
@@ -169,11 +168,7 @@ public class Database {
 
   private static Database createPreparedStatements(Database db) {
     try {
-      db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblData ("
-          + "id SERIAL PRIMARY KEY,"
-          + "subject VARCHAR(50) NOT NULL,"
-          + "message VARCHAR(500) NOT NULL)");
-      db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
+
 
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblData WHERE id=?");
