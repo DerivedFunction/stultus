@@ -321,7 +321,8 @@ class ElementList {
         let td_title = document.createElement("td");
         let td_id = document.createElement("td");
         let td_like = document.createElement("td");
-        td_title.innerHTML = data.mData[i].mSubject;
+        td_title.innerHTML = "<div id = \"postTitle\">" + data.mData[i].mSubject +"</div><br><div id = \"postBody\">"+ data.mData[i].mMessage +"</div>";
+
         td_id.innerHTML = data.mData[i].mId;
         td_like.innerHTML = data.mData[i].numLikes;
         tr.appendChild(td_like);
