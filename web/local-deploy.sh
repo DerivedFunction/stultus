@@ -32,3 +32,8 @@ node_modules/typescript/bin/tsc app.ts --lib "es2015","dom" --target es5 --stric
 # (Note: we don't currently use -s for silent operation)
 echo "Starting local webserver at $TARGETFOLDER"
 npx http-server -c-1 $TARGETFOLDER
+
+node_modules/typescript/bin/tsc apptest.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/apptest.js
+cp spec_runner.html $TARGETFOLDER/$WEBFOLDERNAME
+cp node_modules/jasmine-core/lib/jasmine-core/*.css $TARGETFOLDER/$WEBFOLDERNAME
+cp node_modules/jasmine-core/lib/jasmine-core/*.js $TARGETFOLDER/$WEBFOLDERNAME

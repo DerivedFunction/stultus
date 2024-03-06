@@ -16,12 +16,12 @@ describe("Tests", function () {
     (<HTMLElement>document.getElementById("showFormButton")).click();
     let msg = <HTMLInputElement>document.getElementById("newMessage");
     let title = <HTMLInputElement>document.getElementById("newTitle");
-    title.value = "Denny Li's Test";
-    msg.value = "CSE 216 from Denny Li";
+    title.value = "Stultus Frontend Test";
+    msg.value = "CSE 216 Team 21";
 
     // See if values set works
-    expect(msg.value).toEqual("CSE 216 from Denny Li");
-    expect(title.value).toEqual("Denny Li's Test");
+    expect(msg.value).toEqual("CSE 216 Team 21");
+    expect(title.value).toEqual("Stultus Frontend Test");
     // The add Element form (title, msg) is shown
     expect(
       (<HTMLElement>document.getElementById("addElement")).style.display
@@ -30,9 +30,11 @@ describe("Tests", function () {
     expect(
       (<HTMLElement>document.getElementById("showElements")).style.display
     ).toEqual("none");
+    expect(
+      (<HTMLElement>document.getElementById("showElements")).style.display
+    ).toEqual("none");
 
     // Refresh the UI to main table by clicking add
     (<HTMLElement>document.getElementById("addButton")).click();
-    (<HTMLElement>document.getElementById("refreshFormButton")).click();
   });
 });
