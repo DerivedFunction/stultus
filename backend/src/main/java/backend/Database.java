@@ -86,12 +86,18 @@ public class Database {
     String mMessage;
 
     /**
+     * The number of likes on the object
+     */
+    int numLikes;
+
+    /**
      * Construct a RowData object by providing values for its fields
      */
-    public RowData(int id, String subject, String message) {
+    public RowData(int id, String subject, String message, int likes) {
       mId = id;
       mSubject = subject;
       mMessage = message;
+      numLikes=likes;
     }
 
     @Override
@@ -244,7 +250,7 @@ public class Database {
       ResultSet rs = mSelectAll.executeQuery();
       while (rs.next()) {
         res.add(new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message")));
+            rs.getString("message"),rs.getInt("likes")));
       }
       rs.close();
       return res;
@@ -267,7 +273,7 @@ public class Database {
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
         res = new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message"));
+            rs.getString("message"),rs.getInt("likes"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
