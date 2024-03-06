@@ -41,7 +41,6 @@ public class DataRowTest extends TestCase {
 
   public static void testApp() {
 
-    int num = Integer.parseInt(System.getenv("NUM_TESTS"));
 
     // // Connect to database
     Database db = App.getDatabaseConnection();
