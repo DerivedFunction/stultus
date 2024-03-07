@@ -13,15 +13,17 @@ describe("Tests", function () {
         expect(foo).toEqual(-1);
     });*/
   it("UI Test: Add button hides lists", function () {
+    console.log("html function");
     (<HTMLElement>document.getElementById("showFormButton")).click();
     let msg = <HTMLInputElement>document.getElementById("newMessage");
     let title = <HTMLInputElement>document.getElementById("newTitle");
-    title.value = "Denny Li's Test";
-    msg.value = "CSE 216 from Denny Li";
+    msg.value = "Hey Howdy";
+    title.value = "It's Me The Title";
+
 
     // See if values set works
-    expect(msg.value).toEqual("CSE 216 from Denny Li");
-    expect(title.value).toEqual("Denny Li's Test");
+    expect(msg.value).toEqual("Hey Howdy");
+    expect(title.value).toEqual("It's Me The Title");
     // The add Element form (title, msg) is shown
     expect(
       (<HTMLElement>document.getElementById("addElement")).style.display
@@ -31,8 +33,18 @@ describe("Tests", function () {
       (<HTMLElement>document.getElementById("showElements")).style.display
     ).toEqual("none");
 
+
     // Refresh the UI to main table by clicking add
     (<HTMLElement>document.getElementById("addButton")).click();
-    (<HTMLElement>document.getElementById("refreshFormButton")).click();
+    // (<HTMLElement>document.getElementById("refreshFormButton")).click();
+    setTimeout(function () {
+      console.log("like and delete button")
+      let lbtns = document.getElementsByClassName("likebtn");
+      let lbtn = <HTMLButtonElement>lbtns[0];
+      lbtn.click();
+      let dbtns = document.getElementsByClassName("delbtn");
+      let dbtn = <HTMLButtonElement>dbtns[0];
+      dbtn.click();
+    }, 1000);
   });
 });
