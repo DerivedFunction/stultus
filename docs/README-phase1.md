@@ -59,4 +59,11 @@ Old Tests from `dennyli/tutorials`
 
 ## Routes and details
 
-![Routes List](img-assets/RouteList.png)
+| Purpose | Route | Verb | Purpose | Structure |
+   |---------------------------|------------------|-------|-----------------------------------|-------------------------------------------|
+   | Show all messages | /messages | GET | Return post data to display | Json{ArrayList<messages>} |
+   | Show one post | /messages/id | GET | Return single post data | Json{message} |
+   | Create new Post | /messages | POST | Creates a post | Takes {title, message}, all other fields handled by backend |
+   | Edit content of a post | /messages/id | PUT | Edits a post | Takes {title, message} like creation |
+   | Delete a post | /messages/id | DELETE| Deletes a post | Returns status |
+   | Like a post | /messages/id/like| PUT | Likes a post | Returns new number of likes |
