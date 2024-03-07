@@ -54,7 +54,7 @@ git branch -D backend-dokku
 git checkout -b backend-dokku origin/backend-dokku
 
 # we are now ready to deploy to dokku with:
-git push dokku backend-dokku:master
+git push dokku backend-dokku
 ```
 
 ### Dokku configurations
