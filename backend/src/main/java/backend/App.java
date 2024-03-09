@@ -24,7 +24,7 @@ public class App {
      */
     final Gson gson = new Gson();
 
-    Database db = getDatabaseConnection();
+    Database db = getDatabaseConnection("tblData");
     if (db == null)
       return;
 
@@ -179,12 +179,8 @@ public class App {
    * 
    * @return connected database
    */
-  public static Database getDatabaseConnection() {
-    String tableName=System.getenv("MESSAGE_TABLE");
-    if (tableName== null)
-    {
-      tableName="tblData";
-    }    
+  public static Database getDatabaseConnection(String tableName) {
+
     if (System.getenv("DATABASE_URL") != null) {
       return Database.getDatabase(System.getenv("DATABASE_URL"), DEFAULT_PORT_DB,tableName);
     }
