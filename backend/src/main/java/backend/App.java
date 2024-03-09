@@ -180,8 +180,13 @@ public class App {
    * @return connected database
    */
   public static Database getDatabaseConnection() {
+    String tableName=System.getenv("MESSAGE_TABLE");
+    if (tableName== null)
+    {
+      tableName="tblData";
+    }    
     if (System.getenv("DATABASE_URL") != null) {
-      return Database.getDatabase(System.getenv("DATABASE_URL"), DEFAULT_PORT_DB);
+      return Database.getDatabase(System.getenv("DATABASE_URL"), DEFAULT_PORT_DB,tableName);
     }
     // get the Postgres configuration from the environment
     Map<String, String> env = System.getenv();
@@ -191,7 +196,7 @@ public class App {
     String pass = env.get("POSTGRES_PASS");
 
     // Connect to database
-    return Database.getDatabase(ip, port, "", user, pass);
+    return Database.getDatabase(ip, port, "", user, pass,tableName);
   }
 
   /**

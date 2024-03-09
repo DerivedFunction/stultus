@@ -121,7 +121,7 @@ public class Database {
    * 
    * @return A Database object, or null if we cannot connect properly
    */
-  static Database getDatabase(String db_url, String port_default) {
+  static Database getDatabase(String db_url, String port_default, String tableName) {
     try {
       URI dbUri = new URI(db_url);
       String username = dbUri.getUserInfo().split(":")[0];
@@ -130,7 +130,7 @@ public class Database {
       String path = dbUri.getPath();
       String port = dbUri.getPort() == -1 ? port_default : Integer.toString(dbUri.getPort());
 
-      return getDatabase(host, port, path, username, password);
+      return getDatabase(host, port, path, username, password,tableName);
     } catch (URISyntaxException s) {
       System.out.println("URI Syntax Error");
       return null;
@@ -147,7 +147,7 @@ public class Database {
    * @param pass The password to use
    */
 
-  static Database getDatabase(String ip, String port, String path, String user, String pass) {
+  static Database getDatabase(String ip, String port, String path, String user, String pass,String tableName) {
     if (path == null || "".equals(path)) {
       path = "/";
     }
@@ -169,24 +169,24 @@ public class Database {
       e.printStackTrace();
       return null;
     }
-    return createPreparedStatements(db);
+    return createPreparedStatements(db,tableName);
   }
 
-  private static Database createPreparedStatements(Database db) {
+  private static Database createPreparedStatements(Database db,String tableName) {
     try {
 
 
       // Standard CRUD operations
-      db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblData WHERE id=?");
+      db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM "+tableName + " WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO tblData VALUES (default, ?, ?,default)");
+          "INSERT INTO  " + tableName + "  VALUES (default, ?, ?,default)");
       db.mSelectAll = db.mConnection.prepareStatement(
-          "SELECT id, subject, message, likes FROM tblData ORDER BY id DESC");
-      db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
+          "SELECT id, subject, message, likes FROM  " + tableName + "  ORDER BY id DESC");
+      db.mSelectOne = db.mConnection.prepareStatement("SELECT * from  " + tableName + "  WHERE id=?");
       db.mUpdateOne = db.mConnection.prepareStatement(
-          "UPDATE tblData SET subject=?, message=? WHERE id=?");
-      db.mAddLike=db.mConnection.prepareStatement("UPDATE tblData SET likes=likes+1 WHERE id=? AND likes=0");
-      db.mRemoveLike=db.mConnection.prepareStatement("UPDATE tblData SET likes=likes-1 WHERE id=? AND likes=1");
+          "UPDATE  " + tableName + "  SET subject=?, message=? WHERE id=?");
+      db.mAddLike=db.mConnection.prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
+      db.mRemoveLike=db.mConnection.prepareStatement("UPDATE  " + tableName + "  SET likes=likes-1 WHERE id=? AND likes=1");
       
     } catch (SQLException e) {
       System.err.println("Error creating prepared statement");
