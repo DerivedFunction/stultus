@@ -79,7 +79,12 @@ public class Database {
     String mMessage;
 
     /**
-     * Construct a RowData object by providing values for its fields
+     * Method that constructs a RowData object by providing values for its fields
+     * 
+     * @param id the id of the message
+     * @param subject the user-inputted subject/title of their message
+     * @param message the user-inputted message/content of their post
+     * @param likes the number of likes a message has
      * */
     public RowData(int id, String subject, String message, int likes) {
       mId = id;
@@ -87,6 +92,12 @@ public class Database {
       mMessage = message;
       mLikes = likes;
     }
+    /**
+     * Method that checks if the subject or message of one post is identical to another post
+     * 
+     * @param other the other object(post) that is being compared to the post being created
+     * @return boolean determining whether the two objects are equal or not
+     */
     @Override
     public boolean equals(Object other) {
       RowData obj = (RowData)other;
@@ -102,11 +113,13 @@ public class Database {
   private Database() {}
 
   /**
-   * Get a fully configured connected to the database
+   * Method that gets a fully configured connection to the database
+   * 
    * @param ip The IP address of server
    * @param port The port on the server
    * @param user The user ID to use
    * @param pass The password to use
+   * @return the db object created in which we are connecting
    * */
 
   static Database getDatabase(String ip, String port, String user,
@@ -159,7 +172,8 @@ public class Database {
   }
 
   /**
-   * Close the current connection to data database, if it exist
+   * Method that closes the current connection to data database, if it exists
+   * 
    * @return true if connection closes as expected
    * */
   boolean disconnect() {
@@ -179,11 +193,10 @@ public class Database {
     return true;
   }
   /**
-   * Insert a row into the database
+   * Method that inserts a row into the database. These rows are the user-inputted subject+message
    *
    * @param subject The subject for this new row
    * @param message The message body for this new row
-   *
    * @return The number of rows that were inserted
    */
   int insertRow(String subject, String message) {
@@ -198,7 +211,8 @@ public class Database {
     return count;
   }
   /**
-   * Query the database for a list of all subjects and their IDs
+   * Method that queries the database for a list of all subjects and their IDs
+   * 
    * @return All rows, as an ArrayList
    * */
   ArrayList<RowData> selectAll() {
@@ -218,7 +232,7 @@ public class Database {
   }
 
   /**
-   * Get all the data for a specific row, by ID
+   * Method that gets all the data for a specific row, by ID
    *
    * @param id The id being requested
    * @return the data for the requested row, null otherwise
@@ -239,7 +253,8 @@ public class Database {
   }
 
   /**
-   * Delete a row by ID
+   * Method that deletes a row by ID
+   * 
    * @param id The id of the row to delete
    * @return the number of rows deleted, -1 if error
    * */
@@ -255,11 +270,10 @@ public class Database {
   }
 
   /**
-   * Update the message for a row in the database
+   * Method that updates the message for a row in the database
    *
    * @param id The id of the row to update
-   * @param message The new msg contents
-   *
+   * @param message The new message contents
    * @return the number of rows udpated, -1 on error
    * */
   int updateOne(int id, String message) {
@@ -275,7 +289,7 @@ public class Database {
   }
 
   /**
-   * Create tblData. If it already exists, print error
+   * Method to create tblData. If it already exists, print error
    * */
   void createTable() {
     try {
@@ -286,7 +300,7 @@ public class Database {
   }
 
   /**
-   * Remove tblData from the database, print error if DNE
+   * Method to remove tblData from the database, print error if DNE
    * */
   void dropTable() {
     try {

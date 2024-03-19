@@ -13,8 +13,9 @@ import junit.framework.TestSuite;
  * Unit test for simple App.
  */
 public class AppTest extends TestCase {
+
   /**
-   * Create the test case
+   * Creates the test case
    *
    * @param testName name of the test case
    */
@@ -30,7 +31,9 @@ public class AppTest extends TestCase {
   }
 
   /**
-   * Randomize and return a string using "SUB" and 1" to "100"
+   * Method used to randomize a string for the test case
+   * 
+   * @return randomized string using "SUB" and "1" to "100"
    */
   public static String rngString() {
     Random random = new Random();
@@ -38,6 +41,12 @@ public class AppTest extends TestCase {
     return " : " + num;
   }
 
+  /**
+   * Method used to test the admin functionality. 
+   * 
+   * Creates a connection with the database, checks if an added element is successfully added 
+   * and checks if a deleted element is sucessfully deleted.
+   */
   public void testApp() {
     // get the Postgres configuration and tests from the environment
     Map<String, String> env = System.getenv();

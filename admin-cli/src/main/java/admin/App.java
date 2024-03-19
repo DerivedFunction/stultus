@@ -13,7 +13,7 @@ import java.util.Map;
 public class App {
 
   /**
-   * Print the menu for our program
+   * Method used to print the menu for our program
    */
   static void menu() {
     System.out.println("Main Menu");
@@ -29,7 +29,7 @@ public class App {
   }
 
   /**
-   * Ask the user to enter a menu option; repeat until we get a valid
+   * Method used to ask the user to enter a menu option; repeat until we get a valid
    * option.
    * 
    * @param in A BufferedReader to read input from keyboard
@@ -57,7 +57,7 @@ public class App {
   }
 
   /**
-   * Ask the user to enter a String message
+   * Method used to ask the user to enter a String message
    *
    * @param in      from the keyboard
    * @param message to be displayed
@@ -76,7 +76,7 @@ public class App {
   }
 
   /**
-   * As the user to enter an int
+   * Method used to ask the user to enter an int
    * 
    * @param in      from the keyboard
    * @param message to be displayed
@@ -95,6 +95,11 @@ public class App {
     return i;
   }
 
+  /**
+   * Method used to connect to database and handles all admin functionalities
+   * 
+   * @param argv command line arguments, unused in method
+   */
   public static void main(String[] argv) {
     // get the Postgres configuration from the environment
     Map<String, String> env = System.getenv();
