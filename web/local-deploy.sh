@@ -25,7 +25,6 @@ npm update
 # step 3: copy static html, css, and JavaScript files
 echo "Copying static html, css, and js files"
 cp index_simple.html $TARGETFOLDER/index.html
-cp todo.js todo.css $TARGETFOLDER
 cp -r src $TARGETFOLDER/src
 cp app.css $TARGETFOLDER
 
