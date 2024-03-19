@@ -66,7 +66,7 @@ git push dokku backend-dokku
 
 ### Useful Dokku commands
 
-`ssh -i ~/.ssh/id_ed25519 -t dokku@dokku.cse.lehigh.edu '$COMMAND 2024sp-team-stultus'`
+`ssh -i ~/.ssh/id_ed25519 -t dokku@dokku.cse.lehigh.edu '$COMMAND team-stultus'`
 
 - `ps:start`: start app
 - `ps:stop`: stop app
