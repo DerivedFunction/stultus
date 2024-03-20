@@ -208,7 +208,7 @@ describe("Add Button Tests", function () {
   });
   
   /**
-  * Function  sure to wait after executing each test
+  * Function to wait after executing each test
   */
   afterEach(function (done: () => void) {
     wait(done);
@@ -235,6 +235,39 @@ describe("Add Button Tests", function () {
  * Like Idea Using Like Button
 */
 describe("Like Button Tests", function () {
+  /**
+  * Function to initialize values (There are none so just wait for backend)
+  */
+  beforeAll(function (done: () => void) {
+    wait(done);
+  });
+
+  /**
+  * Function to run before each test to allow backend to sync
+  */
+  beforeEach(function (done: () => void) {
+    wait(done);
+  });
+
+
+
+
+  
+
+  /**
+  * Function to wait after executing each test
+  */
+  afterEach(function (done: () => void) {
+    wait(done);
+  });
+
+  /**
+  * Function to execute after all the tests are complete that resets the system there's nothing to reset
+  */
+  afterAll(function (done: () => void) {
+    wait(done);
+  });
+
 
 });
 
