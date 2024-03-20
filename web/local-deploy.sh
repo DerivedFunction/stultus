@@ -8,6 +8,7 @@
 
 # This is the resource folder we will use as the web root
 TARGETFOLDER=./target
+DOCSFOLDER=./docs
 
 
 # step 1: make sure we have someplace to put everything.  We will delete the
@@ -25,7 +26,6 @@ npm update
 # step 3: copy static html, css, and JavaScript files
 echo "Copying static html, css, and js files"
 cp index_simple.html $TARGETFOLDER/index.html
-cp todo.js todo.css $TARGETFOLDER
 cp -r src $TARGETFOLDER/src
 cp app.css $TARGETFOLDER
 
@@ -41,6 +41,11 @@ node_modules/typescript/bin/tsc apptest.ts --strict --outFile $TARGETFOLDER/$WEB
 cp spec_runner.html $TARGETFOLDER/$WEBFOLDERNAME
 cp node_modules/jasmine-core/lib/jasmine-core/*.css $TARGETFOLDER/$WEBFOLDERNAME
 cp node_modules/jasmine-core/lib/jasmine-core/*.js $TARGETFOLDER/$WEBFOLDERNAME
+
+#create documentation
+echo "Creating Documentation in $DOCSFOLDER"
+rm -rf $DOCSFOLDER
+npx typedoc --out $DOCSFOLDER --plugin typedoc-plugin-markdown *.ts
 
 
 # step final: launch the server.  Be sure to disable caching

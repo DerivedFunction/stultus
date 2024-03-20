@@ -49,7 +49,7 @@ class NewEntryForm {
    * Check if input is valid before submitting with AJAX call
    */
   submitForm() {
-    window.alert("Submit form called");
+    console.log("Submit form called");
     // Get the values of the fields and convert to strings
     // Check for bad input
     let title =
@@ -57,7 +57,8 @@ class NewEntryForm {
     let msg =
       "" + (<HTMLInputElement>document.getElementById("newMessage")).value;
     if (title === "" || msg === "") {
-      window.alert("Error: title/msg is not valid");
+      InvalidContentMsg();
+      console.log("Error: title/msg is not valid");
       return;
     }
 
@@ -79,7 +80,7 @@ class NewEntryForm {
             // Return the json after ok message
             return Promise.resolve(response.json());
           } else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -93,7 +94,7 @@ class NewEntryForm {
         })
         .catch((error) => {
           console.warn("Something went wrong", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
     // post AJAX values to console
@@ -110,10 +111,10 @@ class NewEntryForm {
       newEntryForm.clearForm();
     } else if (data.mStatus === "error") {
       // Handle error w/ msg
-      window.alert("The server replied with error:\n" + data.mMessage);
+      console.log("The server replied with error:\n" + data.mMessage);
     } else {
       // others
-      window.alert("Unspecified error");
+      console.log("Unspecified error");
     }
   }
 }
@@ -149,11 +150,11 @@ class EditEntryForm {
       (<HTMLInputElement>document.getElementById("editCreated")).value =
         data.mData.mCreated;
     } else if (data.mStatus === "error") {
-      window.alert("The server replied with an error:\n" + data.mMessage);
+      console.log("The server replied with an error:\n" + data.mMessage);
     }
     // Handle other errors with a less-detailed popup message
     else {
-      window.alert("Unspecified error");
+      console.log("Unspecified error");
     }
     // show the edit form
     (<HTMLElement>document.getElementById("editElement")).style.display =
@@ -183,7 +184,7 @@ class EditEntryForm {
    * Check if the input fields are both valid, and if so, do an AJAX call.
    */
   submitForm() {
-    window.alert("Submit edit form called.");
+    console.log("Submit edit form called.");
     // get the values of the two fields, force them to be strings, and check
     // that neither is empty
     let title =
@@ -192,7 +193,8 @@ class EditEntryForm {
       "" + (<HTMLInputElement>document.getElementById("editMessage")).value;
     let id = "" + (<HTMLInputElement>document.getElementById("editId")).value;
     if (title === "" || msg === "" || id === "") {
-      window.alert("Error: title, message, or id is not valid");
+      InvalidContentMsg();
+      console.log("Error: title, message, or id is not valid");
       return;
     }
 
@@ -217,7 +219,7 @@ class EditEntryForm {
           }
           // Otherwise, handle server errors with a detailed popup message
           else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -231,7 +233,7 @@ class EditEntryForm {
         })
         .catch((error) => {
           console.warn("Something went wrong.", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
 
@@ -253,11 +255,11 @@ class EditEntryForm {
     }
     // Handle explicit errors with a detailed popup message
     else if (data.mStatus === "error") {
-      window.alert("The server replied with an error:\n" + data.mMessage);
+      console.log("The server replied with an error:\n" + data.mMessage);
     }
     // Handle other errors with a less-detailed popup message
     else {
-      window.alert("Unspecified error");
+      console.log("Unspecified error");
     }
   }
 }
@@ -284,7 +286,7 @@ class ElementList {
           if (response.ok) {
             return Promise.resolve(response.json());
           } else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -297,7 +299,7 @@ class ElementList {
         })
         .catch((error) => {
           console.warn("Something went wrong", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
     // post AJAX values to console
@@ -418,7 +420,7 @@ class ElementList {
           if (response.ok) {
             return Promise.resolve(response.json());
           } else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -431,7 +433,7 @@ class ElementList {
         })
         .catch((error) => {
           console.warn("Something went wrong. ", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
     // post AJAX values to console
@@ -453,7 +455,7 @@ class ElementList {
           if (response.ok) {
             return Promise.resolve(response.json());
           } else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -466,7 +468,7 @@ class ElementList {
         })
         .catch((error) => {
           console.warn("Something went wrong. ", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
     // post AJAX values to console
@@ -492,7 +494,7 @@ class ElementList {
           if (response.ok) {
             return Promise.resolve(response.json());
           } else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -505,7 +507,7 @@ class ElementList {
         })
         .catch((error) => {
           console.warn("Something went wrong.", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
 
@@ -543,7 +545,15 @@ document.addEventListener(
     editEntryForm = new EditEntryForm();
     mainList = new ElementList();
     mainList.refresh();
-    window.alert("DOMContentLoaded");
+    console.log("DOMContentLoaded");
   },
   false
 );
+function InvalidContentMsg() {
+  var contentError = (<HTMLElement>document.getElementById("InvalidContent"));
+  contentError.style.display = "block";
+  setTimeout(function () {
+    contentError.style.display = "none";
+  }, 2000);
+}
+
