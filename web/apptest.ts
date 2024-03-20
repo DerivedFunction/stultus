@@ -177,6 +177,37 @@ describe("Add Button Tests", function () {
   });
 
   /**
+  * Tests if add button works with valid title and message and add it
+  */
+  it("Add button hides lists", function (done: () => void) {
+    //click add button
+    showFormButton.click();
+
+    //set message and title to global vars
+    newMessage.value = title_string;
+    newTitle.value = msg_string;
+
+    // Check if the message and title is valid
+    expect(newMessage.value).toEqual(title_string);
+    expect(newTitle.value).toEqual(msg_string);
+    // The add Element form (newTitle, Message) is shown
+    expect(addElement.style.display).toEqual("block");
+    // The data table is hidden
+    expect(showElements.style.display).toEqual("none");
+    // Refresh the UI to main table by clicking add
+    addButton.click();
+
+
+    // Pause
+    setTimeout(function () {
+      mId = document
+        .getElementsByClassName("delbtn")[0]
+        .getAttribute("data-value");
+      done();
+    }, delay);
+  });
+  
+  /**
   * Function  sure to wait after executing each test
   */
   afterEach(function (done: () => void) {
@@ -187,18 +218,16 @@ describe("Add Button Tests", function () {
   * Function to execute after all the tests are complete that resets the system
   */
   afterAll(function (done: () => void) {
+    // Replace our edited elements with the previous value
     setTimeout(function () {
       let dbtns = document.getElementsByClassName("delbtn");
       let dbtn = <HTMLButtonElement>dbtns[0];
-      // We want to only delete the element we added
       if (dbtn.getAttribute("data-value") === mId) {
         dbtn.click();
       }
       done();
     }, delay);
   });
-
-
 });
 
 /**
