@@ -57,11 +57,7 @@ class NewEntryForm {
     let msg =
       "" + (<HTMLInputElement>document.getElementById("newMessage")).value;
     if (title === "" || msg === "") {
-      var contentError = (<HTMLElement>document.getElementById("InvalidContent"));
-      contentError.style.display = "block";
-      setTimeout(function(){
-        contentError.style.display = "none";
-      }, 2000)
+      InvalidContentMsg();
       console.log("Error: title/msg is not valid");
       return;
     }
@@ -197,6 +193,7 @@ class EditEntryForm {
       "" + (<HTMLInputElement>document.getElementById("editMessage")).value;
     let id = "" + (<HTMLInputElement>document.getElementById("editId")).value;
     if (title === "" || msg === "" || id === "") {
+      InvalidContentMsg();
       console.log("Error: title, message, or id is not valid");
       return;
     }
@@ -552,3 +549,11 @@ document.addEventListener(
   },
   false
 );
+function InvalidContentMsg() {
+  var contentError = (<HTMLElement>document.getElementById("InvalidContent"));
+  contentError.style.display = "block";
+  setTimeout(function () {
+    contentError.style.display = "none";
+  }, 2000);
+}
+
