@@ -8,6 +8,7 @@
 
 # This is the resource folder we will use as the web root
 TARGETFOLDER=./target
+DOCSFOLDER=./docs
 
 
 # step 1: make sure we have someplace to put everything.  We will delete the
@@ -40,6 +41,11 @@ node_modules/typescript/bin/tsc apptest.ts --strict --outFile $TARGETFOLDER/$WEB
 cp spec_runner.html $TARGETFOLDER/$WEBFOLDERNAME
 cp node_modules/jasmine-core/lib/jasmine-core/*.css $TARGETFOLDER/$WEBFOLDERNAME
 cp node_modules/jasmine-core/lib/jasmine-core/*.js $TARGETFOLDER/$WEBFOLDERNAME
+
+#create documentation
+echo "Creating Documentation in $DOCSFOLDER"
+rm -rf $DOCSFOLDER
+npx typedoc --out $DOCSFOLDER --plugin typedoc-plugin-markdown *.ts
 
 
 # step final: launch the server.  Be sure to disable caching
