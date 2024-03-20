@@ -17,7 +17,12 @@ public class App {
   public App() {
 
   }
-
+/**
+ * main method run by the JVM in the Dokku Container
+ * reads important information from environment variables, not from arguments
+ * 
+ * @param args does nothing
+ */
   public static void main(String[] args) {
     /**
      * gson allows conversion between JSON and objects. Must be final
@@ -59,7 +64,7 @@ public class App {
     Spark.get(CONTEXT, getAll(gson, db));
 
     /*
-     * GET route that returns all messages and ids.
+     * GET route that returns  message with specific id.
      * Converts StructuredResponses to JSON
      */
     Spark.get(CONTEXT + "/:id", getWithId(gson, db));
@@ -88,7 +93,12 @@ public class App {
      */
     Spark.delete(CONTEXT + "/:id", deleteWithID(gson, db));
   }
-
+    /**Creates the route to handle delete requests
+   *  
+   * @param gson Gson object that handles shared serialization
+   * @param db Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior for db.deleteOne
+   */
   private static Route deleteWithID(final Gson gson, Database db) {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params("id"));
@@ -103,7 +113,12 @@ public class App {
       }
     };
   }
-
+    /**Creates the route to handle content changes
+   *  
+   * @param gson Gson object that handles shared serialization
+   * @param db Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior for db.updatedOne
+   */
   private static Route putWithID(final Gson gson, Database db) {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params("id"));
@@ -118,6 +133,12 @@ public class App {
       }
     };
   }
+    /**Creates the route to handle like changes
+   *  
+   * @param gson Gson object that handles shared serialization
+   * @param db Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior for db.togglelike
+   */
   private static Route putLike(final Gson gson, Database db)
   {
     return (request, response)->{
@@ -132,6 +153,12 @@ public class App {
     };
   }
 
+  /**Creates the route to handle put requests
+   *  
+   * @param gson Gson object that handles shared serialization
+   * @param db Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior for db.insertRow
+   */
   private static Route postIdea(final Gson gson, Database db) {
     return (request, response) -> {
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
@@ -147,14 +174,25 @@ public class App {
     };
   }
 
-  private static Route getAll(final Gson gson, Database db) {
+  /**Creates the route to handle get requests that do not give a specific id
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db Database object to execute the method of
+   * @return Returns a spark Route object that handles the json behavior for db.selectAll()
+   */
+    private static Route getAll(final Gson gson, Database db) {
     return (request, response) -> {
       extractResponse(response);
       return gson.toJson(
           new StructuredResponse("ok", null, db.selectAll()));
     };
   }
-
+  /**Creates the route to handle get requests that give a specific id
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db Database object to execute the method of
+   * @return Returns a spark Route object that handles the json behavior for db.selectOne()
+   */
   private static Route getWithId(final Gson gson, Database db) {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params("id"));
@@ -196,7 +234,7 @@ public class App {
   }
 
   /**
-   * Get an integer environment variable if it exists, and otherwise return the
+ get an integer environment variable if it exists, and otherwise return the
    * default value.
    * 
    * @envar The name of the environment variable to get.
