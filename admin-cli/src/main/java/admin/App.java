@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * App is our basic admin app. For now, it is a demonstration of the six key
@@ -129,8 +130,17 @@ public class App {
           db.createTable();
           break;
         case 'D':
+        Scanner scan = new Scanner(System.in);
+        String input;
+        System.out.println("Are you sure you want to drop the table? Enter Y for Yes, anything else for No");
+        input = scan.next();
+          if(input == "Y"){
           db.dropTable();
           break;
+          } else{
+            System.out.println("Not dropping table.");
+            break;
+          }
         case '1': {
           int id = getInt(in, "Enter the row ID");
           if (id == -1)
