@@ -15,7 +15,10 @@ let originalTitle: any;
 let originalMsg: any;
 
 
-
+/**
+ * Test #1: 
+ * Edit Preexisting Idea Using The Edit Functionality
+*/
 describe("Edit Tests", function () {
 
   //post/idea values
@@ -105,7 +108,7 @@ describe("Edit Tests", function () {
   afterEach(function (done: () => void) {
     wait(done);
   });
-  
+
   // function to execute after all the tests are complete that resets the system
   afterAll(function (done: () => void) {
     clickEditBtn();
@@ -119,8 +122,26 @@ describe("Edit Tests", function () {
   });
 });
 
-describe("Add Button Tests", function () {
 
+
+
+/**
+ * Test #2: 
+ * Create New Idea Using Add Button Functionality
+*/
+describe("Add Button Tests", function () {
+  //initialize data 
+  let title_string = "Hey Howdy"; //Title To be Added
+  let msg_string = "It's Me The Title"; //Message To Be Added (Don't ask why they are reversed)
+  
+  //initialize html elements  
+  let newMessage: any;
+  let newTitle: any;
+  let showFormButton: any;
+  let addElement: any;
+  let showElements: any;
+  let addButton: any;
+  let mId: any;
 });
 
 describe("Like Button Tests", function () {
