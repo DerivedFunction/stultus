@@ -32,19 +32,77 @@ describe("Edit Tests", function () {
 
   //function to initialize values 
   beforeAll(function (done: () => void) {
-    editTitle = <HTMLInputElement>document.getElementById("editTitle");
-    editMessage = <HTMLInputElement>document.getElementById("editMessage");
-    editButton = <HTMLButtonElement>document.getElementById("editButton");
-    showElements = document.getElementById("showElements");
-    editElements = document.getElementById("editElement");
-    editCancel = document.getElementById("editCancel");
+    editTitle = <HTMLInputElement>document.getElementById("editTitle"); //find where the title box is
+    editMessage = <HTMLInputElement>document.getElementById("editMessage"); //find where the message box is
+    editButton = <HTMLButtonElement>document.getElementById("editButton"); //find where the edit button is 
+    showElements = document.getElementById("showElements"); //find where the show elements procedure in app.ts is
+    editElements = document.getElementById("editElement"); //find where the edit elements div in the index is 
+    editCancel = document.getElementById("editCancel"); //find where the cancel button is
     getOriginal();
-    wait(done);
+    wait(done); //pause for viewer
   });
 
   //function to run before each test to allow backend to sync
   beforeEach(function (done: () => void) {
-    clickEditBtn();
+    clickEditBtn(); //click the button
+    wait(done); //pause for viewer
+  });
+
+  // Tests if edit button works with valid title and message
+  it("Edit success", function (done: () => void) {
+    // fill in the text boxes
+    editMessage.value = msg_string;
+    editTitle.value = title_string;
+
+
+    // See if values set works
+    expect(editMessage.value).toEqual(msg_string);
+    expect(editTitle.value).toEqual(title_string);
+
+
+    // The edit Element form (title, msg) is shown
+    expect(editElements.style.display).toEqual("block");
+    // The data table is hidden
+    expect(showElements.style.display).toEqual("none");
+
+
+    // PUT our changes.
+    editButton.click();
+    done();
+  });
+
+  it("Edit fail: blank", function (done: () => void) {
+    // Fill out text boxes, but leave the title blank
+    editMessage.value = msg_string;
+    editTitle.value = "";
+
+
+    // See if values set works
+    expect(editMessage.value).toEqual(msg_string);
+    expect(editTitle.value).toEqual("");
+
+
+    // The edit Element form (title, msg) is shown
+    // Because we failed (empty title)
+    expect(editElements.style.display).toEqual("block");
+    // The data table is hidden
+    expect(showElements.style.display).toEqual("none");
+
+
+    // PUT our changes.
+    editButton.click();
+
+    setTimeout(function () {
+      // The edit Element form (title, msg) is still shown
+      expect(editElements.style.display).toEqual("block");
+      // Cancel it
+      editCancel.click();
+      done();
+    }, delay);
+  });
+
+  // function  sure to wait after executing each test
+  afterEach(function (done: () => void) {
     wait(done);
   });
   
@@ -58,48 +116,6 @@ describe("Edit Tests", function () {
       editButton.click();
       done();
     }, delay);
-  });
-
-  // function  sure to wait after executing each test
-  afterEach(function (done: () => void) {
-    wait(done);
-  });
-
-
-  it("UI Test: Add button hides lists", function () {
-    console.log("html function");
-    (<HTMLElement>document.getElementById("showFormButton")).click();
-    let msg = <HTMLInputElement>document.getElementById("newMessage");
-    let title = <HTMLInputElement>document.getElementById("newTitle");
-    msg.value = "Hey Howdy";
-    title.value = "It's Me The Title";
-
-
-    // See if values set works
-    expect(msg.value).toEqual("Hey Howdy");
-    expect(title.value).toEqual("It's Me The Title");
-    // The add Element form (title, msg) is shown
-    expect(
-      (<HTMLElement>document.getElementById("addElement")).style.display
-    ).toEqual("block");
-    // The data table is hidden
-    expect(
-      (<HTMLElement>document.getElementById("showElements")).style.display
-    ).toEqual("none");
-
-
-    // Refresh the UI to main table by clicking add
-    (<HTMLElement>document.getElementById("addButton")).click();
-    // (<HTMLElement>document.getElementById("refreshFormButton")).click();
-    setTimeout(function () {
-      console.log("like and delete button")
-      let lbtns = document.getElementsByClassName("likebtn");
-      let lbtn = <HTMLButtonElement>lbtns[0];
-      lbtn.click();
-      let dbtns = document.getElementsByClassName("delbtn");
-      let dbtn = <HTMLButtonElement>dbtns[0];
-      dbtn.click();
-    }, 1000);
   });
 });
 
