@@ -1,17 +1,31 @@
-var describe: any;
+//global vars
+var describe: any; 
 var it: any;
 var expect: any;
-describe("Tests", function () {
-  /*it("Adding 0 + 1 = 1", function () {
-        var foo = 0;
-        foo++;
-        expect(foo).toEqual(1);
-    });
-    it("Subtracting 0 - 1 = -1", function () {
-        var foo = 0;
-        foo--;
-        expect(foo).toEqual(-1);
-    });*/
+var beforeEach: any;
+var beforeAll: any;
+var afterAll: any;
+var afterEach: any;
+
+//delay of one second to be used to make the tests viewable 
+const delay = 1000;
+
+//backup for original message and title elements
+let originalTitle: any;
+let originalMsg: any;
+
+
+
+describe("Edit Tests", function () {
+
+  beforeAll(function (done: () => void) {
+  
+  });
+
+  beforeEach(function (done: () => void) {
+    
+  });
+
   it("UI Test: Add button hides lists", function () {
     console.log("html function");
     (<HTMLElement>document.getElementById("showFormButton")).click();
@@ -47,4 +61,12 @@ describe("Tests", function () {
       dbtn.click();
     }, 1000);
   });
+});
+
+describe("Add Button Tests", function () {
+
+});
+
+describe("Like Button Tests", function () {
+
 });
