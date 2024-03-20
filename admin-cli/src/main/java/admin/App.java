@@ -132,7 +132,7 @@ public class App {
         case 'D':
         Scanner scan = new Scanner(System.in);
         String input;
-        System.out.println("Are you sure you want to drop the table? Enter Y for Yes, anything else for No");
+        System.out.println("Are you sure you want to drop the table? \n Enter Y for Yes, anything else for No");
         input = scan.next();
           if(input == "Y"){
           db.dropTable();
