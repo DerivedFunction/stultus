@@ -57,6 +57,11 @@ class NewEntryForm {
     let msg =
       "" + (<HTMLInputElement>document.getElementById("newMessage")).value;
     if (title === "" || msg === "") {
+      var contentError = (<HTMLElement>document.getElementById("InvalidContent"));
+      contentError.style.display = "block";
+      setTimeout(function(){
+        contentError.style.display = "none";
+      }, 2000)
       console.log("Error: title/msg is not valid");
       return;
     }
