@@ -33,7 +33,9 @@ describe("Edit Tests", function () {
   let showElements: any;
   let editCancel: any;
 
-  //function to initialize values 
+  /**
+  * Function to initialize values 
+  */
   beforeAll(function (done: () => void) {
     editTitle = <HTMLInputElement>document.getElementById("editTitle"); //find where the title box is
     editMessage = <HTMLInputElement>document.getElementById("editMessage"); //find where the message box is
@@ -45,13 +47,17 @@ describe("Edit Tests", function () {
     wait(done); //pause for viewer
   });
 
-  //function to run before each test to allow backend to sync
+  /**
+  * Function to run before each test to allow backend to sync
+  */
   beforeEach(function (done: () => void) {
     clickEditBtn(); //click the button
     wait(done); //pause for viewer
   });
 
-  // Tests if edit button works with valid title and message
+  /**
+  * Tests if edit button works with valid title and message
+  */
   it("Edit success", function (done: () => void) {
     // fill in the text boxes
     editMessage.value = msg_string;
@@ -74,6 +80,9 @@ describe("Edit Tests", function () {
     done();
   });
 
+  /**
+  * Check edit button works and then edit it 
+  */
   it("Edit fail: blank", function (done: () => void) {
     // Fill out text boxes, but leave the title blank
     editMessage.value = msg_string;
@@ -104,12 +113,16 @@ describe("Edit Tests", function () {
     }, delay);
   });
 
-  // function  sure to wait after executing each test
+  /**
+  * Function  sure to wait after executing each test
+  */
   afterEach(function (done: () => void) {
     wait(done);
   });
 
-  // function to execute after all the tests are complete that resets the system
+  /**
+  * Function to execute after all the tests are complete that resets the system
+  */
   afterAll(function (done: () => void) {
     clickEditBtn();
     // Replace our edited elements with the previous value
@@ -142,14 +155,65 @@ describe("Add Button Tests", function () {
   let showElements: any;
   let addButton: any;
   let mId: any;
+
+  /**
+  * Function to initialize values 
+  */
+  beforeAll(function (done: () => void) {
+    newMessage = <HTMLInputElement>document.getElementById("newMessage");
+    newTitle = <HTMLInputElement>document.getElementById("newTitle");
+    showFormButton = document.getElementById("showFormButton");
+    addElement = document.getElementById("addElement");
+    showElements = document.getElementById("showElements");
+    addButton = <HTMLButtonElement>document.getElementById("addButton");
+    wait(done);
+  });
+
+  /**
+  * Function to run before each test to allow backend to sync
+  */
+  beforeEach(function (done: () => void) {
+    wait(done);
+  });
+
+  /**
+  * Function  sure to wait after executing each test
+  */
+  afterEach(function (done: () => void) {
+    wait(done);
+  });
+
+  /**
+  * Function to execute after all the tests are complete that resets the system
+  */
+  afterAll(function (done: () => void) {
+    setTimeout(function () {
+      let dbtns = document.getElementsByClassName("delbtn");
+      let dbtn = <HTMLButtonElement>dbtns[0];
+      // We want to only delete the element we added
+      if (dbtn.getAttribute("data-value") === mId) {
+        dbtn.click();
+      }
+      done();
+    }, delay);
+  });
+
+
 });
 
+/**
+ * Test #3: 
+ * Like Idea Using Like Button
+*/
 describe("Like Button Tests", function () {
 
 });
 
 
-// Get original content from first element
+/**
+ * TEST FUNCTION: 
+ * GET THE ORIGINAL MESSAGE AND TITLE STRING
+*/
 function getOriginal() {
   setTimeout(function () {
     originalTitle = document.getElementById("postTitle")?.textContent;
@@ -157,20 +221,20 @@ function getOriginal() {
   }, delay);
 }
 
-
-// Add a small delay between each Jasmine test.
+/**
+ * TEST FUNCTION: 
+ * PAUSE PROGRAM FOR 1 SECOND TO BE VIEWED BY USER/TESTER
+*/
 function wait(done: () => void) {
   setTimeout(function () {
     done();
   }, delay);
 }
 
-
 /**
- *  Click the edit button for the most recent element
- *  After this, we will need to wait for backend
- *  to send data over to front end.
- */
+ * TEST FUNCTION: 
+ * CLICK EDIT BUTTON AND WAIT FOR BACKEND
+*/
 function clickEditBtn() {
   let ebtns = document.getElementsByClassName("editbtn");
   let ebtn = <HTMLButtonElement>ebtns[0];
