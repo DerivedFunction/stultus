@@ -64,7 +64,7 @@ describe("Edit Tests", function () {
     editTitle.value = title_string;
 
 
-    // See if values set works
+    // See if idea values work
     expect(editMessage.value).toEqual(msg_string);
     expect(editTitle.value).toEqual(title_string);
 
@@ -75,7 +75,7 @@ describe("Edit Tests", function () {
     expect(showElements.style.display).toEqual("none");
 
 
-    // PUT our changes.
+    // PUT our changes by clicking the submit edit button
     editButton.click();
     done();
   });
@@ -101,7 +101,7 @@ describe("Edit Tests", function () {
     expect(showElements.style.display).toEqual("none");
 
 
-    // PUT our changes.
+    // PUT our changes by clicking the submit edit button
     editButton.click();
 
     setTimeout(function () {
@@ -124,12 +124,13 @@ describe("Edit Tests", function () {
   * Function to execute after all the tests are complete that resets the system
   */
   afterAll(function (done: () => void) {
-    clickEditBtn();
+    clickEditBtn(); //click button to get edit screen to appear
+
     // Replace our edited elements with the previous value
     setTimeout(function () {
-      editMessage.value = originalMsg;
-      editTitle.value = originalTitle;
-      editButton.click();
+      editMessage.value = originalMsg; //get old message before edits
+      editTitle.value = originalTitle; //get old title before edts 
+      editButton.click(); // PUT our changes by clicking the submit edit button
       done();
     }, delay);
   });
@@ -160,13 +161,13 @@ describe("Add Button Tests", function () {
   * Function to initialize values 
   */
   beforeAll(function (done: () => void) {
-    newMessage = <HTMLInputElement>document.getElementById("newMessage");
-    newTitle = <HTMLInputElement>document.getElementById("newTitle");
-    showFormButton = document.getElementById("showFormButton");
-    addElement = document.getElementById("addElement");
-    showElements = document.getElementById("showElements");
-    addButton = <HTMLButtonElement>document.getElementById("addButton");
-    wait(done);
+    newMessage = <HTMLInputElement>document.getElementById("newMessage"); //find where the message box is
+    newTitle = <HTMLInputElement>document.getElementById("newTitle"); //find where the title box is
+    showFormButton = document.getElementById("showFormButton"); //find where the add button is
+    addElement = document.getElementById("addElement"); //find where the submit button is
+    showElements = document.getElementById("showElements"); //find where cancel button is
+    addButton = <HTMLButtonElement>document.getElementById("addButton"); //find where the add button is 
+    wait(done); //wait for backend
   });
 
   /**
@@ -198,7 +199,7 @@ describe("Add Button Tests", function () {
     addButton.click();
 
 
-    // Pause
+    // 
     setTimeout(function () {
       mId = document
         .getElementsByClassName("delbtn")[0]
@@ -249,10 +250,39 @@ describe("Like Button Tests", function () {
     wait(done);
   });
 
+  it("Check like button", function (done: () => void) {
+    // Grab the first like value in the first element
+    let oldLike = document.getElementsByTagName("td")[0].textContent;
 
 
+    // Click the like button
+    let lbtns = document.getElementsByClassName("likebtn");
+    let lbtn = <HTMLButtonElement>lbtns[0];
+    lbtn.click();
 
-  
+    //check if everything works
+    setTimeout(function () {
+      // The like value should be different after a short delay
+      expect(oldLike).not.toEqual(
+        document.getElementsByTagName("td")[0].textContent
+      );
+
+
+      // Click the like button again (assuming it toggles the like state)
+      lbtn.click();
+
+
+      // Wait for another short period for the like count to update
+      setTimeout(function () {
+        expect(oldLike).toEqual(
+          document.getElementsByTagName("td")[0].textContent
+        );
+
+
+        done();
+      }, delay);
+    }, delay);
+  });
 
   /**
   * Function to wait after executing each test
@@ -278,8 +308,8 @@ describe("Like Button Tests", function () {
 */
 function getOriginal() {
   setTimeout(function () {
-    originalTitle = document.getElementById("postTitle")?.textContent;
-    originalMsg = document.getElementById("postBody")?.textContent;
+    originalTitle = document.getElementById("postTitle")?.textContent; //get title of original post
+    originalMsg = document.getElementById("postBody")?.textContent; //get message of original post
   }, delay);
 }
 
@@ -289,8 +319,8 @@ function getOriginal() {
 */
 function wait(done: () => void) {
   setTimeout(function () {
-    done();
-  }, delay);
+    done(); //finish after pause
+  }, delay); //pause 
 }
 
 /**
@@ -298,7 +328,7 @@ function wait(done: () => void) {
  * CLICK EDIT BUTTON AND WAIT FOR BACKEND
 */
 function clickEditBtn() {
-  let ebtns = document.getElementsByClassName("editbtn");
+  let ebtns = document.getElementsByClassName("editbtn"); //get edit button
   let ebtn = <HTMLButtonElement>ebtns[0];
-  ebtn.click();
+  ebtn.click(); //click button
 }

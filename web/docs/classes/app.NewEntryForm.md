@@ -33,7 +33,7 @@ when clicked
 
 #### Defined in
 
-[app.ts:25](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/app.ts#lines-25)
+[app.ts:25](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/app.ts#lines-25)
 
 ## Methods
 
@@ -49,7 +49,7 @@ Clear the input fields
 
 #### Defined in
 
-[app.ts:37](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/app.ts#lines-37)
+[app.ts:37](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/app.ts#lines-37)
 
 ___
 
@@ -71,7 +71,7 @@ Runs when AJAX call in submitForm() returns a result
 
 #### Defined in
 
-[app.ts:108](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/app.ts#lines-108)
+[app.ts:108](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/app.ts#lines-108)
 
 ___
 
@@ -87,4 +87,4 @@ Check if input is valid before submitting with AJAX call
 
 #### Defined in
 
-[app.ts:51](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/app.ts#lines-51)
+[app.ts:51](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/app.ts#lines-51)

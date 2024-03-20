@@ -31,7 +31,7 @@
 
 #### Defined in
 
-[apptest.ts:7](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-7)
+[apptest.ts:7](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-7)
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 #### Defined in
 
-[apptest.ts:8](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-8)
+[apptest.ts:8](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-8)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 #### Defined in
 
-[apptest.ts:6](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-6)
+[apptest.ts:6](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-6)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 #### Defined in
 
-[apptest.ts:5](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-5)
+[apptest.ts:5](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-5)
 
 ___
 
@@ -71,7 +71,7 @@ ___
 
 #### Defined in
 
-[apptest.ts:11](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-11)
+[apptest.ts:11](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-11)
 
 ___
 
@@ -81,7 +81,7 @@ ___
 
 #### Defined in
 
-[apptest.ts:2](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-2)
+[apptest.ts:2](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-2)
 
 ___
 
@@ -91,7 +91,7 @@ ___
 
 #### Defined in
 
-[apptest.ts:4](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-4)
+[apptest.ts:4](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-4)
 
 ___
 
@@ -101,7 +101,7 @@ ___
 
 #### Defined in
 
-[apptest.ts:3](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-3)
+[apptest.ts:3](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-3)
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 #### Defined in
 
-[apptest.ts:15](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-15)
+[apptest.ts:15](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-15)
 
 ___
 
@@ -121,7 +121,7 @@ ___
 
 #### Defined in
 
-[apptest.ts:14](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-14)
+[apptest.ts:14](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-14)
 
 ## Functions
 
@@ -129,9 +129,8 @@ ___
 
 ▸ **clickEditBtn**(): `void`
 
-Click the edit button for the most recent element
- After this, we will need to wait for backend
- to send data over to front end.
+TEST FUNCTION: 
+CLICK EDIT BUTTON AND WAIT FOR BACKEND
 
 #### Returns
 
@@ -139,7 +138,7 @@ Click the edit button for the most recent element
 
 #### Defined in
 
-[apptest.ts:174](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-174)
+[apptest.ts:330](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-330)
 
 ___
 
@@ -147,19 +146,25 @@ ___
 
 ▸ **getOriginal**(): `void`
 
+TEST FUNCTION: 
+GET THE ORIGINAL MESSAGE AND TITLE STRING
+
 #### Returns
 
 `void`
 
 #### Defined in
 
-[apptest.ts:153](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-153)
+[apptest.ts:309](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-309)
 
 ___
 
 ### wait
 
 ▸ **wait**(`done`): `void`
+
+TEST FUNCTION: 
+PAUSE PROGRAM FOR 1 SECOND TO BE VIEWED BY USER/TESTER
 
 #### Parameters
 
@@ -173,4 +178,4 @@ ___
 
 #### Defined in
 
-[apptest.ts:162](https://bitbucket.org/sml3/cse216_sp24_team_21/src/ea4b1da/web/apptest.ts#lines-162)
+[apptest.ts:320](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-320)
