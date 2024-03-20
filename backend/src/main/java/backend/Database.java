@@ -49,18 +49,16 @@ public class Database {
    * A Prepared Statement for deleting the table from the Database
    */
 
-   /** 
+  /**
    * A prepared statement for adding a like to a message
    */
   private PreparedStatement mAddLike;
 
-  /** 
+  /**
    * A prepared statement for removing a like to a message
    */
   private PreparedStatement mRemoveLike;
 
-
-  
   /**
    * In the context of the database, RowData represents the data
    * we'd see in a row.
@@ -97,7 +95,7 @@ public class Database {
       mId = id;
       mSubject = subject;
       mMessage = message;
-      numLikes=likes;
+      numLikes = likes;
     }
 
     @Override
@@ -118,6 +116,7 @@ public class Database {
    * 
    * @param db_url       The url to the database
    * @param port_default port to use if absent in db_url
+   * @param tableName    name in database of table of messages
    * 
    * @return A Database object, or null if we cannot connect properly
    */
@@ -130,7 +129,7 @@ public class Database {
       String path = dbUri.getPath();
       String port = dbUri.getPort() == -1 ? port_default : Integer.toString(dbUri.getPort());
 
-      return getDatabase(host, port, path, username, password,tableName);
+      return getDatabase(host, port, path, username, password, tableName);
     } catch (URISyntaxException s) {
       System.out.println("URI Syntax Error");
       return null;
@@ -140,14 +139,15 @@ public class Database {
   /**
    * Get a fully configured connected to the database
    * 
-   * @param ip   The IP address of server
-   * @param port The port on the server
-   * @param path The path
-   * @param user The user ID to use
-   * @param pass The password to use
+   * @param ip        The IP address of server
+   * @param port      The port on the server
+   * @param path      The path
+   * @param user      The user ID to use
+   * @param pass      The password to use
+   * @param tableName name of the message table
    */
 
-  static Database getDatabase(String ip, String port, String path, String user, String pass,String tableName) {
+  static Database getDatabase(String ip, String port, String path, String user, String pass, String tableName) {
     if (path == null || "".equals(path)) {
       path = "/";
     }
@@ -169,15 +169,15 @@ public class Database {
       e.printStackTrace();
       return null;
     }
-    return createPreparedStatements(db,tableName);
+    return createPreparedStatements(db, tableName);
   }
 
-  private static Database createPreparedStatements(Database db,String tableName) {
+  // creates prepared statments
+  private static Database createPreparedStatements(Database db, String tableName) {
     try {
 
-
       // Standard CRUD operations
-      db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM "+tableName + " WHERE id=?");
+      db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM " + tableName + " WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
           "INSERT INTO  " + tableName + "  VALUES (default, ?, ?,default)");
       db.mSelectAll = db.mConnection.prepareStatement(
@@ -185,9 +185,11 @@ public class Database {
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from  " + tableName + "  WHERE id=?");
       db.mUpdateOne = db.mConnection.prepareStatement(
           "UPDATE  " + tableName + "  SET subject=?, message=? WHERE id=?");
-      db.mAddLike=db.mConnection.prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
-      db.mRemoveLike=db.mConnection.prepareStatement("UPDATE  " + tableName + "  SET likes=likes-1 WHERE id=? AND likes=1");
-      
+      db.mAddLike = db.mConnection
+          .prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
+      db.mRemoveLike = db.mConnection
+          .prepareStatement("UPDATE  " + tableName + "  SET likes=likes-1 WHERE id=? AND likes=1");
+
     } catch (SQLException e) {
       System.err.println("Error creating prepared statement");
       e.printStackTrace();
@@ -250,7 +252,7 @@ public class Database {
       ResultSet rs = mSelectAll.executeQuery();
       while (rs.next()) {
         res.add(new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message"),rs.getInt("likes")));
+            rs.getString("message"), rs.getInt("likes")));
       }
       rs.close();
       return res;
@@ -273,7 +275,7 @@ public class Database {
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
         res = new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message"),rs.getInt("likes"));
+            rs.getString("message"), rs.getInt("likes"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -292,7 +294,7 @@ public class Database {
     try {
       mDeleteOne.setInt(1, id);
       res = mDeleteOne.executeUpdate();
-      
+
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -319,28 +321,26 @@ public class Database {
     }
     return res;
   }
+
   /**
    * Add a like to a row in the database
+   * 
    * @param id The id of the row to add the like
    * @return the number of rows updated
    */
-  int toggleLike(int id)
-   {
-    int res=-1;
+  int toggleLike(int id) {
+    int res = -1;
     try {
-      mAddLike.setInt(1,id);
-    res =mAddLike.executeUpdate();
-    if(res ==0)
-      {
+      mAddLike.setInt(1, id);
+      res = mAddLike.executeUpdate();
+      if (res == 0) {
         mRemoveLike.setInt(1, id);
-        res=mRemoveLike.executeUpdate();
+        res = mRemoveLike.executeUpdate();
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
     return res;
   }
-
-
 
 }
