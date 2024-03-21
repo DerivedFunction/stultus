@@ -1,9 +1,9 @@
 # Backend Server 
 
 The backend has 3 purposes.
-1. It serves a copy of the webfrontend upon request
+1. It serves a copy of the web frontend upon request
 2. It responds to http requests with data from the database
-3. It adds information from HTtp requests to the database
+3. It adds information from http requests to the database
 
 All tests are on the backend methods, not the json handling, so there are more similar tests that could be written
 
