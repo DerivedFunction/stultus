@@ -133,8 +133,8 @@ public class App {
         Scanner scan = new Scanner(System.in);
         String input;
         System.out.println("Are you sure you want to drop the table? \n Enter Y for Yes, anything else for No");
-        input = scan.next();
-          if(input == "Y"){
+        input = scan.nextLine();
+          if(input.equals("Y")){
           db.dropTable();
           break;
           } else{
