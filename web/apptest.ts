@@ -1,23 +1,69 @@
-//global vars
+
+/** 
+ * Global vars
+ * @type {function}
+*/
 var describe: any; 
+
+/** 
+ * Testis Functionality
+ * @type {function}
+*/
 var it: any;
+
+/** 
+ * Global vars
+ * @type {function}
+*/
 var expect: any;
+
+/** 
+ * Allows backend to sync
+ * @type {function}
+*/
 var beforeEach: any;
+
+/** 
+ * Initializes values
+ * @type {function}
+*/
 var beforeAll: any;
+
+/** 
+ * Executes after all the tests are complete that resets the system
+ * @type {function}
+*/
 var afterAll: any;
+
+/** 
+ * Waiting after executing each test
+ * @type {function}
+*/
 var afterEach: any;
 
-//delay of one second to be used to make the tests viewable 
+
+/** 
+ * Delay of one second to be used to make the tests viewable 
+ * @type {number}
+*/
 const delay = 1000;
 
-//backup for original message and title elements
+/** 
+ * Backup for original title element
+ * @type {HTMLElement}
+*/
 let originalTitle: any;
+/** 
+ * Backup for original message element
+ * @type {HTMLElement}
+*/
 let originalMsg: any;
 
 
 /**
  * Test #1: 
  * Edit Preexisting Idea Using The Edit Functionality
+ * @type {function(){}}
 */
 describe("Edit Tests", function () {
 
@@ -35,6 +81,7 @@ describe("Edit Tests", function () {
 
   /**
   * Function to initialize values 
+  * @type {function(){}}
   */
   beforeAll(function (done: () => void) {
     editTitle = <HTMLInputElement>document.getElementById("editTitle"); //find where the title box is
@@ -49,6 +96,7 @@ describe("Edit Tests", function () {
 
   /**
   * Function to run before each test to allow backend to sync
+  * @type {function(){}}
   */
   beforeEach(function (done: () => void) {
     clickEditBtn(); //click the button
@@ -57,6 +105,7 @@ describe("Edit Tests", function () {
 
   /**
   * Tests if edit button works with valid title and message
+  * @type {function(){}}
   */
   it("Edit success", function (done: () => void) {
     // fill in the text boxes
@@ -82,6 +131,7 @@ describe("Edit Tests", function () {
 
   /**
   * Check edit button works and then edit it 
+  * @type {function(){}}
   */
   it("Edit fail: blank", function (done: () => void) {
     // Fill out text boxes, but leave the title blank
@@ -115,6 +165,7 @@ describe("Edit Tests", function () {
 
   /**
   * Function  sure to wait after executing each test
+  * @type {function(){}}
   */
   afterEach(function (done: () => void) {
     wait(done);
@@ -122,6 +173,7 @@ describe("Edit Tests", function () {
 
   /**
   * Function to execute after all the tests are complete that resets the system
+  * @type {function(){}}
   */
   afterAll(function (done: () => void) {
     clickEditBtn(); //click button to get edit screen to appear
@@ -142,6 +194,7 @@ describe("Edit Tests", function () {
 /**
  * Test #2: 
  * Create New Idea Using Add Button Functionality
+ * @type {function(){}}
 */
 describe("Add Button Tests", function () {
   //initialize data 
@@ -159,6 +212,7 @@ describe("Add Button Tests", function () {
 
   /**
   * Function to initialize values 
+  * @type {function(){}}
   */
   beforeAll(function (done: () => void) {
     newMessage = <HTMLInputElement>document.getElementById("newMessage"); //find where the message box is
@@ -172,6 +226,7 @@ describe("Add Button Tests", function () {
 
   /**
   * Function to run before each test to allow backend to sync
+  * @type {function(){}}
   */
   beforeEach(function (done: () => void) {
     wait(done);
@@ -179,6 +234,7 @@ describe("Add Button Tests", function () {
 
   /**
   * Tests if add button works with valid title and message and add it
+  * @type {function(){}}
   */
   it("Add button hides lists", function (done: () => void) {
     //click add button
@@ -210,6 +266,7 @@ describe("Add Button Tests", function () {
   
   /**
   * Function to wait after executing each test
+  * @type {function(){}}
   */
   afterEach(function (done: () => void) {
     wait(done);
@@ -217,6 +274,7 @@ describe("Add Button Tests", function () {
 
   /**
   * Function to execute after all the tests are complete that resets the system
+  * @type {function(){}}
   */
   afterAll(function (done: () => void) {
     // Replace our edited elements with the previous value
@@ -234,10 +292,13 @@ describe("Add Button Tests", function () {
 /**
  * Test #3: 
  * Like Idea Using Like Button
+ * @type {function(){}}
+ * 
 */
 describe("Like Button Tests", function () {
   /**
   * Function to initialize values (There are none so just wait for backend)
+  * @type {function(){}}
   */
   beforeAll(function (done: () => void) {
     wait(done);
@@ -245,11 +306,17 @@ describe("Like Button Tests", function () {
 
   /**
   * Function to run before each test to allow backend to sync
+  * @type {function(){}}
   */
   beforeEach(function (done: () => void) {
     wait(done);
   });
 
+
+  /**
+  * Tests if like button works
+  * @type {function(){}}
+  */
   it("Check like button", function (done: () => void) {
     // Grab the first like value in the first element
     let oldLike = document.getElementsByTagName("td")[0].textContent;
@@ -286,6 +353,7 @@ describe("Like Button Tests", function () {
 
   /**
   * Function to wait after executing each test
+  * @type {function(){}}
   */
   afterEach(function (done: () => void) {
     wait(done);
@@ -293,6 +361,7 @@ describe("Like Button Tests", function () {
 
   /**
   * Function to execute after all the tests are complete that resets the system there's nothing to reset
+  * @type {function(){}}
   */
   afterAll(function (done: () => void) {
     wait(done);
@@ -305,6 +374,7 @@ describe("Like Button Tests", function () {
 /**
  * TEST FUNCTION: 
  * GET THE ORIGINAL MESSAGE AND TITLE STRING
+ * @type {function(){}}
 */
 function getOriginal() {
   setTimeout(function () {
@@ -316,6 +386,7 @@ function getOriginal() {
 /**
  * TEST FUNCTION: 
  * PAUSE PROGRAM FOR 1 SECOND TO BE VIEWED BY USER/TESTER
+ * @type {function(){}}
 */
 function wait(done: () => void) {
   setTimeout(function () {
@@ -326,6 +397,7 @@ function wait(done: () => void) {
 /**
  * TEST FUNCTION: 
  * CLICK EDIT BUTTON AND WAIT FOR BACKEND
+ * @type {function(){}}
 */
 function clickEditBtn() {
   let ebtns = document.getElementsByClassName("editbtn"); //get edit button
