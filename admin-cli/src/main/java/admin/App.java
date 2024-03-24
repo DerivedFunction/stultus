@@ -186,8 +186,8 @@ public class App {
             break;
           }
           String message = getString(in, "Enter the message");
-          if(message.length() > 2048){
-            System.out.println("Message length too long (must not exceed 2048 characters)");
+          if(message.length() > 1024){
+            System.out.println("Message length too long (must not exceed 1024 characters)");
             break;
           }
           if (subject.equals("") || message.equals(""))
