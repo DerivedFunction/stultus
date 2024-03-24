@@ -79,4 +79,6 @@ May wish to add edge case testing (such as overlength messages or empty messages
 
 
 ## Documentation for Branches
-![Backend](html-assets/backenddocs/index.html)
+- [Admin](../admin-cli/README.md)
+- [Backend](../backend/README.md)
+- [Web](../web/README.md#documentation)
