@@ -29,9 +29,11 @@
 
 • **afterAll**: `any`
 
+Executes after all the tests are complete that resets the system
+
 #### Defined in
 
-[apptest.ts:7](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-7)
+[apptest.ts:36](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-36)
 
 ___
 
@@ -39,9 +41,11 @@ ___
 
 • **afterEach**: `any`
 
+Waiting after executing each test
+
 #### Defined in
 
-[apptest.ts:8](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-8)
+[apptest.ts:42](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-42)
 
 ___
 
@@ -49,9 +53,11 @@ ___
 
 • **beforeAll**: `any`
 
+Initializes values
+
 #### Defined in
 
-[apptest.ts:6](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-6)
+[apptest.ts:30](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-30)
 
 ___
 
@@ -59,9 +65,11 @@ ___
 
 • **beforeEach**: `any`
 
+Allows backend to sync
+
 #### Defined in
 
-[apptest.ts:5](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-5)
+[apptest.ts:24](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-24)
 
 ___
 
@@ -69,9 +77,11 @@ ___
 
 • `Const` **delay**: ``1000``
 
+Delay of one second to be used to make the tests viewable
+
 #### Defined in
 
-[apptest.ts:11](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-11)
+[apptest.ts:49](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-49)
 
 ___
 
@@ -79,9 +89,11 @@ ___
 
 • **describe**: `any`
 
+Global vars
+
 #### Defined in
 
-[apptest.ts:2](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-2)
+[apptest.ts:6](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-6)
 
 ___
 
@@ -89,9 +101,11 @@ ___
 
 • **expect**: `any`
 
+Global vars
+
 #### Defined in
 
-[apptest.ts:4](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-4)
+[apptest.ts:18](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-18)
 
 ___
 
@@ -99,9 +113,11 @@ ___
 
 • **it**: `any`
 
+Testis Functionality
+
 #### Defined in
 
-[apptest.ts:3](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-3)
+[apptest.ts:12](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-12)
 
 ___
 
@@ -109,9 +125,11 @@ ___
 
 • **originalMsg**: `any`
 
+Backup for original message element
+
 #### Defined in
 
-[apptest.ts:15](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-15)
+[apptest.ts:60](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-60)
 
 ___
 
@@ -119,9 +137,11 @@ ___
 
 • **originalTitle**: `any`
 
+Backup for original title element
+
 #### Defined in
 
-[apptest.ts:14](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-14)
+[apptest.ts:55](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-55)
 
 ## Functions
 
@@ -138,7 +158,7 @@ CLICK EDIT BUTTON AND WAIT FOR BACKEND
 
 #### Defined in
 
-[apptest.ts:330](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-330)
+[apptest.ts:402](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-402)
 
 ___
 
@@ -155,7 +175,7 @@ GET THE ORIGINAL MESSAGE AND TITLE STRING
 
 #### Defined in
 
-[apptest.ts:309](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-309)
+[apptest.ts:379](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-379)
 
 ___
 
@@ -178,4 +198,4 @@ PAUSE PROGRAM FOR 1 SECOND TO BE VIEWED BY USER/TESTER
 
 #### Defined in
 
-[apptest.ts:320](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/apptest.ts#lines-320)
+[apptest.ts:391](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/apptest.ts#lines-391)

@@ -24,8 +24,7 @@ NewEntryForm has all the code for the form for adding an entry
 
 • **new NewEntryForm**(): [`NewEntryForm`](app.NewEntryForm.md)
 
-Intialize the object  setting buttons to do actions
-when clicked
+Intialize the object  setting buttons to do actions when clicked
 
 #### Returns
 
@@ -33,7 +32,7 @@ when clicked
 
 #### Defined in
 
-[app.ts:25](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/app.ts#lines-25)
+[app.ts:34](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-34)
 
 ## Methods
 
@@ -49,7 +48,7 @@ Clear the input fields
 
 #### Defined in
 
-[app.ts:37](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/app.ts#lines-37)
+[app.ts:47](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-47)
 
 ___
 
@@ -71,7 +70,7 @@ Runs when AJAX call in submitForm() returns a result
 
 #### Defined in
 
-[app.ts:108](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/app.ts#lines-108)
+[app.ts:121](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-121)
 
 ___
 
@@ -87,4 +86,4 @@ Check if input is valid before submitting with AJAX call
 
 #### Defined in
 
-[app.ts:51](https://bitbucket.org/sml3/cse216_sp24_team_21/src/1aadf3e/web/app.ts#lines-51)
+[app.ts:62](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-62)

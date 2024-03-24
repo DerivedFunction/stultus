@@ -1,26 +1,35 @@
 /** Prevent compiler errors when using jQuery by
  * setting $ to any
+ * @type any
  */
 var $: any;
 
-/** Global variable to be referenced for newEntryForm */
+/** Global variable to be referenced for newEntryForm 
+ * @type {Object.<string, string>}
+*/
 var newEntryForm: NewEntryForm;
 
 /**
  * Backend server link to dokku
+ * @type {string}
  */
 const backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
+
 /**
  * Component name to fetch resources
+ * @type {string}
  */
 const componentName = "messages";
+
 /**
  * NewEntryForm has all the code for the form for adding an entry
+ * @type {class NewEntryForm}
  */
 class NewEntryForm {
+
   /**
-   * Intialize the object  setting buttons to do actions
-   * when clicked
+   * Intialize the object  setting buttons to do actions when clicked
+   * @return {NewEntryForm}
    */
   constructor() {
     document.getElementById("addCancel")?.addEventListener("click", (e) => {
@@ -33,6 +42,7 @@ class NewEntryForm {
 
   /**
    * Clear the input fields
+   * @type {function}
    */
   clearForm() {
     (<HTMLInputElement>document.getElementById("newTitle")).value = "";
@@ -47,6 +57,7 @@ class NewEntryForm {
 
   /**
    * Check if input is valid before submitting with AJAX call
+   * @type {function}
    */
   submitForm() {
     console.log("Submit form called");
@@ -61,8 +72,10 @@ class NewEntryForm {
       console.log("Error: title/msg is not valid");
       return;
     }
-
-    // do a POST (create) and do onSubmitResponse
+    /**
+    * do a POST (create) and do onSubmitResponse
+    * @type {function}
+    */
     const doAjax = async () => {
       await fetch(`${backendUrl}/${componentName}`, {
         method: "POST",
@@ -119,16 +132,20 @@ class NewEntryForm {
   }
 }
 
-/** Global variable to be referenced for ElementList */
+/** Global variable to be referenced for ElementList 
+ * @type {EditEntryForm}
+*/
 var editEntryForm: EditEntryForm;
 
 /**
  * EditEntryForm contains all code for editing an entry
+ * @type {class EditEntryForm}
  */
 class EditEntryForm {
   /**
    * Intialize the object b setting buttons to do actions
    * when clicked
+   * @return {EditEntryForm}
    */
   constructor() {
     document.getElementById("editCancel")?.addEventListener("click", (e) => {
@@ -138,6 +155,12 @@ class EditEntryForm {
       editEntryForm.submitForm();
     });
   }
+
+  /**
+   * Intialize the object b setting buttons to do actions
+   * when clicked
+   * @param data
+   */
   init(data: any) {
     // Fill the edit form when we receive ok
     if (data.mStatus === "ok") {
@@ -166,6 +189,7 @@ class EditEntryForm {
 
   /**
    * Clear the form's input fields
+   * @type {function}
    */
   clearForm() {
     (<HTMLInputElement>document.getElementById("editTitle")).value = "";
@@ -182,6 +206,7 @@ class EditEntryForm {
 
   /**
    * Check if the input fields are both valid, and if so, do an AJAX call.
+   * @type {function}
    */
   submitForm() {
     console.log("Submit edit form called.");
@@ -198,8 +223,9 @@ class EditEntryForm {
       return;
     }
 
-    // set up an AJAX PUT.
-    // When the server replies, the result will go to onSubmitResponse
+    /** set up an AJAX PUT. When the server replies, the result will go to onSubmitResponse
+     * @type {function}
+    */
     const doAjax = async () => {
       await fetch(`${backendUrl}/${componentName}/${id}`, {
         method: "PUT",
@@ -243,7 +269,6 @@ class EditEntryForm {
   /**
    * onSubmitResponse runs when the AJAX call in submitForm() returns a
    * result.
-   *
    * @param data The object returned by the server
    */
   private onSubmitResponse(data: any) {
@@ -264,15 +289,19 @@ class EditEntryForm {
   }
 }
 
-/** Global variable to be referenced for ElementList */
+/** Global variable to be referenced for ElementList 
+ * @type {var}
+*/
 var mainList: ElementList;
 
 /**
  * ElementList provides a way to see the data stored in server
+ * @type {class name}
  */
 class ElementList {
   /**
    * Refresh updates the messageList
+   * @
    */
   refresh() {
     const doAjax = async () => {
@@ -440,6 +469,10 @@ class ElementList {
     doAjax().then(console.log).catch(console.log);
   }
 
+  /**
+   * Ajax function that sends HTTP function to update like count
+   * @param e 
+   */
   private clickLike(e: Event) {
     const id = (<HTMLElement>e.target).getAttribute("data-value");
 
@@ -477,6 +510,7 @@ class ElementList {
 
   /**
    * clickEdit is the code we run in response to a click of a delete button
+   * @param e
    */
   private clickEdit(e: Event) {
     // as in clickDelete, we need the ID of the row
@@ -516,7 +550,10 @@ class ElementList {
   }
 }
 
-// Run some configuration code when the web page loads
+/**
+ * Run some configuration code when the web page loads
+ * @type {function}
+ */
 document.addEventListener(
   "DOMContentLoaded",
   () => {
@@ -549,6 +586,11 @@ document.addEventListener(
   },
   false
 );
+
+/**
+ * Unhide error message from HTML index for a moment 
+ * @returns {HTMLBodyElement}
+ */
 function InvalidContentMsg() {
   var contentError = (<HTMLElement>document.getElementById("InvalidContent"));
   contentError.style.display = "block";

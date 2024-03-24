@@ -126,3 +126,8 @@ textarea,
     font-style: italic;
     font-weight: bolder;
 }
+
+#likeCol{
+    color: red;
+    text-align: center;
+}
