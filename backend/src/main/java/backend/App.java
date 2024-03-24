@@ -18,6 +18,12 @@ public class App {
 
   }
 
+  /**
+   * main method run by the JVM in the Dokku Container
+   * reads important information from environment variables, not from arguments
+   * 
+   * @param args does nothing
+   */
   public static void main(String[] args) {
     /**
      * gson allows conversion between JSON and objects. Must be final
@@ -39,11 +45,11 @@ public class App {
       Spark.staticFiles.externalLocation(static_location_override);
     }
     // if CORS enablesd, set backend to accept foriegn requests
-        if ("True".equalsIgnoreCase(System.getenv("CORS_ENABLED"))) {
-        final String acceptCrossOriginRequestsFrom = "*";
-        final String acceptedCrossOriginRoutes = "GET,PUT,POST,DELETE,OPTIONS";
-        final String supportedRequestHeaders = "Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin";
-        enableCORS(acceptCrossOriginRequestsFrom, acceptedCrossOriginRoutes, supportedRequestHeaders);
+    if ("True".equalsIgnoreCase(System.getenv("CORS_ENABLED"))) {
+      final String acceptCrossOriginRequestsFrom = "*";
+      final String acceptedCrossOriginRoutes = "GET,PUT,POST,DELETE,OPTIONS";
+      final String supportedRequestHeaders = "Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin";
+      enableCORS(acceptCrossOriginRequestsFrom, acceptedCrossOriginRoutes, supportedRequestHeaders);
     }
 
     // Set up route for serving main page
@@ -59,7 +65,7 @@ public class App {
     Spark.get(CONTEXT, getAll(gson, db));
 
     /*
-     * GET route that returns all messages and ids.
+     * GET route that returns message with specific id.
      * Converts StructuredResponses to JSON
      */
     Spark.get(CONTEXT + "/:id", getWithId(gson, db));
@@ -79,9 +85,9 @@ public class App {
     Spark.put(CONTEXT + "/:id", putWithID(gson, db));
 
     /*
-     * PUT route for adding a like, 
+     * PUT route for adding a like,
      */
-    Spark.put(CONTEXT+"/:id/like",putLike(gson, db));
+    Spark.put(CONTEXT + "/:id/like", putLike(gson, db));
 
     /*
      * Delete route for removing a row from DataStore
@@ -89,6 +95,14 @@ public class App {
     Spark.delete(CONTEXT + "/:id", deleteWithID(gson, db));
   }
 
+  /**
+   * Creates the route to handle delete requests
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.deleteOne
+   */
   private static Route deleteWithID(final Gson gson, Database db) {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params("id"));
@@ -104,6 +118,14 @@ public class App {
     };
   }
 
+  /**
+   * Creates the route to handle content changes
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.updatedOne
+   */
   private static Route putWithID(final Gson gson, Database db) {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params("id"));
@@ -118,11 +140,19 @@ public class App {
       }
     };
   }
-  private static Route putLike(final Gson gson, Database db)
-  {
-    return (request, response)->{
+
+  /**
+   * Creates the route to handle like changes
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.togglelike
+   */
+  private static Route putLike(final Gson gson, Database db) {
+    return (request, response) -> {
       int idx = Integer.parseInt(request.params("id"));
-      int result =db.toggleLike(idx);
+      int result = db.toggleLike(idx);
       if (result == -1) {
         return gson.toJson(new StructuredResponse(
             "error", "error performing insertion", null));
@@ -132,6 +162,14 @@ public class App {
     };
   }
 
+  /**
+   * Creates the route to handle put requests
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.insertRow
+   */
   private static Route postIdea(final Gson gson, Database db) {
     return (request, response) -> {
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
@@ -147,6 +185,14 @@ public class App {
     };
   }
 
+  /**
+   * Creates the route to handle get requests that do not give a specific id
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json behavior for
+   *         db.selectAll()
+   */
   private static Route getAll(final Gson gson, Database db) {
     return (request, response) -> {
       extractResponse(response);
@@ -155,6 +201,14 @@ public class App {
     };
   }
 
+  /**
+   * Creates the route to handle get requests that give a specific id
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json behavior for
+   *         db.selectOne()
+   */
   private static Route getWithId(final Gson gson, Database db) {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params("id"));
@@ -177,12 +231,14 @@ public class App {
   /**
    * Gets database connect using enviroment variables
    * 
+   * @param tableName name of the main message table
+   * 
    * @return connected database
    */
   public static Database getDatabaseConnection(String tableName) {
 
     if (System.getenv("DATABASE_URL") != null) {
-      return Database.getDatabase(System.getenv("DATABASE_URL"), DEFAULT_PORT_DB,tableName);
+      return Database.getDatabase(System.getenv("DATABASE_URL"), DEFAULT_PORT_DB, tableName);
     }
     // get the Postgres configuration from the environment
     Map<String, String> env = System.getenv();
@@ -192,17 +248,17 @@ public class App {
     String pass = env.get("POSTGRES_PASS");
 
     // Connect to database
-    return Database.getDatabase(ip, port, "", user, pass,tableName);
+    return Database.getDatabase(ip, port, "", user, pass, tableName);
   }
 
   /**
-   * Get an integer environment variable if it exists, and otherwise return the
+   * get an integer environment variable if it exists, and otherwise return the
    * default value.
    * 
-   * @envar The name of the environment variable to get.
-   * @defaultVal The integer value to use as the default if envar isn't found
+   * @param envar The name of the environment variable to get.
+   * @param defaultVal The integer value to use as the default if envar isn't found
    * 
-   * @returns The best answer we could come up with for a value for envar
+   * @return The best answer we could come up with for a value for envar
    */
   static int getIntFromEnv(String envar, int defaultVal) {
     ProcessBuilder processBuilder = new ProcessBuilder();
@@ -213,35 +269,35 @@ public class App {
   }
 
   /**
- * Set up CORS headers for the OPTIONS verb, and for every response that the
- * server sends.  This only needs to be called once.
- * 
- * @param origin The server that is allowed to send requests to this server
- * @param methods The allowed HTTP verbs from the above origin
- * @param headers The headers that can be sent with a request from the above
- *                origin
- */
-private static void enableCORS(String origin, String methods, String headers) {
+   * Set up CORS headers for the OPTIONS verb, and for every response that the
+   * server sends. This only needs to be called once.
+   * 
+   * @param origin  The server that is allowed to send requests to this server
+   * @param methods The allowed HTTP verbs from the above origin
+   * @param headers The headers that can be sent with a request from the above
+   *                origin
+   */
+  private static void enableCORS(String origin, String methods, String headers) {
     // Create an OPTIONS route that reports the allowed CORS headers and methods
     Spark.options("/*", (request, response) -> {
-        String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
-        if (accessControlRequestHeaders != null) {
-            response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
-        }
-        String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
-        if (accessControlRequestMethod != null) {
-            response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
-        }
-        return "OK";
+      String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+      if (accessControlRequestHeaders != null) {
+        response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+      }
+      String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+      if (accessControlRequestMethod != null) {
+        response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+      }
+      return "OK";
     });
 
-    // 'before' is a decorator, which will run before any 
-    // get/post/put/delete.  In our case, it will put three extra CORS
+    // 'before' is a decorator, which will run before any
+    // get/post/put/delete. In our case, it will put three extra CORS
     // headers into the response
     Spark.before((request, response) -> {
-        response.header("Access-Control-Allow-Origin", origin);
-        response.header("Access-Control-Request-Method", methods);
-        response.header("Access-Control-Allow-Headers", headers);
+      response.header("Access-Control-Allow-Origin", origin);
+      response.header("Access-Control-Request-Method", methods);
+      response.header("Access-Control-Allow-Headers", headers);
     });
-}
+  }
 }
