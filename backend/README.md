@@ -17,3 +17,5 @@ Tests
 All tests test at least one random subject message pair
 
 May wish to add edge case testing (such as overlength messages or empty messages)
+
+Javadocs found at docs/apidocs/index.html for main documentation, with other documentation in the docs/apidocs folder
