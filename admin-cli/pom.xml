@@ -43,7 +43,7 @@
         <version>2.9</version>
         <configuration>
           <show>private</show>
-          <reportOutputDirectory>${project.reporting.outputDirectory}/docs</reportOutputDirectory>
+          <reportOutputDirectory>./docs</reportOutputDirectory><destDir>docs</destDir>
         </configuration>
         <executions>
           <execution>
