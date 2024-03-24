@@ -56,3 +56,4 @@ target/
 **/node_modules/**
 *.sh
 *.pdf
+src/main/resources/*
