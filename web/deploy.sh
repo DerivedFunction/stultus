@@ -18,12 +18,9 @@ cp index_simple.html $TARGETFOLDER/$WEBFOLDERNAME/index.html
 echo "updating npm dependencies"
 npm update
 
-# step 3: copy javascript and other files from src folder
-echo "Copying source files to $TARGETFOLDER/$WEBFOLDERNAME"
-cp -r src $TARGETFOLDER/$WEBFOLDERNAME/src
-
 # step 4: copy css files
-
+echo "copying app.css to $TARGETFOLDER/$WEBFOLDERNAME"
+cp app.css $TARGETFOLDER/$WEBFOLDERNAME
 
 # step 5: compile TypeScript files
 echo "Compiling typescript files"
