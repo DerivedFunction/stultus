@@ -147,7 +147,7 @@ public class Database {
           db.mConnection.prepareStatement("CREATE TABLE tblData ("
                                           + "id SERIAL PRIMARY KEY,"
                                           + "subject VARCHAR(100) NOT NULL,"
-                                          + "message VARCHAR(2048) NOT NULL,"
+                                          + "message VARCHAR(1024) NOT NULL,"
                                           + "likes INT DEFAULT 0)");
       db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
 
