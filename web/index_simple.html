@@ -9,13 +9,12 @@
 
 
     <title>Stultus</title>
-    <script defer type="module" src="todo.js"></script>
     <script src="app.js"></script>
-    <link rel="stylesheet" href="todo.css" />
     <link rel="stylesheet" href="app.css" />
     <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Madimi One' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Sumana' rel='stylesheet'>
 </head>
 
 
@@ -25,9 +24,9 @@
             <h3>Create A New Idea</h3>
         </div>
         <div style="height: 100;"></div>
-        <label>Title</label>
+        <label id = "Title">Title</label>
         <input type="text" id="newTitle" />
-        <label>Message</label>
+        <label id = Message>Message</label>
         <textarea id="newMessage"></textarea>
         <button id="addButton">Add</button>
         <button id="addCancel">Cancel</button>
@@ -37,9 +36,9 @@
             <h3>Edit Your Idea</h3>
         </div>
         <div style="height: 100;"></div>
-        <label>Title</label>
+        <label id = "Title">Title</label>
         <input type="text" id="editTitle" />
-        <label>Message</label>
+        <label id = Message>Message</label>
         <textarea id="editMessage"></textarea>
         <span id="editCreated"></span>
         <input type="hidden" id="editId" />
@@ -54,6 +53,9 @@
         <div style="height: 100;"></div>
         <!--<button id="refreshFormButton">Refresh</button> -->
     <div id="messageList"></div>
+    </div>
+    <div id = "InvalidContent">
+        Invalid Title/Message: Please Try Again
     </div>
 </body>
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * App is our basic admin app. For now, it is a demonstration of the six key
@@ -13,7 +14,7 @@ import java.util.Map;
 public class App {
 
   /**
-   * Print the menu for our program
+   * Method used to print the menu for our program
    */
   static void menu() {
     System.out.println("Main Menu");
@@ -29,7 +30,7 @@ public class App {
   }
 
   /**
-   * Ask the user to enter a menu option; repeat until we get a valid
+   * Method used to ask the user to enter a menu option; repeat until we get a valid
    * option.
    * 
    * @param in A BufferedReader to read input from keyboard
@@ -57,7 +58,7 @@ public class App {
   }
 
   /**
-   * Ask the user to enter a String message
+   * Method used to ask the user to enter a String message
    *
    * @param in      from the keyboard
    * @param message to be displayed
@@ -76,7 +77,7 @@ public class App {
   }
 
   /**
-   * As the user to enter an int
+   * Method used to ask the user to enter an int
    * 
    * @param in      from the keyboard
    * @param message to be displayed
@@ -95,6 +96,11 @@ public class App {
     return i;
   }
 
+  /**
+   * Method used to connect to database and handles all admin functionalities
+   * 
+   * @param argv command line arguments, unused in method
+   */
   public static void main(String[] argv) {
     // get the Postgres configuration from the environment
     Map<String, String> env = System.getenv();
@@ -124,8 +130,17 @@ public class App {
           db.createTable();
           break;
         case 'D':
+        Scanner scan = new Scanner(System.in);
+        String input;
+        System.out.println("Are you sure you want to drop the table? \n Enter Y for Yes, anything else for No");
+        input = scan.nextLine();
+          if(input.equals("Y")){
           db.dropTable();
           break;
+          } else{
+            System.out.println("Not dropping table.");
+            break;
+          }
         case '1': {
           int id = getInt(in, "Enter the row ID");
           if (id == -1)
@@ -171,8 +186,8 @@ public class App {
             break;
           }
           String message = getString(in, "Enter the message");
-          if(message.length() > 2048){
-            System.out.println("Message length too long (must not exceed 2048 characters)");
+          if(message.length() > 1024){
+            System.out.println("Message length too long (must not exceed 1024 characters)");
             break;
           }
           if (subject.equals("") || message.equals(""))

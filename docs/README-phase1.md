@@ -36,32 +36,47 @@ change my ideas based on feedback
 
 ![User Stories](img-assets/UserStories.png)
 
-## Description of Tests
+## Description of Tests (Automated)
 
 ### Backend
 
-Old Tests from `dennyli/tutorials`
+- Test for insert and selectall database method
+- Test for delete (relies on insert)
+- Test for update
+- Test for toggling likes
+- Test that single row select and multi row select return the same rows
 
-- Add NUM_TEST rows to DB
-- Execute `selectAll()` and compare if newly added rows exist in DB
+All tests test at least one random subject message pair
+
+May wish to add edge case testing (such as overlength messages or empty messages)
 
 ### Admin
 
-Old Tests from `dennyli/tutorials`
+- Create a randomly generated String, and adding that String as a new element in the table
+- Ensuring the elements have been added
+- Deleting added Elements
+- Ensuring Elements added have been deleted.
 
-- Add NUM_TEST rows to DB
-- Execute `selectAll()` and compare if newly added rows exist in DB
-
-### Web (and Mobile)
+### Web
 
 - Add button hides lists of rows
 - Check if tests values are in text boxes.
+- Clicking the like button and deleting the test element
 
 ## Routes and details
 
-![Routes List](img-assets/RouteList.png)
+
+
+
+| Purpose                | Route               | Verb   | Purpose                     | Structure                                                     |
+| ---------------------- | ------------------- | ------ | --------------------------- | ------------------------------------------------------------- |
+| Show all messages      | `/messages`         | GET    | Return post data to display | JSON `{ArrayList<messages>}`                                  |
+| Show one post          | `/messages/id`      | GET    | Return single post data     | JSON `{title, message, numLikes}`                             |
+| Create new Post        | `/messages`         | POST   | Creates a post              | Takes `{title, message}`, all other fields handled by backend |
+| Edit content of a post | `/messages/id`      | PUT    | Edits a post                | Takes `{title, message}` and backend handles updates          |
+| Delete a post          | `/messages/id`      | DELETE | Deletes a post              | Returns `status`                                              |
+| Like a post            | `/messages/id/like` | PUT    | Likes a post                | Returns new number of `numLikes`                              |
 
 
 ## Documentation for Branches
 ![Backend](html-assets/backenddocs/index.html)
-

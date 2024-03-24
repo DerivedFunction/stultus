@@ -38,6 +38,16 @@ h3 {
     font-family: 'Madimi One';
 }
 
+#Title{
+    font-family: 'Madimi One';
+    font-size: larger;
+}
+
+#Message{
+    font-family: 'Madimi One';
+    font-size: medium;
+}
+
 #postBody{
     font-size: medium;
     font-weight: lighter;
@@ -107,4 +117,17 @@ textarea,
     display: block;
     margin-bottom: 5px;
     margin-left: 15px;
+}
+
+#InvalidContent{
+    display: none;
+    font-family: 'Sumana';
+    color: white;
+    font-style: italic;
+    font-weight: bolder;
+}
+
+#likeCol{
+    color: red;
+    text-align: center;
 }

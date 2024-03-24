@@ -58,15 +58,15 @@ git push dokku backend-dokku
 ```
 
 ### Dokku configurations
+
 - POSTGRES URL: <postgres://***:***@salt.db.elephantsql.com/***>
 - POSTGRES Port: 5432
 - PORT: 8998
 - NUM_TESTS: 5
 
-
 ### Useful Dokku commands
 
-`'$COMMAND 2024sp-team-stultus'`
+`ssh -i ~/.ssh/id_ed25519 -t dokku@dokku.cse.lehigh.edu '$COMMAND team-stultus'`
 
 - `ps:start`: start app
 - `ps:stop`: stop app

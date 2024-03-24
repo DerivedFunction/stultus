@@ -55,3 +55,4 @@ Thumbs.db
 target/
 **/node_modules/**
 *.sh
+*.pdf

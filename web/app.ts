@@ -1,26 +1,35 @@
 /** Prevent compiler errors when using jQuery by
  * setting $ to any
+ * @type any
  */
 var $: any;
 
-/** Global variable to be referenced for newEntryForm */
+/** Global variable to be referenced for newEntryForm 
+ * @type {Object.<string, string>}
+*/
 var newEntryForm: NewEntryForm;
 
 /**
  * Backend server link to dokku
+ * @type {string}
  */
 const backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
+
 /**
  * Component name to fetch resources
+ * @type {string}
  */
 const componentName = "messages";
+
 /**
  * NewEntryForm has all the code for the form for adding an entry
+ * @type {class NewEntryForm}
  */
 class NewEntryForm {
+
   /**
-   * Intialize the object  setting buttons to do actions
-   * when clicked
+   * Intialize the object  setting buttons to do actions when clicked
+   * @return {NewEntryForm}
    */
   constructor() {
     document.getElementById("addCancel")?.addEventListener("click", (e) => {
@@ -33,6 +42,7 @@ class NewEntryForm {
 
   /**
    * Clear the input fields
+   * @type {function}
    */
   clearForm() {
     (<HTMLInputElement>document.getElementById("newTitle")).value = "";
@@ -47,9 +57,10 @@ class NewEntryForm {
 
   /**
    * Check if input is valid before submitting with AJAX call
+   * @type {function}
    */
   submitForm() {
-    window.alert("Submit form called");
+    console.log("Submit form called");
     // Get the values of the fields and convert to strings
     // Check for bad input
     let title =
@@ -57,11 +68,14 @@ class NewEntryForm {
     let msg =
       "" + (<HTMLInputElement>document.getElementById("newMessage")).value;
     if (title === "" || msg === "") {
-      window.alert("Error: title/msg is not valid");
+      InvalidContentMsg();
+      console.log("Error: title/msg is not valid");
       return;
     }
-
-    // do a POST (create) and do onSubmitResponse
+    /**
+    * do a POST (create) and do onSubmitResponse
+    * @type {function}
+    */
     const doAjax = async () => {
       await fetch(`${backendUrl}/${componentName}`, {
         method: "POST",
@@ -79,7 +93,7 @@ class NewEntryForm {
             // Return the json after ok message
             return Promise.resolve(response.json());
           } else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -93,7 +107,7 @@ class NewEntryForm {
         })
         .catch((error) => {
           console.warn("Something went wrong", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
     // post AJAX values to console
@@ -110,24 +124,28 @@ class NewEntryForm {
       newEntryForm.clearForm();
     } else if (data.mStatus === "error") {
       // Handle error w/ msg
-      window.alert("The server replied with error:\n" + data.mMessage);
+      console.log("The server replied with error:\n" + data.mMessage);
     } else {
       // others
-      window.alert("Unspecified error");
+      console.log("Unspecified error");
     }
   }
 }
 
-/** Global variable to be referenced for ElementList */
+/** Global variable to be referenced for ElementList 
+ * @type {EditEntryForm}
+*/
 var editEntryForm: EditEntryForm;
 
 /**
  * EditEntryForm contains all code for editing an entry
+ * @type {class EditEntryForm}
  */
 class EditEntryForm {
   /**
    * Intialize the object b setting buttons to do actions
    * when clicked
+   * @return {EditEntryForm}
    */
   constructor() {
     document.getElementById("editCancel")?.addEventListener("click", (e) => {
@@ -137,6 +155,12 @@ class EditEntryForm {
       editEntryForm.submitForm();
     });
   }
+
+  /**
+   * Intialize the object b setting buttons to do actions
+   * when clicked
+   * @param data
+   */
   init(data: any) {
     // Fill the edit form when we receive ok
     if (data.mStatus === "ok") {
@@ -149,11 +173,11 @@ class EditEntryForm {
       (<HTMLInputElement>document.getElementById("editCreated")).value =
         data.mData.mCreated;
     } else if (data.mStatus === "error") {
-      window.alert("The server replied with an error:\n" + data.mMessage);
+      console.log("The server replied with an error:\n" + data.mMessage);
     }
     // Handle other errors with a less-detailed popup message
     else {
-      window.alert("Unspecified error");
+      console.log("Unspecified error");
     }
     // show the edit form
     (<HTMLElement>document.getElementById("editElement")).style.display =
@@ -165,6 +189,7 @@ class EditEntryForm {
 
   /**
    * Clear the form's input fields
+   * @type {function}
    */
   clearForm() {
     (<HTMLInputElement>document.getElementById("editTitle")).value = "";
@@ -181,9 +206,10 @@ class EditEntryForm {
 
   /**
    * Check if the input fields are both valid, and if so, do an AJAX call.
+   * @type {function}
    */
   submitForm() {
-    window.alert("Submit edit form called.");
+    console.log("Submit edit form called.");
     // get the values of the two fields, force them to be strings, and check
     // that neither is empty
     let title =
@@ -192,12 +218,14 @@ class EditEntryForm {
       "" + (<HTMLInputElement>document.getElementById("editMessage")).value;
     let id = "" + (<HTMLInputElement>document.getElementById("editId")).value;
     if (title === "" || msg === "" || id === "") {
-      window.alert("Error: title, message, or id is not valid");
+      InvalidContentMsg();
+      console.log("Error: title, message, or id is not valid");
       return;
     }
 
-    // set up an AJAX PUT.
-    // When the server replies, the result will go to onSubmitResponse
+    /** set up an AJAX PUT. When the server replies, the result will go to onSubmitResponse
+     * @type {function}
+    */
     const doAjax = async () => {
       await fetch(`${backendUrl}/${componentName}/${id}`, {
         method: "PUT",
@@ -217,7 +245,7 @@ class EditEntryForm {
           }
           // Otherwise, handle server errors with a detailed popup message
           else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -231,7 +259,7 @@ class EditEntryForm {
         })
         .catch((error) => {
           console.warn("Something went wrong.", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
 
@@ -241,7 +269,6 @@ class EditEntryForm {
   /**
    * onSubmitResponse runs when the AJAX call in submitForm() returns a
    * result.
-   *
    * @param data The object returned by the server
    */
   private onSubmitResponse(data: any) {
@@ -253,24 +280,28 @@ class EditEntryForm {
     }
     // Handle explicit errors with a detailed popup message
     else if (data.mStatus === "error") {
-      window.alert("The server replied with an error:\n" + data.mMessage);
+      console.log("The server replied with an error:\n" + data.mMessage);
     }
     // Handle other errors with a less-detailed popup message
     else {
-      window.alert("Unspecified error");
+      console.log("Unspecified error");
     }
   }
 }
 
-/** Global variable to be referenced for ElementList */
+/** Global variable to be referenced for ElementList 
+ * @type {var}
+*/
 var mainList: ElementList;
 
 /**
  * ElementList provides a way to see the data stored in server
+ * @type {class name}
  */
 class ElementList {
   /**
    * Refresh updates the messageList
+   * @
    */
   refresh() {
     const doAjax = async () => {
@@ -284,7 +315,7 @@ class ElementList {
           if (response.ok) {
             return Promise.resolve(response.json());
           } else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -297,7 +328,7 @@ class ElementList {
         })
         .catch((error) => {
           console.warn("Something went wrong", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
     // post AJAX values to console
@@ -418,7 +449,7 @@ class ElementList {
           if (response.ok) {
             return Promise.resolve(response.json());
           } else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -431,13 +462,17 @@ class ElementList {
         })
         .catch((error) => {
           console.warn("Something went wrong. ", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
     // post AJAX values to console
     doAjax().then(console.log).catch(console.log);
   }
 
+  /**
+   * Ajax function that sends HTTP function to update like count
+   * @param e 
+   */
   private clickLike(e: Event) {
     const id = (<HTMLElement>e.target).getAttribute("data-value");
 
@@ -453,7 +488,7 @@ class ElementList {
           if (response.ok) {
             return Promise.resolve(response.json());
           } else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -466,7 +501,7 @@ class ElementList {
         })
         .catch((error) => {
           console.warn("Something went wrong. ", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
     // post AJAX values to console
@@ -475,6 +510,7 @@ class ElementList {
 
   /**
    * clickEdit is the code we run in response to a click of a delete button
+   * @param e
    */
   private clickEdit(e: Event) {
     // as in clickDelete, we need the ID of the row
@@ -492,7 +528,7 @@ class ElementList {
           if (response.ok) {
             return Promise.resolve(response.json());
           } else {
-            window.alert(
+            console.log(
               `The server replied not ok: ${response.status}\n` +
                 response.statusText
             );
@@ -505,7 +541,7 @@ class ElementList {
         })
         .catch((error) => {
           console.warn("Something went wrong.", error);
-          window.alert("Unspecified error");
+          console.log("Unspecified error");
         });
     };
 
@@ -514,7 +550,10 @@ class ElementList {
   }
 }
 
-// Run some configuration code when the web page loads
+/**
+ * Run some configuration code when the web page loads
+ * @type {function}
+ */
 document.addEventListener(
   "DOMContentLoaded",
   () => {
@@ -543,7 +582,20 @@ document.addEventListener(
     editEntryForm = new EditEntryForm();
     mainList = new ElementList();
     mainList.refresh();
-    window.alert("DOMContentLoaded");
+    console.log("DOMContentLoaded");
   },
   false
 );
+
+/**
+ * Unhide error message from HTML index for a moment 
+ * @returns {HTMLBodyElement}
+ */
+function InvalidContentMsg() {
+  var contentError = (<HTMLElement>document.getElementById("InvalidContent"));
+  contentError.style.display = "block";
+  setTimeout(function () {
+    contentError.style.display = "none";
+  }, 2000);
+}
+
