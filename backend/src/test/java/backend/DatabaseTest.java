@@ -43,9 +43,7 @@ public class DatabaseTest extends TestCase {
    * Tests that inserts work properly (cleanup coupled with delete)
    */
   public static void testInsert() {
-
-    ArrayList<RowData> sub = new ArrayList<>();
-    addElementstoDB(sub);
+    ArrayList<RowData> sub = addElementstoDB(true);
     // Check if database contains all elements we just added
     ArrayList<RowData> res = db.selectAll();
     assertTrue(res.containsAll(sub));
@@ -62,8 +60,7 @@ public class DatabaseTest extends TestCase {
    * Tests for deletion (relies on insert for test articles)
    */
   public static void testDelete() {
-    ArrayList<RowData> sub = new ArrayList<>();
-    addElementstoDB(sub);
+    ArrayList<RowData> sub = addElementstoDB(false);
     // Check if database contains all elements we just added
     ArrayList<RowData> res = db.selectAll();
     for (RowData row : res) {
@@ -82,8 +79,7 @@ public class DatabaseTest extends TestCase {
    */
   public static void testSelects() {
 
-    ArrayList<RowData> sub = new ArrayList<>();
-    addElementstoDB(sub);
+    ArrayList<RowData> sub = addElementstoDB(false);
     // Check if database contains all elements we just added
     ArrayList<RowData> res = db.selectAll();
     for (RowData row : res) {
@@ -104,8 +100,8 @@ public class DatabaseTest extends TestCase {
    * selects)
    */
   public static void testLikes() {
-    ArrayList<RowData> sub = new ArrayList<>();
-    addElementstoDB(sub);
+    ArrayList<RowData> sub = addElementstoDB(false);
+    ;
     // Check if database contains all elements we just added
     ArrayList<RowData> res = db.selectAll();
     for (RowData row : res) {
@@ -129,21 +125,23 @@ public class DatabaseTest extends TestCase {
    * 
    * @param sub the ArrayList to add elements
    */
-  private static void addElementstoDB(ArrayList<RowData> sub) {
+  private static ArrayList<RowData> addElementstoDB(boolean isInsert) {
+    ArrayList<RowData> sub = new ArrayList<>();
     for (int i = 0; i < num; i++) {
       String subject = "Subject" + rngString();
       String message = "Message" + rngString();
       sub.add(new RowData(i, subject, message, 0));
-      assertTrue(db.insertRow(subject, message) == 1); // add new element
+      if (isInsert)
+        assertTrue(db.insertRow(subject, message) == 1); // Assert and new element
     }
+    return sub;
   }
 
   /**
    * test updates (relies on insert and select)
    */
   public static void testUpdates() {
-    ArrayList<RowData> sub = new ArrayList<>();
-    addElementstoDB(sub);
+    ArrayList<RowData> sub = addElementstoDB(false);
     // Check if database contains all elements we just added
     ArrayList<RowData> res = db.selectAll();
     for (RowData row : res) {
