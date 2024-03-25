@@ -383,7 +383,7 @@ public class Database {
       // If it finds the same value as vote
       // (aka upvote & 1 in likeTable)
       // Delete it to unvote.
-      if (findLikes(id, userID) == vote) {
+      if (findVotes(id, userID) == vote) {
         return deleteVote(id, userID);
       }
       mVote.setInt(1, id);
@@ -403,7 +403,7 @@ public class Database {
    * @param userID user's ID that voted
    * @return vote value (1 or -1 if voted, 0 if not)
    */
-  int findLikes(int postID, int userID) {
+  int findVotes(int postID, int userID) {
     int res = 0; // default vote count
     try {
       mfindVotes.setInt(1, postID);
