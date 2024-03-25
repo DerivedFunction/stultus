@@ -1,18 +1,10 @@
 # Phase 1 Sprint 5 - PM Report Template
 
-
-
 Use this form to provide your project manager report.
-
-
 
 ## Team Information
 
-
-
 ### Team Information:
-
-
 
 - Number: 21
 
@@ -26,11 +18,7 @@ Use this form to provide your project manager report.
 
   - with mentor: Tuesday 7pm
 
-
-
 ### Team Roles:
-
-
 
 - Project Manger: **Denny Li**, [del226@lehigh.edu](mailto:del226@lehigh.edu)
 
@@ -40,15 +28,11 @@ Use this form to provide your project manager report.
 
 - Front End/Mobile Web: **Patrick Boles**, [pjb325@lehigh.edu](mailto:pjb325@lehigh.edu)
 
-
-
 ### Essential links for this project:
-
-
 
 - Team's Dokku URL(s)
 
-  - <https://2024sp-team-stultus.dokku.cse.lehigh.edu/>
+  - <https://team-stultus.dokku.cse.lehigh.edu/>
 
 - Team's software repo (bitbucket)
 
@@ -58,11 +42,7 @@ Use this form to provide your project manager report.
 
   - <https://cse216-24sp-del226.atlassian.net/jira/software/projects/T2/boards/2>
 
-
-
 ## General questions
-
-
 
 1. Did the PM for this week submit this report (If not, why not?)?
 
@@ -80,23 +60,15 @@ Use this form to provide your project manager report.
 
 4. Report on each member's progress (sprint and phase activity completion) – "what is the status?"
 
-
-
    > Everyone should be done with it.
 
-
-
 5. Summary of "code review" during which each team member discussed and showed their progress – "how did you confirm the status?"
-
-
 
    > No code review, but we tested how the pull requests work when we created pull requests to edit the `phase-1-README.md`.
 
    > In the future, pull requests are made to the `precheck` branch before being merged to `master`. That way we have a prelease and
 
    > and final working one.
-
-
 
 6. What did you do to encourage the team to be working on phase activities "sooner rather than later"?
 
@@ -114,43 +86,25 @@ Use this form to provide your project manager report.
 
 9. Discuss expectations the team has set for one another, if any. Please highlight any changes from last week.
 
-
-
    > Everyone is expected to do things on time and/or early and contribute. Better to ask questions for problems now
 
    > than to wait last minute.
-
-
 
 10. If anything was especially challenging or unclear, please make sure this is [1] itemized, [2] briefly described, [3] its status reported (resolved or unresolved), and [4] includes critical steps taken to find resolution.
 
     > Nothing yet.
 
-
-
 ## Project Management
-
-
 
 Self-evaluation of PM performance
 
-
-
 0. When did your team meet with your mentor, and for how long?
-
-
 
    > No, not yet. That is because this Sprint is due on Friday.
 
-
-
 1. Describe your use of Trello. Did you have too much detail? Too little? Just enough? Did you implement policies around its use (if so, what were they?)?
 
-
-
    > Attempting to use Jira to keep track of issues. However, it takes time to get used to the clicking for roles, labels and stuff. That just seems tedious.
-
-
 
 2. How did you conduct team meetings? How did your team interact outside of these meetings?
 
@@ -158,37 +112,21 @@ Self-evaluation of PM performance
 
 3. What techniques (daily check-ins/scrums, team programming, timelines, Jira use, slack use, group design exercises) did you use to mitigate risk? Highlight any changes from last week.
 
-
-
    > We used Jira, Slack more often now that we can't just do things individually like the tutorials.
-
-
 
 4. Describe any difficulties you faced in managing the interactions among your teammates. Were there any team issues that arose? If not, what do you believe is keeping thins so constructive?
 
-
-
    > No difficulty, except that I have to leave Lehigh after 4:00 PM. I got other obligations to do. Therefore, unless Sprints are due Tuesday night, everything is separate.
-
-
 
 5. What is your biggest concern as you think ahead to the next sprint?
 
-
-
    > We will attempt to create a mobile/desktop web/Chrome in our frontend. No mobile app.
 
-
-
 6. Describe the most significant obstacle or difficulty your team faced.
-
-
 
    > Nothing for now. Maybe trying not to get ahead of ourselves, or lose points for minor mistakes.
 
    > At my house, the internet is significantly slow. I will try to download/upload big files at Lehigh.
-
-
 
 7. What might you suggest the team or the next PM "start", "stop", or "continue" doing in the next sprint?
 
@@ -207,4 +145,3 @@ Self-evaluation of PM performance
    > No mobile app, just a mobile UI for our website. We have not been used to React yet.
 
    > Are we even going to use it???
-

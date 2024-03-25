@@ -42,7 +42,7 @@ In addition to uploading to coursesite, version control this in the `master` bra
 
 - Team's Dokku URL(s)
 
-  - <https://2024sp-team-stultus.dokku.cse.lehigh.edu/>
+  - <https://team-stultus.dokku.cse.lehigh.edu/>
 
 - Team's software repo (bitbucket)
 
