@@ -155,7 +155,6 @@ public class DatabaseTest extends TestCase {
           assertEquals(changed.mMessage, message);
           assertEquals(changed.mSubject, subject);
         }
-
       }
     }
   }
