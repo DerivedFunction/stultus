@@ -85,6 +85,11 @@ public class App {
     Spark.put(CONTEXT + "/:id", putWithID(gson, db));
 
     /*
+     * PUT route for voting
+     */
+    Spark.put(CONTEXT + "/:id/vote/:voteValue", putVote(gson, db));
+
+    /*
      * PUT route for adding a like,
      */
     Spark.put(CONTEXT + "/:id/like", putLike(gson, db));
@@ -156,6 +161,29 @@ public class App {
       if (result == -1) {
         return gson.toJson(new StructuredResponse(
             "error", "error performing insertion", null));
+      } else {
+        return gson.toJson(new StructuredResponse("ok", null, null));
+      }
+    };
+  }
+
+  /**
+   * Creates the route to handle like changes
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.togglelike
+   */
+  private static Route putVote(final Gson gson, Database db) {
+    return (request, response) -> {
+      int idx = Integer.parseInt(request.params("id"));
+      int vote = Integer.parseInt(request.params("voteValue"));
+      System.err.println("post: " + idx + " vote value" + vote);
+      int result = db.toggleVote(idx, vote, 0);
+      if (result == -1) {
+        return gson.toJson(new StructuredResponse(
+            "error", "error updating vote", null));
       } else {
         return gson.toJson(new StructuredResponse("ok", null, null));
       }
@@ -255,8 +283,9 @@ public class App {
    * get an integer environment variable if it exists, and otherwise return the
    * default value.
    * 
-   * @param envar The name of the environment variable to get.
-   * @param defaultVal The integer value to use as the default if envar isn't found
+   * @param envar      The name of the environment variable to get.
+   * @param defaultVal The integer value to use as the default if envar isn't
+   *                   found
    * 
    * @return The best answer we could come up with for a value for envar
    */
