@@ -52,12 +52,29 @@ public class Database {
   /**
    * A prepared statement for adding a like to a message
    */
-  private PreparedStatement mAddLike;
+  private PreparedStatement mAddLike_deprecated;
 
   /**
    * A prepared statement for removing a like to a message
    */
-  private PreparedStatement mRemoveLike;
+  private PreparedStatement mRemoveLike_deprecated;
+  /**
+   * A prepared statement for find if a user has already voted for a message
+   */
+  private PreparedStatement mfindVotes;
+  /**
+   * A prepared statement for voting to a message
+   */
+  private PreparedStatement mVote;
+  /**
+   * A prepared statement for deleting votes to a message
+   */
+  private PreparedStatement mDeleteVote;
+
+  /**
+   * Database table for likes
+   */
+  private static String likeTable = "likeData";
 
   /**
    * In the context of the database, RowData represents the data
@@ -185,9 +202,16 @@ public class Database {
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from  " + tableName + "  WHERE id=?");
       db.mUpdateOne = db.mConnection.prepareStatement(
           "UPDATE  " + tableName + "  SET subject=?, message=? WHERE id=?");
-      db.mAddLike = db.mConnection
+      db.mVote = db.mConnection.prepareStatement(
+          "INSERT INTO  " + likeTable + " (post_id, vote, userID) VALUES (?,?,?)");
+      db.mfindVotes = db.mConnection.prepareStatement(
+          "SELECT COUNT(*) AS hasVoted" +
+              "FROM " + likeTable +
+              "WHERE post_id=? AND userID=?");
+      // deprecated statements
+      db.mAddLike_deprecated = db.mConnection
           .prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
-      db.mRemoveLike = db.mConnection
+      db.mRemoveLike_deprecated = db.mConnection
           .prepareStatement("UPDATE  " + tableName + "  SET likes=likes-1 WHERE id=? AND likes=1");
 
     } catch (SQLException e) {
@@ -331,11 +355,11 @@ public class Database {
   int toggleLike(int id) {
     int res = -1;
     try {
-      mAddLike.setInt(1, id);
-      res = mAddLike.executeUpdate();
+      mAddLike_deprecated.setInt(1, id);
+      res = mAddLike_deprecated.executeUpdate();
       if (res == 0) {
-        mRemoveLike.setInt(1, id);
-        res = mRemoveLike.executeUpdate();
+        mRemoveLike_deprecated.setInt(1, id);
+        res = mRemoveLike_deprecated.executeUpdate();
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -343,4 +367,45 @@ public class Database {
     return res;
   }
 
+  /**
+   * toggleVote() checks to see if user upvotes or downvotes a post.
+   * If it already exists in the LikeData, then it will remove it
+   * 
+   * @param id ID of the post
+   * @return number of rows updated (1 on success)
+   */
+  int toggleVote(int id, int vote, int userID) {
+    int res = -1;
+    try {
+      // If it finds the same value as vote
+      // (aka upvote & 1 in likeTable)
+      // Delete it to unvote.
+      if (findLikes(id, userID) == vote) {
+
+      }
+      mVote.setInt(1, id);
+      mVote.setInt(2, vote);
+      // before executing, it needs to
+      res = mVote.executeUpdate();
+      if (res == 0) {
+
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  int findLikes(int postID, int userID) {
+    int res = -1;
+    try {
+      mfindVotes.setInt(1, postID);
+      mfindVotes.setInt(2, userID);
+      // before executing, it needs to
+      res = mfindVotes.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
 }
