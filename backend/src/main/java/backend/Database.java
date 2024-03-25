@@ -208,6 +208,9 @@ public class Database {
           "SELECT COUNT(*) AS hasVoted" +
               "FROM " + likeTable +
               "WHERE post_id=? AND userID=?");
+      db.mDeleteVote = db.mConnection.prepareStatement(
+          "DELETE FROM " + likeTable +
+              "WHERE post_id = ? AND userID = ?");
       // deprecated statements
       db.mAddLike_deprecated = db.mConnection
           .prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
@@ -381,28 +384,50 @@ public class Database {
       // (aka upvote & 1 in likeTable)
       // Delete it to unvote.
       if (findLikes(id, userID) == vote) {
-
+        return deleteVote(id, userID);
       }
       mVote.setInt(1, id);
       mVote.setInt(2, vote);
-      // before executing, it needs to
+      mVote.setInt(3, userID);
       res = mVote.executeUpdate();
-      if (res == 0) {
-
-      }
     } catch (SQLException e) {
       e.printStackTrace();
     }
     return res;
   }
 
+  /**
+   * findLikes() finds if a user already voted for a post
+   * 
+   * @param postID post's ID to check
+   * @param userID user's ID that voted
+   * @return vote value (1 or -1 if voted, 0 if not)
+   */
   int findLikes(int postID, int userID) {
-    int res = -1;
+    int res = 0; // default vote count
     try {
       mfindVotes.setInt(1, postID);
       mfindVotes.setInt(2, userID);
-      // before executing, it needs to
       res = mfindVotes.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  /**
+   * deleteVote() deletes the user's vote from the likeTable
+   * 
+   * @param postID post's ID to delete the vote
+   * @param userID user that is removing the vote
+   * @return
+   */
+  int deleteVote(int postID, int userID) {
+    int res = -1;
+    try {
+      mDeleteVote.setInt(1, postID);
+      mDeleteVote.setInt(2, userID);
+      res = mDeleteVote.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
