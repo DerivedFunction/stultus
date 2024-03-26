@@ -275,7 +275,7 @@ public class App {
    * @param checkResult Evaluation of result
    * @param message     mMessage for JSON on OK
    * @param data        mData for JSON on OK
-   * @return
+   * @return JSON response
    */
   private static Object JSONResponse(final Gson gson, String errorType, boolean checkResult, String message,
       Object data) {
