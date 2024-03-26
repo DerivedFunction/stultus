@@ -416,7 +416,10 @@ public class Database {
     try {
       mfindVotes.setInt(1, postID);
       mfindVotes.setInt(2, userID);
-      res = mfindVotes.executeUpdate();
+      ResultSet resultSet = mfindVotes.executeQuery();
+      if (resultSet.next()) {
+        res = resultSet.getInt("hasVoted");
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     }
