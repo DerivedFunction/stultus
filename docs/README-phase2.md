@@ -13,28 +13,111 @@ change my ideas based on feedback
 
 ## Entity Relationship Diagram
 
-![Entity Relationship Diagram](img-assets/ERD.png)
+![Entity Relationship Diagram](img-assets/ERD-phase2.png)
 
 ## UML Diagram
 
-![UML Diagram](img-assets/UML.png)
+![UML Diagram](img-assets/UML-phase2.png)
 
 ## Admin FSM
 
-![Admin FSM Diagram](img-assets/AdminFSM.png)
+![Admin FSM Diagram](img-assets/AdminFSM-phase2.png)
 
 ## Web FSM
 
-![Web FSM Diagram](img-assets/WebFSM.png)
+![Web FSM Diagram](img-assets/WebFSM-phase2.png)
 
 ## Mock User Interface
 
-![Main UI](img-assets/MainUI.png)
-![Edit UI](img-assets/EditUI.png)
+![Main UI](img-assets/MainUI-phase2.png)
+![Edit UI](img-assets/EditUI-phase2.png)
 
 ## User Stories
 
-![User Stories](img-assets/UserStories.png)
+
+As an authorized User
+I want to be able to log in
+(MUST BE MANUAL TEST BECAUSE GOOGLE USES CAPTCHA)
+Because security policy says that I cannot do anything else without it
+
+As an authorized User
+I want to be able to see my profile
+(Automated Test with jasmine on frontend)
+(Automated Test get on backend.)
+So I can see information that you know about me
+
+As an authorized user 
+I want to be able to edit my profile
+(Automated test with jasmine?)
+(Test on backend on test user)
+To correct information I don’t like
+
+As an authorized user
+I want to be able to like, unlike and dislike ideas
+(Automated test of backend and sql)
+(Automated test of frontend with jasmine)
+To show my approval and disapproval
+
+As a authorized User
+I want to be able to see messages
+So that I can see other people’s ideas
+(Automated test with Jasmine? And mocked routes)
+(automated test of sql ->json path)
+(Manual test of clicking the refresh button when another user posts on a different browser)
+Integration test can be manual of looking at website from full deployment
+
+As a authorized User
+I want to be able to post messages
+So that I can share other people’s ideas
+(Automated test of https route  and frontend with mocking)
+(Automated test of SQL statement coupled with delete (so that test messages are unsure), or the creation of a dedicated testing table)
+Integration test by uses of example operation, could only be automated if delete was also automated
+
+As an authorized User
+I want to be able to edit messages
+So that I can change my ideas based on feedback
+(Automated test of frontend using Mocking)
+(If ACID, can automated test edits on a single test message, otherwise requires a testing DB)
+Can be integration tested live
+
+As an authorized User
+I want to be able to delete messages
+So that I can withdraw mistaken submissions
+(Automated test of frontend using mocking)
+(Automated test of backend using a test message, though this couples to the put route, or using a test DB)
+Integration test can probably be manual
+
+(All manual integration tests could be replaced if we have a test DB, but should not be replaced unless this is true)
+
+As an admin
+I want to be able to create tables
+So that I can enable the app
+Automated testing with PreparedStatements (Create a test DB, first half of test)
+
+As an admin
+I want to be able to delete tables
+So that I can limit costs and resource use
+Automated testing with PreparedStatement (second half of test with creating a DB)
+
+
+As an admin
+I want to be able to delete messages
+So that I can remove sensitive information from improper locations
+Automated testing with PreparedStatements (Create a post and delete by id)
+
+As an admin
+I want to be able to connect to the database
+So that I can moderate submissions
+Manual testing of command line functions
+Automated testing with PreparedStatements (Create a post and delete by id)
+
+As an admin
+I want to be able remove users
+For violating terms of service (or cause they were fired)
+
+As an admin
+I want to be able to prepopulate tables
+To allow information to persist across transfers
 
 ## Description of Tests (Automated)
 
