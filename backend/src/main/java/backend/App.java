@@ -50,13 +50,15 @@ public class App {
    * parameters for basic message with id in website
    */
   private static final String FORMAT = String.format("%s/:%s", CONTEXT, ID_PARAM);
-
   /**
    * parameters for basic message with id in website
    */
-  private static final String VOTE_FORMAT = String.format("%s/%s/:%s/%s/:%s", FORMAT, VOTE_CONTEXT, VOTE_PARAM,
+  private static final String NET_VOTE_FORMAT = String.format("%s/%s", FORMAT, VOTE_CONTEXT);
+  /**
+   * parameters for basic message with id in website
+   */
+  private static final String VOTE_FORMAT = String.format("%s/:%s/%s/:%s", NET_VOTE_FORMAT, VOTE_CONTEXT, VOTE_PARAM,
       USER_CONTEXT, USER_PARAM);
-
   /**
    * deprecated method: parameters for like in website
    */
@@ -182,9 +184,7 @@ public class App {
       int result = db.deleteRow(idx);
       String errorType = "unable to delete row " + idx;
       boolean checkResult = (result == -1);
-      String message = null;
-      Object data = null;
-      return JSONResponse(gson, errorType, checkResult, message, data);
+      return JSONResponse(gson, errorType, checkResult, null, null);
     };
   }
 
@@ -201,12 +201,10 @@ public class App {
       int idx = Integer.parseInt(request.params(ID_PARAM));
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
-      int result = db.updateOne(idx, req.mTitle, req.mMessage);
+      Integer result = db.updateOne(idx, req.mTitle, req.mMessage);
       String errorType = "unable to update row " + idx;
       boolean checkResult = (result < 1);
-      String message = null;
-      Object data = (Integer) result;
-      return JSONResponse(gson, errorType, checkResult, message, data);
+      return JSONResponse(gson, errorType, checkResult, null, result);
     };
   }
 
@@ -224,9 +222,7 @@ public class App {
       int result = db.toggleLike(idx);
       String errorType = "error performing like";
       boolean checkResult = (result == -1);
-      String message = null;
-      Object data = null;
-      return JSONResponse(gson, errorType, checkResult, message, data);
+      return JSONResponse(gson, errorType, checkResult, null, null);
     };
   }
 
@@ -246,9 +242,7 @@ public class App {
       int result = db.toggleVote(idx, vote, user);
       String errorType = "error updating vote: post id=" + idx + " vote=" + vote;
       boolean checkResult = (result == -1);
-      String message = null;
-      Object data = null;
-      return JSONResponse(gson, errorType, checkResult, message, data);
+      return JSONResponse(gson, errorType, checkResult, null, null);
     };
   }
 
@@ -269,11 +263,20 @@ public class App {
       String errorType = "error performing insertion";
       boolean checkResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
-      Object data = null;
-      return JSONResponse(gson, errorType, checkResult, message, data);
+      return JSONResponse(gson, errorType, checkResult, message, null);
     };
   }
 
+  /**
+   * Returns JSON response on error or OK
+   * 
+   * @param gson        GSON to convert to JSON
+   * @param errorType   Error Message
+   * @param checkResult Evaluation of result
+   * @param message     mMessage for JSON on OK
+   * @param data        mData for JSON on OK
+   * @return
+   */
   private static Object JSONResponse(final Gson gson, String errorType, boolean checkResult, String message,
       Object data) {
     if (checkResult) {
