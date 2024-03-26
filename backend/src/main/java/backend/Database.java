@@ -205,11 +205,11 @@ public class Database {
           "INSERT INTO  " + likeTable + " (post_id, vote, userID) VALUES (?,?,?)");
       db.mfindVotes = db.mConnection.prepareStatement(
           "SELECT COUNT(*) AS hasVoted" +
-              "FROM " + likeTable +
-              "WHERE post_id=? AND userID=?");
+              " FROM " + likeTable +
+              " WHERE post_id=? AND userID=?");
       db.mDeleteVote = db.mConnection.prepareStatement(
           "DELETE FROM " + likeTable +
-              "WHERE post_id = ? AND userID = ?");
+              " WHERE post_id=? AND userID=?");
       // deprecated statements
       db.mAddLike_deprecated = db.mConnection
           .prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
