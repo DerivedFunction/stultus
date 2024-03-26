@@ -56,7 +56,11 @@ public class Database {
   /**
    * A prepared statement for find if a user has already voted for a message
    */
-  private PreparedStatement mfindVotes;
+  private PreparedStatement mfindVoteforUser;
+  /**
+   * A prepared statement for find total votes for a message
+   */
+  private PreparedStatement mfindTotalVotes;
   /**
    * A prepared statement for voting to a message
    */
@@ -203,10 +207,19 @@ public class Database {
           "UPDATE  " + tableName + "  SET subject=?, message=? WHERE id=?");
       db.mVote = db.mConnection.prepareStatement(
           "INSERT INTO  " + likeTable + " (post_id, vote, userID) VALUES (?,?,?)");
-      db.mfindVotes = db.mConnection.prepareStatement(
+      db.mfindVoteforUser = db.mConnection.prepareStatement(
           "SELECT COUNT(*) AS hasVoted" +
               " FROM " + likeTable +
               " WHERE post_id=? AND userID=?");
+      db.mfindTotalVotes = db.mConnection.prepareStatement(
+          "SELECT " + tableName + ".id, " +
+              tableName + ".subject, " +
+              tableName + ".message, " +
+              "COALESCE(SUM(" + likeTable + ".vote), 0) AS NetVotes " +
+              "FROM " + tableName + " " +
+              "LEFT JOIN " + likeTable + " ON " + tableName + ".id = " + likeTable + ".post_id " +
+              "WHERE " + tableName + ".id = ? " +
+              "GROUP BY " + tableName + ".id, " + tableName + ".subject, " + tableName + ".message");
       db.mDeleteVote = db.mConnection.prepareStatement(
           "DELETE FROM " + likeTable +
               " WHERE post_id=? AND userID=?");
@@ -414,9 +427,9 @@ public class Database {
   int findVotes(int postID, int userID) {
     int res = 0; // default vote count
     try {
-      mfindVotes.setInt(1, postID);
-      mfindVotes.setInt(2, userID);
-      ResultSet resultSet = mfindVotes.executeQuery();
+      mfindVoteforUser.setInt(1, postID);
+      mfindVoteforUser.setInt(2, userID);
+      ResultSet resultSet = mfindVoteforUser.executeQuery();
       if (resultSet.next()) {
         res = resultSet.getInt("hasVoted");
       }
@@ -439,6 +452,20 @@ public class Database {
       mDeleteVote.setInt(1, postID);
       mDeleteVote.setInt(2, userID);
       res = mDeleteVote.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  int totalVotes(int postID) {
+    int res = 0;
+    try {
+      mfindTotalVotes.setInt(1, postID);
+      ResultSet resultSet = mfindVoteforUser.executeQuery();
+      if (resultSet.next()) {
+        res = resultSet.getInt("netVotes");
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     }
