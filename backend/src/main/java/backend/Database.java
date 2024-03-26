@@ -163,6 +163,7 @@ public class Database {
    * @param user  The user ID to use
    * @param pass  The password to use
    * @param table The ArrayList of all SQL tables
+   * @return Connected Database
    */
   static Database getDatabase(String ip, String port, String path, String user, String pass, ArrayList<String> table) {
     if (path == null || "".equals(path)) {
@@ -191,6 +192,10 @@ public class Database {
 
   /**
    * creates prepared SQL statments
+   * 
+   * @param db      The connected database
+   * @param dbTable The list of db tables we want to connect
+   * @return The database with SQL statements
    */
   private static Database createPreparedStatements(Database db, ArrayList<String> dbTable) {
     String tableName = dbTable.get(0);
@@ -314,8 +319,9 @@ public class Database {
       mSelectOne.setInt(1, id);
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
-        res = new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message"), rs.getInt("likes"));
+        int postID = rs.getInt("id");
+        res = new RowData(postID, rs.getString("subject"),
+            rs.getString("message"), totalVotes(postID));
       }
     } catch (SQLException e) {
       e.printStackTrace();
