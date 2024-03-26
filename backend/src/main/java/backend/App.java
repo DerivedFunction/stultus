@@ -57,7 +57,7 @@ public class App {
   /**
    * parameters for basic message with id in website
    */
-  private static final String VOTE_FORMAT = String.format("%s/:%s/%s/:%s", NET_VOTE_FORMAT, VOTE_CONTEXT, VOTE_PARAM,
+  private static final String VOTE_FORMAT = String.format("%s/:%s/%s/:%s", NET_VOTE_FORMAT, VOTE_PARAM,
       USER_CONTEXT, USER_PARAM);
   /**
    * deprecated method: parameters for like in website
