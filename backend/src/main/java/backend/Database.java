@@ -9,6 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * SQL Database for our App
+ */
 public class Database {
   /**
    * The connection to the database. When there is no connection, it
@@ -42,14 +45,6 @@ public class Database {
   private PreparedStatement mUpdateOne;
 
   /**
-   * A Prepared Statement for creating the table from the Database
-   */
-
-  /**
-   * A Prepared Statement for deleting the table from the Database
-   */
-
-  /**
    * A prepared statement for adding a like to a message
    */
   private PreparedStatement mAddLike_deprecated;
@@ -70,11 +65,6 @@ public class Database {
    * A prepared statement for deleting votes to a message
    */
   private PreparedStatement mDeleteVote;
-
-  /**
-   * Database table for likes
-   */
-  private static String likeTable = "likeData";
 
   /**
    * In the context of the database, RowData represents the data
@@ -107,6 +97,11 @@ public class Database {
 
     /**
      * Construct a RowData object by providing values for its fields
+     * 
+     * @param id      The ID of post
+     * @param subject The subject of post
+     * @param message The message of post
+     * @param likes   (Deprecated method)
      */
     public RowData(int id, String subject, String message, int likes) {
       mId = id;
@@ -124,7 +119,9 @@ public class Database {
     }
   }
 
-  // Database constructor is private
+  /**
+   * Database constructor is private
+   */
   private Database() {
   }
 
@@ -133,11 +130,11 @@ public class Database {
    * 
    * @param db_url       The url to the database
    * @param port_default port to use if absent in db_url
-   * @param tableName    name in database of table of messages
+   * @param dbTable      ArrayList of all SQL tables to use
    * 
    * @return A Database object, or null if we cannot connect properly
    */
-  static Database getDatabase(String db_url, String port_default, String tableName) {
+  static Database getDatabase(String db_url, String port_default, ArrayList<String> dbTable) {
     try {
       URI dbUri = new URI(db_url);
       String username = dbUri.getUserInfo().split(":")[0];
@@ -146,7 +143,7 @@ public class Database {
       String path = dbUri.getPath();
       String port = dbUri.getPort() == -1 ? port_default : Integer.toString(dbUri.getPort());
 
-      return getDatabase(host, port, path, username, password, tableName);
+      return getDatabase(host, port, path, username, password, dbTable);
     } catch (URISyntaxException s) {
       System.out.println("URI Syntax Error");
       return null;
@@ -156,15 +153,14 @@ public class Database {
   /**
    * Get a fully configured connected to the database
    * 
-   * @param ip        The IP address of server
-   * @param port      The port on the server
-   * @param path      The path
-   * @param user      The user ID to use
-   * @param pass      The password to use
-   * @param tableName name of the message table
+   * @param ip    The IP address of server
+   * @param port  The port on the server
+   * @param path  The path
+   * @param user  The user ID to use
+   * @param pass  The password to use
+   * @param table The ArrayList of all SQL tables
    */
-
-  static Database getDatabase(String ip, String port, String path, String user, String pass, String tableName) {
+  static Database getDatabase(String ip, String port, String path, String user, String pass, ArrayList<String> table) {
     if (path == null || "".equals(path)) {
       path = "/";
     }
@@ -186,13 +182,16 @@ public class Database {
       e.printStackTrace();
       return null;
     }
-    return createPreparedStatements(db, tableName);
+    return createPreparedStatements(db, table);
   }
 
-  // creates prepared statments
-  private static Database createPreparedStatements(Database db, String tableName) {
+  /**
+   * creates prepared SQL statments
+   */
+  private static Database createPreparedStatements(Database db, ArrayList<String> dbTable) {
+    String tableName = dbTable.get(0);
+    String likeTable = dbTable.get(1);
     try {
-
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM " + tableName + " WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
@@ -332,9 +331,10 @@ public class Database {
    * Update the message for a row in the database
    *
    * @param id      The id of the row to update
+   * @param title   The title of the message
    * @param message The new msg contents
    *
-   * @return the number of rows udpated, -1 on error
+   * @return the number of rows updated, -1 on error
    */
   int updateOne(int id, String title, String message) {
     int res = -1;
@@ -371,19 +371,18 @@ public class Database {
   }
 
   /**
-   * toggleVote() checks to see if user upvotes or downvotes a post.
+   * Checks to see if user upvotes or downvotes a post.
    * If it already exists in the LikeData, then it will remove it
    * 
-   * @param id ID of the post
+   * @param id     ID of the post
+   * @param vote   value of the vote
+   * @param userID ID of user
    * @return number of rows updated (1 on success)
    */
   int toggleVote(int id, int vote, int userID) {
     int res = -1;
     try {
-      // If it finds the same value as vote
-      // (aka upvote & 1 in likeTable)
-      // Delete it to unvote.
-      if (findVotes(id, userID) == vote) {
+      if (findVotes(id, userID) != 0) {
         return deleteVote(id, userID);
       }
       mVote.setInt(1, id);
@@ -397,7 +396,7 @@ public class Database {
   }
 
   /**
-   * findLikes() finds if a user already voted for a post
+   * Finds if a user already voted for a post
    * 
    * @param postID post's ID to check
    * @param userID user's ID that voted
@@ -416,11 +415,11 @@ public class Database {
   }
 
   /**
-   * deleteVote() deletes the user's vote from the likeTable
+   * Deletes the user's vote from the likeTable
    * 
    * @param postID post's ID to delete the vote
    * @param userID user that is removing the vote
-   * @return
+   * @return 1 on success, -1 on error
    */
   int deleteVote(int postID, int userID) {
     int res = -1;
