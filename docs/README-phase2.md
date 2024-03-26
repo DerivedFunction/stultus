@@ -42,21 +42,24 @@ Because security policy says that I cannot do anything else without it
 
 As an authorized User
 I want to be able to see my profile
+So I can see information that you know about me
 (Automated Test with jasmine on frontend)
 (Automated Test get on backend.)
-So I can see information that you know about me
+Integration test can probably be manual
 
 As an authorized user 
 I want to be able to edit my profile
+To correct information I don’t like
 (Automated test with jasmine?)
 (Test on backend on test user)
-To correct information I don’t like
+Integration test can probably be manual
 
 As an authorized user
 I want to be able to like, unlike and dislike ideas
+To show my approval and disapproval
 (Automated test of backend and sql)
 (Automated test of frontend with jasmine)
-To show my approval and disapproval
+Integration test can probably be manual
 
 As a authorized User
 I want to be able to see messages
@@ -87,6 +90,20 @@ So that I can withdraw mistaken submissions
 (Automated test of backend using a test message, though this couples to the put route, or using a test DB)
 Integration test can probably be manual
 
+As an authorized User
+I want to be able to comment on messages
+So that I can give feedback
+(Automated Test of frontend using jasmine and mocking)
+(Automated Test of backend using comment on test message)
+Integration test manaul
+
+As an authorized User
+I want to be able to delete my comments
+so that I can remove bad feedback
+(Automated Test on frontend using mocking)
+(Automated Test of backend using the same test comment as the test for creating comments)
+Integration test manual
+
 (All manual integration tests could be replaced if we have a test DB, but should not be replaced unless this is true)
 
 As an admin
@@ -114,11 +131,12 @@ Automated testing with PreparedStatements (Create a post and delete by id)
 As an admin
 I want to be able remove users
 For violating terms of service (or cause they were fired)
+Manual or automated test of prepared statment
 
 As an admin
 I want to be able to prepopulate tables
 To allow information to persist across transfers
-
+Manual or Automated Testing of prepared statments to post to all tables
 ## Description of Tests (Automated)
 
 ### Backend
