@@ -297,7 +297,7 @@ public class Database {
       while (rs.next()) {
         int id = rs.getInt("id");
         res.add(new RowData(id, rs.getString("subject"),
-            rs.getString("message"), totalVotes(id)));
+            rs.getString("message"), totalVotes(id) + rs.getInt("likes")));
       }
       rs.close();
       return res;
@@ -321,7 +321,7 @@ public class Database {
       if (rs.next()) {
         int postID = rs.getInt("id");
         res = new RowData(postID, rs.getString("subject"),
-            rs.getString("message"), totalVotes(postID));
+            rs.getString("message"), totalVotes(postID) + rs.getInt("likes"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
