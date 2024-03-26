@@ -1,5 +1,6 @@
 package backend;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import com.google.gson.*;
@@ -8,12 +9,42 @@ import spark.Response;
 import spark.Route;
 import spark.Spark;
 
+/**
+ * Default backend App
+ */
 public class App {
+  /**
+   * Default port to listen to database
+   */
   private static final String DEFAULT_PORT_DB = "5432";
+  /**
+   * Default port for Spark
+   */
   private static final int DEFAULT_PORT_SPARK = 4567;
-
+  /**
+   * parameters for website
+   */
   private static final String CONTEXT = "/messages";
+  /**
+   * the list of all SQL table names to use
+   */
+  private static ArrayList<String> dbElements = dbTableElements();
 
+  /**
+   * Method to get SQL table names
+   * 
+   * @return ArrayList of table names.
+   */
+  private static ArrayList<String> dbTableElements() {
+    ArrayList<String> ret = new ArrayList<>();
+    ret.add("tblData");
+    ret.add("likeData");
+    return ret;
+  }
+
+  /**
+   * Default constructor
+   */
   public App() {
 
   }
@@ -30,7 +61,7 @@ public class App {
      */
     final Gson gson = new Gson();
 
-    Database db = getDatabaseConnection("tblData");
+    Database db = getDatabaseConnection(dbElements);
     if (db == null)
       return;
 
@@ -251,6 +282,11 @@ public class App {
     };
   }
 
+  /**
+   * Responseesponse on success
+   * 
+   * @param response 200 OK
+   */
   private static void extractResponse(Response response) {
     response.status(200);
     response.type("application/json");
@@ -259,14 +295,12 @@ public class App {
   /**
    * Gets database connect using enviroment variables
    * 
-   * @param tableName name of the main message table
-   * 
+   * @param table name of the main message table
    * @return connected database
    */
-  public static Database getDatabaseConnection(String tableName) {
-
+  public static Database getDatabaseConnection(ArrayList<String> table) {
     if (System.getenv("DATABASE_URL") != null) {
-      return Database.getDatabase(System.getenv("DATABASE_URL"), DEFAULT_PORT_DB, tableName);
+      return Database.getDatabase(System.getenv("DATABASE_URL"), DEFAULT_PORT_DB, table);
     }
     // get the Postgres configuration from the environment
     Map<String, String> env = System.getenv();
@@ -276,7 +310,7 @@ public class App {
     String pass = env.get("POSTGRES_PASS");
 
     // Connect to database
-    return Database.getDatabase(ip, port, "", user, pass, tableName);
+    return Database.getDatabase(ip, port, "", user, pass, table);
   }
 
   /**
@@ -320,9 +354,11 @@ public class App {
       return "OK";
     });
 
-    // 'before' is a decorator, which will run before any
-    // get/post/put/delete. In our case, it will put three extra CORS
-    // headers into the response
+    /**
+     * 'before' is a decorator, which will run before any
+     * get/post/put/delete. In our case, it will put three extra CORS
+     * headers into the response
+     */
     Spark.before((request, response) -> {
       response.header("Access-Control-Allow-Origin", origin);
       response.header("Access-Control-Request-Method", methods);
