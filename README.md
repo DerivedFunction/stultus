@@ -34,6 +34,9 @@ other's ideas. All relavant information about new updates and releases are in [`
 [CSE 216 Dokku tutorial link](https://www.cse.lehigh.edu/~stevelu/spear-tutorials/viewer.html#cse216_dokku/tut.md)
 
 ```bash
+# Delete the backend-dokku branch from remote and locally
+git push origin --delete backend-dokku
+git branch -D backend-dokku
 # the following is to be done on your **local** host
 # start from the root folder of the master branch
 git checkout master
