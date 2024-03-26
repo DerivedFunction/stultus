@@ -11,7 +11,16 @@ import junit.framework.TestSuite;
  * Unit test for simple App.
  */
 public class DatabaseTest extends TestCase {
-  static Database db = App.getDatabaseConnection("tblTest");
+  static ArrayList<String> dbTable = dbTableElements();
+
+  private static ArrayList<String> dbTableElements() {
+    ArrayList<String> ret = new ArrayList<>();
+    ret.add("tblTest");
+    ret.add("likeTest");
+    return ret;
+  }
+
+  static Database db = App.getDatabaseConnection(dbTable);
   static int num = App.getIntFromEnv("NUM_TESTS", 2);
 
   /**
