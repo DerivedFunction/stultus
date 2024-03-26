@@ -251,7 +251,7 @@ public class Database {
     try {
       mConnection.close();
     } catch (SQLException e) {
-      System.err.println("Error: Connection.close() thre a SQLException");
+      System.err.println("Error: Connection.close() threw a SQLException");
       e.printStackTrace();
       mConnection = null;
       return false;
@@ -290,8 +290,9 @@ public class Database {
     try {
       ResultSet rs = mSelectAll.executeQuery();
       while (rs.next()) {
-        res.add(new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message"), rs.getInt("likes")));
+        int id = rs.getInt("id");
+        res.add(new RowData(id, rs.getString("subject"),
+            rs.getString("message"), totalVotes(id)));
       }
       rs.close();
       return res;
@@ -458,11 +459,17 @@ public class Database {
     return res;
   }
 
+  /**
+   * Finds the net total votes of a post
+   * 
+   * @param postID The id of post to check
+   * @return The net vote count
+   */
   int totalVotes(int postID) {
     int res = 0;
     try {
       mfindTotalVotes.setInt(1, postID);
-      ResultSet resultSet = mfindVoteforUser.executeQuery();
+      ResultSet resultSet = mfindTotalVotes.executeQuery();
       if (resultSet.next()) {
         res = resultSet.getInt("netVotes");
       }
