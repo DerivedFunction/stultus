@@ -56,7 +56,7 @@ git checkout master
 git branch -D backend-dokku
 git checkout -b backend-dokku origin/backend-dokku
 
-# we are now ready to deploy to dokku with:
+# we are now ready to deploy to dokku with (-f if necessary):
 git push dokku backend-dokku
 ```
 
