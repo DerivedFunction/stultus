@@ -242,8 +242,8 @@ public class App {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params(ID_PARAM));
       int vote = Integer.parseInt(request.params(VOTE_PARAM));
-      System.err.println("post: " + idx + " vote value" + vote);
-      int result = db.toggleVote(idx, vote, 0);
+      int user = Integer.parseInt(request.params(USER_PARAM));
+      int result = db.toggleVote(idx, vote, user);
       String errorType = "error updating vote: post id=" + idx + " vote=" + vote;
       boolean checkResult = (result == -1);
       String message = null;
