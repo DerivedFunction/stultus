@@ -26,6 +26,42 @@ public class App {
    */
   private static final String CONTEXT = "/messages";
   /**
+   * parameters for id in website
+   */
+  private static final String ID_PARAM = "id";
+  /**
+   * parameter name for voting in website
+   */
+  private static final String VOTE_CONTEXT = "vote";
+  /**
+   * parameter name for voting in website
+   */
+  private static final String VOTE_PARAM = "voteValue";
+  /**
+   * parameter name for user in website
+   */
+  private static final String USER_CONTEXT = "user";
+  /**
+   * parameters for user in website
+   */
+  private static final String USER_PARAM = "userInfo";
+
+  /**
+   * parameters for basic message with id in website
+   */
+  private static final String FORMAT = String.format("%s/:%s", CONTEXT, ID_PARAM);
+
+  /**
+   * parameters for basic message with id in website
+   */
+  private static final String VOTE_FORMAT = String.format("%s/%s/:%s/%s/:%s", FORMAT, VOTE_CONTEXT, VOTE_PARAM,
+      USER_CONTEXT, USER_PARAM);
+
+  /**
+   * deprecated method: parameters for like in website
+   */
+  private static final String LIKE_PARAM = "like";
+  /**
    * the list of all SQL table names to use
    */
   private static ArrayList<String> dbElements = dbTableElements();
@@ -99,7 +135,7 @@ public class App {
      * GET route that returns message with specific id.
      * Converts StructuredResponses to JSON
      */
-    Spark.get(CONTEXT + "/:id", getWithId(gson, db));
+    Spark.get(FORMAT, getWithId(gson, db));
 
     /*
      * POST route that adds a new element to DataStore.
@@ -113,22 +149,22 @@ public class App {
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
      */
-    Spark.put(CONTEXT + "/:id", putWithID(gson, db));
+    Spark.put(FORMAT, putWithID(gson, db));
 
     /*
      * PUT route for voting
      */
-    Spark.put(CONTEXT + "/:id/vote/:voteValue", putVote(gson, db));
+    Spark.put(VOTE_FORMAT, putVote(gson, db));
 
     /*
      * PUT route for adding a like,
      */
-    Spark.put(CONTEXT + "/:id/like", putLike(gson, db));
+    Spark.put(String.format("%s/%s", FORMAT, LIKE_PARAM), putLike(gson, db));
 
     /*
      * Delete route for removing a row from DataStore
      */
-    Spark.delete(CONTEXT + "/:id", deleteWithID(gson, db));
+    Spark.delete(FORMAT, deleteWithID(gson, db));
   }
 
   /**
@@ -141,16 +177,14 @@ public class App {
    */
   private static Route deleteWithID(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params("id"));
+      int idx = Integer.parseInt(request.params(ID_PARAM));
       extractResponse(response);
       int result = db.deleteRow(idx);
-
-      if (result == -1) {
-        return gson.toJson(new StructuredResponse(
-            "error", "unable to delete row " + idx, null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", null, null));
-      }
+      String errorType = "unable to delete row " + idx;
+      boolean checkResult = (result == -1);
+      String message = null;
+      Object data = null;
+      return JSONResponse(gson, errorType, checkResult, message, data);
     };
   }
 
@@ -164,16 +198,15 @@ public class App {
    */
   private static Route putWithID(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params("id"));
+      int idx = Integer.parseInt(request.params(ID_PARAM));
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
       int result = db.updateOne(idx, req.mTitle, req.mMessage);
-      if (result < 1) {
-        return gson.toJson(new StructuredResponse(
-            "error", "unable to update row " + idx, null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", null, result));
-      }
+      String errorType = "unable to update row " + idx;
+      boolean checkResult = (result < 1);
+      String message = null;
+      Object data = (Integer) result;
+      return JSONResponse(gson, errorType, checkResult, message, data);
     };
   }
 
@@ -187,14 +220,13 @@ public class App {
    */
   private static Route putLike(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params("id"));
+      int idx = Integer.parseInt(request.params(ID_PARAM));
       int result = db.toggleLike(idx);
-      if (result == -1) {
-        return gson.toJson(new StructuredResponse(
-            "error", "error performing insertion", null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", null, null));
-      }
+      String errorType = "error performing like";
+      boolean checkResult = (result == -1);
+      String message = null;
+      Object data = null;
+      return JSONResponse(gson, errorType, checkResult, message, data);
     };
   }
 
@@ -208,16 +240,15 @@ public class App {
    */
   private static Route putVote(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params("id"));
-      int vote = Integer.parseInt(request.params("voteValue"));
+      int idx = Integer.parseInt(request.params(ID_PARAM));
+      int vote = Integer.parseInt(request.params(VOTE_PARAM));
       System.err.println("post: " + idx + " vote value" + vote);
       int result = db.toggleVote(idx, vote, 0);
-      if (result == -1) {
-        return gson.toJson(new StructuredResponse(
-            "error", "error updating vote", null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", null, null));
-      }
+      String errorType = "error updating vote: post id=" + idx + " vote=" + vote;
+      boolean checkResult = (result == -1);
+      String message = null;
+      Object data = null;
+      return JSONResponse(gson, errorType, checkResult, message, data);
     };
   }
 
@@ -235,13 +266,22 @@ public class App {
       extractResponse(response);
       // createEntry checks for null title/message (-1)
       int rowsAdded = db.insertRow(req.mTitle, req.mMessage);
-      if (rowsAdded <= 0) {
-        return gson.toJson(new StructuredResponse(
-            "error", "error performing insertion", null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", "" + rowsAdded, null));
-      }
+      String errorType = "error performing insertion";
+      boolean checkResult = (rowsAdded <= 0);
+      String message = "" + rowsAdded;
+      Object data = null;
+      return JSONResponse(gson, errorType, checkResult, message, data);
     };
+  }
+
+  private static Object JSONResponse(final Gson gson, String errorType, boolean checkResult, String message,
+      Object data) {
+    if (checkResult) {
+      return gson.toJson(new StructuredResponse(
+          "error", errorType, null));
+    } else {
+      return gson.toJson(new StructuredResponse("ok", message, data));
+    }
   }
 
   /**
@@ -270,20 +310,18 @@ public class App {
    */
   private static Route getWithId(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params("id"));
+      int idx = Integer.parseInt(request.params(ID_PARAM));
       extractResponse(response);
       Database.RowData data = db.selectOne(idx);
-      if (data == null) {
-        return gson.toJson(
-            new StructuredResponse("error", idx + " not found", null));
-      } else {
-        return gson.toJson(new StructuredResponse("ok", null, data));
-      }
+      String errorType = idx + " not found";
+      boolean checkResult = (data == null);
+      String message = null;
+      return JSONResponse(gson, errorType, checkResult, message, data);
     };
   }
 
   /**
-   * Responseesponse on success
+   * Response on success
    * 
    * @param response 200 OK
    */
