@@ -381,9 +381,18 @@ public class Database {
    */
   int toggleVote(int id, int vote, int userID) {
     int res = -1;
+    int oldVote = findVotes(id, userID);
     try {
-      if (findVotes(id, userID) != 0) {
+      // If it is the same value (upvoted already and
+      // upvote button clicked again)
+      // Delete the vote
+      if (oldVote == vote) {
         return deleteVote(id, userID);
+      } else
+      // If it is different value ex (already downvoted and
+      // now an upvote) delete it and replace it.
+      if (oldVote != 0) {
+        deleteVote(id, userID);
       }
       mVote.setInt(1, id);
       mVote.setInt(2, vote);
