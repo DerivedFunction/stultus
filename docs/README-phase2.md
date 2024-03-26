@@ -1,4 +1,4 @@
-# Phase 2 
+# Phase 2
 
 ## User Stories Preview
 
@@ -34,7 +34,6 @@ change my ideas based on feedback
 
 ## User Stories
 
-
 As an authorized User
 I want to be able to log in
 (MUST BE MANUAL TEST BECAUSE GOOGLE USES CAPTCHA)
@@ -46,7 +45,7 @@ I want to be able to see my profile
 (Automated Test get on backend.)
 So I can see information that you know about me
 
-As an authorized user 
+As an authorized user
 I want to be able to edit my profile
 (Automated test with jasmine?)
 (Test on backend on test user)
@@ -69,7 +68,7 @@ Integration test can be manual of looking at website from full deployment
 As a authorized User
 I want to be able to post messages
 So that I can share other people’s ideas
-(Automated test of https route  and frontend with mocking)
+(Automated test of https route and frontend with mocking)
 (Automated test of SQL statement coupled with delete (so that test messages are unsure), or the creation of a dedicated testing table)
 Integration test by uses of example operation, could only be automated if delete was also automated
 
@@ -98,7 +97,6 @@ As an admin
 I want to be able to delete tables
 So that I can limit costs and resource use
 Automated testing with PreparedStatement (second half of test with creating a DB)
-
 
 As an admin
 I want to be able to delete messages
@@ -148,20 +146,18 @@ May wish to add edge case testing (such as overlength messages or empty messages
 
 ## Routes and details
 
-
-
-
-| Purpose                | Route               | Verb   | Purpose                     | Structure                                                     |
-| ---------------------- | ------------------- | ------ | --------------------------- | ------------------------------------------------------------- |
-| Show all messages      | `/messages`         | GET    | Return post data to display | JSON `{ArrayList<messages>}`                                  |
-| Show one post          | `/messages/id`      | GET    | Return single post data     | JSON `{title, message, numLikes}`                             |
-| Create new Post        | `/messages`         | POST   | Creates a post              | Takes `{title, message}`, all other fields handled by backend |
-| Edit content of a post | `/messages/id`      | PUT    | Edits a post                | Takes `{title, message}` and backend handles updates          |
-| Delete a post          | `/messages/id`      | DELETE | Deletes a post              | Returns `status`                                              |
-| Like a post            | `/messages/id/like` | PUT    | Likes a post                | Returns new number of `numLikes`                              |
-
+| Purpose                  | Route                                       | Verb   | Purpose                     | Structure                                                     |
+| ------------------------ | ------------------------------------------- | ------ | --------------------------- | ------------------------------------------------------------- |
+| Show all messages        | `/messages`                                 | GET    | Return post data to display | JSON `{ArrayList<messages>}`                                  |
+| Show one post            | `/messages/id`                              | GET    | Return single post data     | JSON `{title, message, numLikes}`                             |
+| Create new Post          | `/messages`                                 | POST   | Creates a post              | Takes `{title, message}`, all other fields handled by backend |
+| Edit content of a post   | `/messages/id`                              | PUT    | Edits a post                | Takes `{title, message}` and backend handles updates          |
+| Delete a post            | `/messages/id`                              | DELETE | Deletes a post              | Returns `status`                                              |
+| Like a post              | `/messages/id/vote/voteValue/user/userInfo` | PUT    | Vote on a post              | Returns `1` on success                                        |
+| Like a post (deprecated) | `/messages/id/like`                         | PUT    | Likes a post                | Returns new number of `numLikes`                              |
 
 ## Documentation for Branches
+
 - [Admin](../admin-cli/README.md)
 - [Backend](../backend/README.md)
 - [Web](../web/README.md#documentation)
