@@ -24,6 +24,8 @@
 ![Main UI](img-assets/MainUI-phase2.png)
 ![Edit UI](img-assets/EditUI-phase2.png)
 
+Comment operations and profile will maintain visual consistency with the site
+
 ## User Stories
 
 As an authorized User
