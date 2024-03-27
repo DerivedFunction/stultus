@@ -153,6 +153,9 @@ May wish to add edge case testing (such as overlength messages or empty messages
 
 - Create a randomly generated String, and adding that String as a new element in the table
 - Ensuring the elements have been added
+- Change Tables 
+- Find elements linked in different table elements
+- Edit Elements
 - Deleting added Elements
 - Ensuring Elements added have been deleted.
 
