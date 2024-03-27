@@ -34,7 +34,7 @@ I want to be able to log in
 
 Because security policy says that I cannot do anything else without it
 
-
+---
 
 
 As an authorized User
@@ -49,7 +49,7 @@ So I can see information that you know about me
 
 Integration test can probably be manual
 
-
+---
 
 
 As an authorized user
@@ -65,7 +65,7 @@ To correct information I don’t like
 Integration test can probably be manual
 
 
-
+---
 
 As an authorized user
 
@@ -80,7 +80,7 @@ To show my approval and disapproval
 Integration test can probably be manual
 
 
-
+---
 
 As a authorized User
 
@@ -96,7 +96,7 @@ So that I can see other people’s ideas
 
 Integration test can be manual of looking at website from full deployment
 
-
+---
 
 
 As a authorized User
@@ -111,7 +111,7 @@ So that I can share other people’s ideas
 
 Integration test by uses of example operation, could only be automated if delete was also automated
 
-
+---
 
 
 As an authorized User
@@ -127,7 +127,7 @@ So that I can change my ideas based on feedback
 Can be integration tested live
 
 
-
+---
 
 
 
@@ -144,7 +144,7 @@ So that I can withdraw mistaken submissions
 Integration test can probably be manual
 
 
-
+---
 
 
 As an authorized User
@@ -160,7 +160,7 @@ So that I can give feedback
 Integration test manaul
 
 
-
+---
 
 
 
@@ -176,14 +176,14 @@ so that I can remove bad feedback
 
 Integration test manual
 
-
+---
 
 
 
 (All manual integration tests could be replaced if we have a test DB, but should not be replaced unless this is true)
 
 
-
+---
 
 As an admin
 
@@ -193,7 +193,7 @@ So that I can enable the app
 
 Automated testing with PreparedStatements (Create a test DB, first half of test)
 
-
+---
 
 
 As an admin
@@ -205,7 +205,7 @@ So that I can limit costs and resource use
 Automated testing with PreparedStatement (second half of test with creating a DB)
 
 
-
+---
 
 As an admin
 
@@ -215,7 +215,7 @@ So that I can remove sensitive information from improper locations
 
 Automated testing with PreparedStatements (Create a post and delete by id)
 
-
+---
 
 
 As an admin
@@ -228,7 +228,7 @@ Manual testing of command line functions
 
 Automated testing with PreparedStatements (Create a post and delete by id)
 
-
+---
 
 
 As an admin
@@ -239,7 +239,7 @@ For violating terms of service (or cause they were fired)
 
 Manual or automated test of prepared statment
 
-
+---
 
 
 As an admin
@@ -250,7 +250,7 @@ To allow information to persist across transfers
 
 Manual or Automated Testing of prepared statments to post to all tables
 
-
+---
 
 
 ## Description of Tests (Automated)
