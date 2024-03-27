@@ -35,6 +35,8 @@ I want to be able to log in
 Because security policy says that I cannot do anything else without it
 
 
+
+
 As an authorized User
 
 I want to be able to see my profile
@@ -46,6 +48,8 @@ So I can see information that you know about me
 (Automated Test get on backend.)
 
 Integration test can probably be manual
+
+
 
 
 As an authorized user
@@ -62,6 +66,7 @@ Integration test can probably be manual
 
 
 
+
 As an authorized user
 
 I want to be able to like, unlike and dislike ideas
@@ -73,6 +78,7 @@ To show my approval and disapproval
 (Automated test of frontend with jasmine)
 
 Integration test can probably be manual
+
 
 
 
@@ -91,6 +97,8 @@ So that I can see other people’s ideas
 Integration test can be manual of looking at website from full deployment
 
 
+
+
 As a authorized User
 
 I want to be able to post messages
@@ -102,6 +110,8 @@ So that I can share other people’s ideas
 (Automated test of SQL statement coupled with delete (so that test messages are unsure), or the creation of a dedicated testing table)
 
 Integration test by uses of example operation, could only be automated if delete was also automated
+
+
 
 
 As an authorized User
@@ -117,6 +127,10 @@ So that I can change my ideas based on feedback
 Can be integration tested live
 
 
+
+
+
+
 As an authorized User
 
 I want to be able to delete messages
@@ -130,6 +144,9 @@ So that I can withdraw mistaken submissions
 Integration test can probably be manual
 
 
+
+
+
 As an authorized User
 
 I want to be able to comment on messages
@@ -141,6 +158,9 @@ So that I can give feedback
 (Automated Test of backend using comment on test message)
 
 Integration test manaul
+
+
+
 
 
 
@@ -158,7 +178,11 @@ Integration test manual
 
 
 
+
+
 (All manual integration tests could be replaced if we have a test DB, but should not be replaced unless this is true)
+
+
 
 
 As an admin
@@ -168,6 +192,7 @@ I want to be able to create tables
 So that I can enable the app
 
 Automated testing with PreparedStatements (Create a test DB, first half of test)
+
 
 
 
@@ -181,6 +206,7 @@ Automated testing with PreparedStatement (second half of test with creating a DB
 
 
 
+
 As an admin
 
 I want to be able to delete messages
@@ -188,6 +214,8 @@ I want to be able to delete messages
 So that I can remove sensitive information from improper locations
 
 Automated testing with PreparedStatements (Create a post and delete by id)
+
+
 
 
 As an admin
@@ -201,6 +229,8 @@ Manual testing of command line functions
 Automated testing with PreparedStatements (Create a post and delete by id)
 
 
+
+
 As an admin
 
 I want to be able remove users
@@ -210,6 +240,8 @@ For violating terms of service (or cause they were fired)
 Manual or automated test of prepared statment
 
 
+
+
 As an admin
 
 I want to be able to prepopulate tables
@@ -217,6 +249,9 @@ I want to be able to prepopulate tables
 To allow information to persist across transfers
 
 Manual or Automated Testing of prepared statments to post to all tables
+
+
+
 
 ## Description of Tests (Automated)
 
