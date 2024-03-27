@@ -19,6 +19,10 @@
 
 ![Web FSM Diagram](img-assets/WebFSM-phase2.png)
 
+## Idea FSm
+
+![Idea FSM diagram](img-assets/IdeasFSM-phase2.png)
+
 ## Mock User Interface
 
 ![Main UI](img-assets/MainUI-phase2.png)
