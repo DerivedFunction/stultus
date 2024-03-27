@@ -213,8 +213,8 @@ public class Database {
       db.mVote = db.mConnection.prepareStatement(
           "INSERT INTO  " + likeTable + " (post_id, vote, userID) VALUES (?,?,?)");
       db.mfindVoteforUser = db.mConnection.prepareStatement(
-          "SELECT COUNT(*) AS hasVoted" +
-              " FROM " + likeTable +
+          "SELECT vote FROM " +
+              likeTable +
               " WHERE post_id=? AND userID=?");
       db.mfindTotalVotes = db.mConnection.prepareStatement(
           "SELECT " + tableName + ".id, " +
@@ -438,7 +438,7 @@ public class Database {
       mfindVoteforUser.setInt(2, userID);
       ResultSet resultSet = mfindVoteforUser.executeQuery();
       if (resultSet.next()) {
-        res = resultSet.getInt("hasVoted");
+        res = resultSet.getInt("vote");
       }
     } catch (SQLException e) {
       e.printStackTrace();
