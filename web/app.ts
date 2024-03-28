@@ -1,4 +1,4 @@
-/** Prevent compiler errors when using jQuery by
+/** Prevent compiler errors when using jQuery by test
  * setting $ to any
  * @type any
  */
