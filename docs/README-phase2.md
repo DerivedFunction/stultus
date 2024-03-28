@@ -26,7 +26,11 @@
 ## Mock User Interface
 
 ![Main UI](img-assets/MainUI-phase2.png)
-![Edit UI](img-assets/EditUI-phase2.png)
+![Edit UI](img-assets/EditUI-phase2.png
+![Login UI](img-assets/LoginUI-phase2.png)
+![Login Fail](img-assets/LoginFail-phase2.png)
+![Profile UI](img-assets/ProfileUI-phase2.png)
+![Profile Edit UI](img-assets/ProfileEditUI-phase2.png)
 
 Comment operations and profile will maintain visual consistency with the site
 
