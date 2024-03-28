@@ -211,6 +211,8 @@ public class App {
   /**
    * Creates the route to handle like changes
    * 
+   * @deprecated As of Sprint 8, this method is deprecated in favor of
+   *             {@link #putVote(gson, db)}
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
