@@ -15,7 +15,7 @@ other's ideas. All relavant information about new updates and releases are in [`
   - SSH: `git clone git@bitbucket.org:sml3/cse216_sp24_team_21.git`
   - https: `git clone https://del226@bitbucket.org/sml3/cse216_sp24_team_21.git`
 - Jira Link: <https://cse216-24sp-del226.atlassian.net/jira/software/projects/T2/boards/2>
-- Backend URL: <https://2024sp-team-stultus.dokku.cse.lehigh.edu/>
+- Backend URL: <https://team-stultus.dokku.cse.lehigh.edu/>
 
 ## Team Members
 
@@ -34,6 +34,9 @@ other's ideas. All relavant information about new updates and releases are in [`
 [CSE 216 Dokku tutorial link](https://www.cse.lehigh.edu/~stevelu/spear-tutorials/viewer.html#cse216_dokku/tut.md)
 
 ```bash
+# Delete the backend-dokku branch from remote and locally
+git push origin --delete backend-dokku
+git branch -D backend-dokku
 # the following is to be done on your **local** host
 # start from the root folder of the master branch
 git checkout master
@@ -53,19 +56,20 @@ git checkout master
 git branch -D backend-dokku
 git checkout -b backend-dokku origin/backend-dokku
 
-# we are now ready to deploy to dokku with:
-git push dokku backend-dokku:master
+# we are now ready to deploy to dokku with (-f if necessary):
+git push dokku backend-dokku
 ```
 
 ### Dokku configurations
+
 - POSTGRES URL: <postgres://***:***@salt.db.elephantsql.com/***>
 - POSTGRES Port: 5432
 - PORT: 8998
-
+- NUM_TESTS: 5
 
 ### Useful Dokku commands
 
-`'$COMMAND 2024sp-team-stultus'`
+`ssh -i ~/.ssh/id_ed25519 -t dokku@dokku.cse.lehigh.edu '$COMMAND team-stultus'`
 
 - `ps:start`: start app
 - `ps:stop`: stop app

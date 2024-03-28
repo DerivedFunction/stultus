@@ -1,13 +1,11 @@
 <!DOCTYPE html />
 <html lang="en">
 
-<head>
-    <title>Tests</title>
 
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <!-- included for testing web frontend -->
     <script src="jasmine.js"></script>
     <script src="jasmine-html.js"></script>
@@ -15,21 +13,24 @@
     <script src="boot1.js"></script>
     <link rel="stylesheet" href="jasmine.css">
 
+
     <script src="apptest.js"></script>
     <!-- End of tests -->
-
-    <link rel="stylesheet" href="app.css" />
-    <link rel="stylesheet" href="todo.css" />
-    <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
-
-    <script defer type="module" src="todo.js"></script>
+    <title>Stultus</title>
     <script src="app.js"></script>
-
+    <link rel="stylesheet" href="app.css" />
+    <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Madimi One' rel='stylesheet'>
 </head>
+
 
 <body>
     <div id="addElement">
-        <h3>Add a New Entry</h3>
+        <div id="scrollTitle">
+            <h3>Create A New Idea</h3>
+        </div>
+        <div style="height: 100;"></div>
         <label>Title</label>
         <input type="text" id="newTitle" />
         <label>Message</label>
@@ -38,7 +39,10 @@
         <button id="addCancel">Cancel</button>
     </div>
     <div id="editElement">
-        <h3>Edit an Entry</h3>
+        <div id="scrollTitle">
+            <h3>Edit Your Idea</h3>
+        </div>
+        <div style="height: 100;"></div>
         <label>Title</label>
         <input type="text" id="editTitle" />
         <label>Message</label>
@@ -49,13 +53,19 @@
         <button id="editCancel">Cancel</button>
     </div>
     <div id="showElements">
-        <h3>All Messages</h3>
-        <button id="showFormButton">Add Message</button>
+        <div id="scrollTitle">
+            <h3>Stultus</h3>
+            <button id="showFormButton">New Post</button>
+        </div>
+        <div style="height: 100;"></div>
+        <!--<button id="refreshFormButton">Refresh</button> -->
         <div id="messageList"></div>
-        <button id="refreshFormButton">Refresh</button>
-    </div>
-    <hr />
-    <app-root></app-root>
+        </div>
+        </div>
+        <div id="InvalidContent">
+            Invalid Title/Message: Please Try Again
+        </div>
 </body>
+
 
 </html>

@@ -37,17 +37,31 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 /** Prevent compiler errors when using jQuery by
  * setting $ to any
+ * @type any
  */
 var $;
-/** Global variable to be referenced for newEntryForm */
+/** Global variable to be referenced for newEntryForm
+ * @type {Object.<string, string>}
+*/
 var newEntryForm;
 /**
+ * Backend server link to dokku
+ * @type {string}
+ */
+var backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
+/**
+ * Component name to fetch resources
+ * @type {string}
+ */
+var componentName = "messages";
+/**
  * NewEntryForm has all the code for the form for adding an entry
+ * @type {class NewEntryForm}
  */
 var NewEntryForm = /** @class */ (function () {
     /**
-     * Intialize the object  setting buttons to do actions
-     * when clicked
+     * Intialize the object  setting buttons to do actions when clicked
+     * @return {NewEntryForm}
      */
     function NewEntryForm() {
         var _a, _b;
@@ -60,6 +74,7 @@ var NewEntryForm = /** @class */ (function () {
     }
     /**
      * Clear the input fields
+     * @type {function}
      */
     NewEntryForm.prototype.clearForm = function () {
         document.getElementById("newTitle").value = "";
@@ -73,23 +88,28 @@ var NewEntryForm = /** @class */ (function () {
     };
     /**
      * Check if input is valid before submitting with AJAX call
+     * @type {function}
      */
     NewEntryForm.prototype.submitForm = function () {
         var _this = this;
-        window.alert("Submit form called");
+        console.log("Submit form called");
         // Get the values of the fields and convert to strings
         // Check for bad input
         var title = "" + document.getElementById("newTitle").value;
         var msg = "" + document.getElementById("newMessage").value;
         if (title === "" || msg === "") {
-            window.alert("Error: title/msg is not valid");
+            InvalidContentMsg();
+            console.log("Error: title/msg is not valid");
             return;
         }
-        // do a POST (create) and do onSubmitResponse
+        /**
+        * do a POST (create) and do onSubmitResponse
+        * @type {function}
+        */
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("/messages", {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName), {
                             method: "POST",
                             body: JSON.stringify({
                                 // from backend
@@ -106,7 +126,7 @@ var NewEntryForm = /** @class */ (function () {
                                 return Promise.resolve(response.json());
                             }
                             else {
-                                window.alert("The server replied not ok: ".concat(response.status, "\n") +
+                                console.log("The server replied not ok: ".concat(response.status, "\n") +
                                     response.statusText);
                             }
                             return Promise.reject(response);
@@ -118,7 +138,7 @@ var NewEntryForm = /** @class */ (function () {
                         })
                             .catch(function (error) {
                             console.warn("Something went wrong", error);
-                            window.alert("Unspecified error");
+                            console.log("Unspecified error");
                         })];
                     case 1:
                         _a.sent();
@@ -140,24 +160,28 @@ var NewEntryForm = /** @class */ (function () {
         }
         else if (data.mStatus === "error") {
             // Handle error w/ msg
-            window.alert("The server replied with error:\n" + data.mMessage);
+            console.log("The server replied with error:\n" + data.mMessage);
         }
         else {
             // others
-            window.alert("Unspecified error");
+            console.log("Unspecified error");
         }
     };
     return NewEntryForm;
 }());
-/** Global variable to be referenced for ElementList */
+/** Global variable to be referenced for ElementList
+ * @type {EditEntryForm}
+*/
 var editEntryForm;
 /**
  * EditEntryForm contains all code for editing an entry
+ * @type {class EditEntryForm}
  */
 var EditEntryForm = /** @class */ (function () {
     /**
      * Intialize the object b setting buttons to do actions
      * when clicked
+     * @return {EditEntryForm}
      */
     function EditEntryForm() {
         var _a, _b;
@@ -168,6 +192,11 @@ var EditEntryForm = /** @class */ (function () {
             editEntryForm.submitForm();
         });
     }
+    /**
+     * Intialize the object b setting buttons to do actions
+     * when clicked
+     * @param data
+     */
     EditEntryForm.prototype.init = function (data) {
         // Fill the edit form when we receive ok
         if (data.mStatus === "ok") {
@@ -181,11 +210,11 @@ var EditEntryForm = /** @class */ (function () {
                 data.mData.mCreated;
         }
         else if (data.mStatus === "error") {
-            window.alert("The server replied with an error:\n" + data.mMessage);
+            console.log("The server replied with an error:\n" + data.mMessage);
         }
         // Handle other errors with a less-detailed popup message
         else {
-            window.alert("Unspecified error");
+            console.log("Unspecified error");
         }
         // show the edit form
         document.getElementById("editElement").style.display =
@@ -196,6 +225,7 @@ var EditEntryForm = /** @class */ (function () {
     };
     /**
      * Clear the form's input fields
+     * @type {function}
      */
     EditEntryForm.prototype.clearForm = function () {
         document.getElementById("editTitle").value = "";
@@ -211,25 +241,28 @@ var EditEntryForm = /** @class */ (function () {
     };
     /**
      * Check if the input fields are both valid, and if so, do an AJAX call.
+     * @type {function}
      */
     EditEntryForm.prototype.submitForm = function () {
         var _this = this;
-        window.alert("Submit edit form called.");
+        console.log("Submit edit form called.");
         // get the values of the two fields, force them to be strings, and check
         // that neither is empty
         var title = "" + document.getElementById("editTitle").value;
         var msg = "" + document.getElementById("editMessage").value;
         var id = "" + document.getElementById("editId").value;
         if (title === "" || msg === "" || id === "") {
-            window.alert("Error: title, message, or id is not valid");
+            InvalidContentMsg();
+            console.log("Error: title, message, or id is not valid");
             return;
         }
-        // set up an AJAX PUT.
-        // When the server replies, the result will go to onSubmitResponse
+        /** set up an AJAX PUT. When the server replies, the result will go to onSubmitResponse
+         * @type {function}
+        */
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("/messages/".concat(id), {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName, "/").concat(id), {
                             method: "PUT",
                             body: JSON.stringify({
                                 mTitle: title, //mTitle
@@ -247,7 +280,7 @@ var EditEntryForm = /** @class */ (function () {
                             }
                             // Otherwise, handle server errors with a detailed popup message
                             else {
-                                window.alert("The server replied not ok: ".concat(response.status, "\n") +
+                                console.log("The server replied not ok: ".concat(response.status, "\n") +
                                     response.statusText);
                             }
                             // return response;
@@ -259,7 +292,7 @@ var EditEntryForm = /** @class */ (function () {
                         })
                             .catch(function (error) {
                             console.warn("Something went wrong.", error);
-                            window.alert("Unspecified error");
+                            console.log("Unspecified error");
                         })];
                     case 1:
                         _a.sent();
@@ -273,7 +306,6 @@ var EditEntryForm = /** @class */ (function () {
     /**
      * onSubmitResponse runs when the AJAX call in submitForm() returns a
      * result.
-     *
      * @param data The object returned by the server
      */
     EditEntryForm.prototype.onSubmitResponse = function (data) {
@@ -285,32 +317,36 @@ var EditEntryForm = /** @class */ (function () {
         }
         // Handle explicit errors with a detailed popup message
         else if (data.mStatus === "error") {
-            window.alert("The server replied with an error:\n" + data.mMessage);
+            console.log("The server replied with an error:\n" + data.mMessage);
         }
         // Handle other errors with a less-detailed popup message
         else {
-            window.alert("Unspecified error");
+            console.log("Unspecified error");
         }
     };
     return EditEntryForm;
 }());
-/** Global variable to be referenced for ElementList */
+/** Global variable to be referenced for ElementList
+ * @type {var}
+*/
 var mainList;
 /**
  * ElementList provides a way to see the data stored in server
+ * @type {class name}
  */
 var ElementList = /** @class */ (function () {
     function ElementList() {
     }
     /**
      * Refresh updates the messageList
+     * @
      */
     ElementList.prototype.refresh = function () {
         var _this = this;
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("/messages", {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName), {
                             method: "GET",
                             headers: {
                                 "Content-type": "application/json; charset=UTF-8",
@@ -321,7 +357,7 @@ var ElementList = /** @class */ (function () {
                                 return Promise.resolve(response.json());
                             }
                             else {
-                                window.alert("The server replied not ok: ".concat(response.status, "\n") +
+                                console.log("The server replied not ok: ".concat(response.status, "\n") +
                                     response.statusText);
                             }
                             return Promise.reject(response);
@@ -332,7 +368,7 @@ var ElementList = /** @class */ (function () {
                         })
                             .catch(function (error) {
                             console.warn("Something went wrong", error);
-                            window.alert("Unspecified error");
+                            console.log("Unspecified error");
                         })];
                     case 1:
                         _a.sent();
@@ -357,9 +393,11 @@ var ElementList = /** @class */ (function () {
                 var tr = document.createElement("tr");
                 var td_title = document.createElement("td");
                 var td_id = document.createElement("td");
-                td_title.innerHTML = data.mData[i].mSubject;
+                var td_like = document.createElement("td");
+                td_title.innerHTML = "<div id = \"postTitle\">" + data.mData[i].mSubject + "</div><br><div id = \"postBody\">" + data.mData[i].mMessage + "</div>";
                 td_id.innerHTML = data.mData[i].mId;
-                tr.appendChild(td_id);
+                td_like.innerHTML = data.mData[i].numLikes;
+                tr.appendChild(td_like);
                 tr.appendChild(td_title);
                 tr.appendChild(this.buttons(data.mData[i].mId));
                 table.appendChild(tr);
@@ -379,6 +417,12 @@ var ElementList = /** @class */ (function () {
         for (var i = 0; i < all_editbtns.length; ++i) {
             all_editbtns[i].addEventListener("click", function (e) {
                 mainList.clickEdit(e);
+            });
+        }
+        var all_likebtns = (document.getElementsByClassName("likebtn"));
+        for (var i = 0; i < all_likebtns.length; ++i) {
+            all_likebtns[i].addEventListener("click", function (e) {
+                mainList.clickLike(e);
             });
         }
     };
@@ -405,6 +449,13 @@ var ElementList = /** @class */ (function () {
         btn.innerHTML = "Delete";
         td.appendChild(btn);
         fragment.appendChild(td);
+        td = document.createElement("td");
+        btn = document.createElement("button");
+        btn.classList.add("likebtn");
+        btn.setAttribute("data-value", id);
+        btn.innerHTML = "Like";
+        td.appendChild(btn);
+        fragment.appendChild(td);
         return fragment;
     };
     /**
@@ -417,7 +468,7 @@ var ElementList = /** @class */ (function () {
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("/messages/".concat(id), {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName, "/").concat(id), {
                             // Grab the element from "database"
                             method: "DELETE",
                             headers: {
@@ -429,7 +480,7 @@ var ElementList = /** @class */ (function () {
                                 return Promise.resolve(response.json());
                             }
                             else {
-                                window.alert("The server replied not ok: ".concat(response.status, "\n") +
+                                console.log("The server replied not ok: ".concat(response.status, "\n") +
                                     response.statusText);
                             }
                             return Promise.reject(response);
@@ -440,7 +491,51 @@ var ElementList = /** @class */ (function () {
                         })
                             .catch(function (error) {
                             console.warn("Something went wrong. ", error);
-                            window.alert("Unspecified error");
+                            console.log("Unspecified error");
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        // post AJAX values to console
+        doAjax().then(console.log).catch(console.log);
+    };
+    /**
+     * Ajax function that sends HTTP function to update like count
+     * @param e
+     */
+    ElementList.prototype.clickLike = function (e) {
+        var _this = this;
+        var id = e.target.getAttribute("data-value");
+        var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName, "/").concat(id, "/like"), {
+                            // Grab the element from "database"
+                            method: "PUT",
+                            headers: {
+                                "Content-type": "application/json; charset=UTF-8",
+                            },
+                        })
+                            .then(function (response) {
+                            if (response.ok) {
+                                return Promise.resolve(response.json());
+                            }
+                            else {
+                                console.log("The server replied not ok: ".concat(response.status, "\n") +
+                                    response.statusText);
+                            }
+                            return Promise.reject(response);
+                        })
+                            .then(function (data) {
+                            mainList.refresh();
+                            console.log(data);
+                        })
+                            .catch(function (error) {
+                            console.warn("Something went wrong. ", error);
+                            console.log("Unspecified error");
                         })];
                     case 1:
                         _a.sent();
@@ -453,6 +548,7 @@ var ElementList = /** @class */ (function () {
     };
     /**
      * clickEdit is the code we run in response to a click of a delete button
+     * @param e
      */
     ElementList.prototype.clickEdit = function (e) {
         var _this = this;
@@ -462,7 +558,7 @@ var ElementList = /** @class */ (function () {
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("/messages/".concat(id), {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName, "/").concat(id), {
                             method: "GET",
                             headers: {
                                 "Content-type": "application/json; charset=UTF-8",
@@ -473,7 +569,7 @@ var ElementList = /** @class */ (function () {
                                 return Promise.resolve(response.json());
                             }
                             else {
-                                window.alert("The server replied not ok: ".concat(response.status, "\n") +
+                                console.log("The server replied not ok: ".concat(response.status, "\n") +
                                     response.statusText);
                             }
                             return Promise.reject(response);
@@ -484,7 +580,7 @@ var ElementList = /** @class */ (function () {
                         })
                             .catch(function (error) {
                             console.warn("Something went wrong.", error);
-                            window.alert("Unspecified error");
+                            console.log("Unspecified error");
                         })];
                     case 1:
                         _a.sent();
@@ -497,7 +593,10 @@ var ElementList = /** @class */ (function () {
     };
     return ElementList;
 }());
-// Run some configuration code when the web page loads
+/**
+ * Run some configuration code when the web page loads
+ * @type {function}
+ */
 document.addEventListener("DOMContentLoaded", function () {
     var _a, _b;
     // set up initial UI state
@@ -522,5 +621,16 @@ document.addEventListener("DOMContentLoaded", function () {
     editEntryForm = new EditEntryForm();
     mainList = new ElementList();
     mainList.refresh();
-    window.alert("DOMContentLoaded");
+    console.log("DOMContentLoaded");
 }, false);
+/**
+ * Unhide error message from HTML index for a moment
+ * @returns {HTMLBodyElement}
+ */
+function InvalidContentMsg() {
+    var contentError = document.getElementById("InvalidContent");
+    contentError.style.display = "block";
+    setTimeout(function () {
+        contentError.style.display = "none";
+    }, 2000);
+}

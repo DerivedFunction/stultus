@@ -57,7 +57,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.6.0</version>
         <configuration>
-          <mainClass>edu.lehigh.cse216.del226.backend.App</mainClass>
+          <mainClass>backend.App</mainClass>
         </configuration>
       </plugin>
       <plugin>
@@ -76,11 +76,28 @@
         </descriptorRefs>
         <archive>
             <manifest>
-                <mainClass>edu.lehigh.cse216.del226.backend.App</mainClass>
+                <mainClass>backend.App</mainClass>
             </manifest>
         </archive>
     </configuration>
 </plugin>
+<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <show>private</show>
+          <reportOutputDirectory>./docs</reportOutputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
