@@ -185,7 +185,30 @@ public class App {
     /*
      * Delete route for removing a row from DataStore
      */
-    Spark.delete(FORMAT, deleteWithID(gson, db));
+    Spark.delete(FORMAT, deleteWithID_old(gson, db));
+    /*
+     * Delete route for removing a row from DataStore
+     */
+    Spark.delete(EDIT_FORMAT, deleteWithID(gson, db));
+  }
+
+  /**
+   * Creates the route to handle delete requests
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.deleteOne
+   */
+  private static Route deleteWithID_old(final Gson gson, Database db) {
+    return (request, response) -> {
+      int idx = Integer.parseInt(request.params(ID_PARAM));
+      extractResponse(response);
+      int result = db.deleteRow(idx, 1);
+      String errorType = "unable to delete row " + idx;
+      boolean checkResult = (result == -1);
+      return JSONResponse(gson, errorType, checkResult, null, null);
+    };
   }
 
   /**
@@ -199,8 +222,9 @@ public class App {
   private static Route deleteWithID(final Gson gson, Database db) {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params(ID_PARAM));
+      int userID = Integer.parseInt(request.params(USER_PARAM));
       extractResponse(response);
-      int result = db.deleteRow(idx);
+      int result = db.deleteRow(idx, userID);
       String errorType = "unable to delete row " + idx;
       boolean checkResult = (result == -1);
       return JSONResponse(gson, errorType, checkResult, null, null);
