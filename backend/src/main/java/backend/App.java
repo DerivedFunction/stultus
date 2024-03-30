@@ -53,13 +53,13 @@ public class App {
    */
   private static final String FORMAT = String.format("%s/:%s", CONTEXT, ID_PARAM);
   /**
-   * parameters for netVotes with id in website
+   * parameters for adding a basic message with userid in website
    */
-  private static final String NET_VOTE_FORMAT = String.format("%s/%s", FORMAT, VOTE_CONTEXT);
+  private static final String ADD_FORMAT = String.format("%s/%s/:%s", FORMAT, USER_CONTEXT, USER_PARAM);
   /**
    * parameters for basic voting with userid andid in website
    */
-  private static final String VOTE_FORMAT = String.format("%s/:%s/%s/:%s", NET_VOTE_FORMAT, VOTE_PARAM,
+  private static final String VOTE_FORMAT = String.format("%s/%s/:%s/%s/:%s", FORMAT, VOTE_CONTEXT, VOTE_PARAM,
       USER_CONTEXT, USER_PARAM);
   /**
    * deprecated method: parameters for like in website
@@ -146,8 +146,16 @@ public class App {
      * Reads JSON from body of request and turns it to a
      * SimpleRequest object, extracting the title and msg,
      * and also the object.
+     * 
      */
-    Spark.post(CONTEXT, postIdea(gson, db));
+    Spark.post(CONTEXT, postIdea_old(gson, db));
+    /*
+     * POST route that adds a new element to DataStore.
+     * Reads JSON from body of request and turns it to a
+     * SimpleRequest object, extracting the title and msg,
+     * and also the object.
+     */
+    Spark.post(ADD_FORMAT, postIdea(gson, db));
 
     /*
      * PUT route for updating a row in DataStore. Almost the same
@@ -258,12 +266,34 @@ public class App {
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.insertRow
    */
-  private static Route postIdea(final Gson gson, Database db) {
+  private static Route postIdea_old(final Gson gson, Database db) {
     return (request, response) -> {
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
       // createEntry checks for null title/message (-1)
       int rowsAdded = db.insertRow(req.mTitle, req.mMessage, 1);
+      String errorType = "error performing insertion";
+      boolean checkResult = (rowsAdded <= 0);
+      String message = "" + rowsAdded;
+      return JSONResponse(gson, errorType, checkResult, message, null);
+    };
+  }
+
+  /**
+   * Creates the route to handle put requests with userID
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.insertRow
+   */
+  private static Route postIdea(final Gson gson, Database db) {
+    return (request, response) -> {
+      int id = Integer.parseInt(request.params(USER_PARAM));
+      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+      extractResponse(response);
+      // createEntry checks for null title/message (-1)
+      int rowsAdded = db.insertRow(req.mTitle, req.mMessage, id);
       String errorType = "error performing insertion";
       boolean checkResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
