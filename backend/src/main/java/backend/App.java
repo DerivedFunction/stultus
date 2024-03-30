@@ -270,26 +270,6 @@ public class App {
   }
 
   /**
-   * Returns JSON response on error or OK
-   * 
-   * @param gson        GSON to convert to JSON
-   * @param errorType   Error Message
-   * @param checkResult Evaluation of result
-   * @param message     mMessage for JSON on OK
-   * @param data        mData for JSON on OK
-   * @return JSON response
-   */
-  private static Object JSONResponse(final Gson gson, String errorType, boolean checkResult, String message,
-      Object data) {
-    if (checkResult) {
-      return gson.toJson(new StructuredResponse(
-          "error", errorType, null));
-    } else {
-      return gson.toJson(new StructuredResponse("ok", message, data));
-    }
-  }
-
-  /**
    * Creates the route to handle get requests that do not give a specific id
    * 
    * @param gson Gson object that handles shared serialization
@@ -333,6 +313,26 @@ public class App {
   private static void extractResponse(Response response) {
     response.status(200);
     response.type("application/json");
+  }
+
+  /**
+   * Returns JSON response on error or OK
+   * 
+   * @param gson        GSON to convert to JSON
+   * @param errorType   Error Message
+   * @param checkResult Evaluation of result
+   * @param message     mMessage for JSON on OK
+   * @param data        mData for JSON on OK
+   * @return JSON response
+   */
+  private static Object JSONResponse(final Gson gson, String errorType, boolean checkResult, String message,
+      Object data) {
+    if (checkResult) {
+      return gson.toJson(new StructuredResponse(
+          "error", errorType, null));
+    } else {
+      return gson.toJson(new StructuredResponse("ok", message, data));
+    }
   }
 
   /**
