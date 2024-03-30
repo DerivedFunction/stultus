@@ -55,7 +55,11 @@ public class App {
   /**
    * parameters for adding a basic message with userid in website
    */
-  private static final String FORMAT_WITH_USER = String.format("%s/%s/:%s", FORMAT, USER_CONTEXT, USER_PARAM);
+  private static final String ADD_FORMAT = String.format("%s/%s/:%s", CONTEXT, USER_CONTEXT, USER_PARAM);
+  /**
+   * parameters for editing a basic message with userid in website
+   */
+  private static final String EDIT_FORMAT = String.format("%s/%s/:%s", FORMAT, USER_CONTEXT, USER_PARAM);
   /**
    * parameters for basic voting with userid andid in website
    */
@@ -155,7 +159,7 @@ public class App {
      * SimpleRequest object, extracting the title and msg,
      * and also the object.
      */
-    Spark.post(FORMAT_WITH_USER, postIdea(gson, db));
+    Spark.post(ADD_FORMAT, postIdea(gson, db));
 
     /*
      * PUT route for updating a row in DataStore. Almost the same
@@ -166,7 +170,7 @@ public class App {
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
      */
-    Spark.put(FORMAT_WITH_USER, putWithID(gson, db));
+    Spark.put(EDIT_FORMAT, putWithID(gson, db));
 
     /*
      * PUT route for voting
