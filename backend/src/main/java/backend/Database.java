@@ -100,6 +100,11 @@ public class Database {
     int numLikes;
 
     /**
+     * The userID on the object
+     */
+    int mUserID;
+
+    /**
      * Construct a RowData object by providing values for its fields
      * 
      * @param id      The ID of post
@@ -112,6 +117,24 @@ public class Database {
       mSubject = subject;
       mMessage = message;
       numLikes = likes;
+      mUserID = 1;
+    }
+
+    /**
+     * Construct a RowData object by providing values for its fields
+     * 
+     * @param id      The ID of post
+     * @param subject The subject of post
+     * @param message The message of post
+     * @param likes   (Deprecated method)
+     * @param userID  The author's id
+     */
+    public RowData(int id, String subject, String message, int likes, int userID) {
+      mId = id;
+      mSubject = subject;
+      mMessage = message;
+      numLikes = likes;
+      mUserID = userID;
     }
 
     @Override
@@ -298,7 +321,7 @@ public class Database {
       while (rs.next()) {
         int id = rs.getInt("id");
         res.add(new RowData(id, rs.getString("subject"),
-            rs.getString("message"), totalVotes(id) + rs.getInt("likes")));
+            rs.getString("message"), totalVotes(id) + rs.getInt("likes"), rs.getInt("userid")));
       }
       rs.close();
       return res;
@@ -322,7 +345,7 @@ public class Database {
       if (rs.next()) {
         int postID = rs.getInt("id");
         res = new RowData(postID, rs.getString("subject"),
-            rs.getString("message"), totalVotes(postID) + rs.getInt("likes"));
+            rs.getString("message"), totalVotes(postID) + rs.getInt("likes"), rs.getInt("userid"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -357,8 +380,12 @@ public class Database {
    *
    * @return the number of rows updated, -1 on error
    */
-  int updateOne(int id, String title, String message) {
+  int updateOne(int id, String title, String message, int userID) {
     int res = -1;
+    RowData data = selectOne(id);
+    // Wrong user cannot update post
+    if (data.mUserID != userID)
+      return res;
     try {
       mUpdateOne.setString(1, title);
       mUpdateOne.setString(2, message);
