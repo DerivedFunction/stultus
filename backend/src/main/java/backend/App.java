@@ -46,7 +46,7 @@ public class App {
   /**
    * parameters for user in website
    */
-  private static final String USER_PARAM = "userInfo";
+  private static final String USER_PARAM = "userID";
 
   /**
    * parameters for basic message with id in website
