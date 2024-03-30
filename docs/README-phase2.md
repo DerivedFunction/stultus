@@ -135,6 +135,7 @@ As an admin
 I want to be able to prepopulate tables
 To allow information to persist across transfers
 Manual or Automated Testing of prepared statments to post to all tables
+
 ## Description of Tests (Automated)
 
 ### Backend
@@ -164,15 +165,23 @@ May wish to add edge case testing (such as overlength messages or empty messages
 
 ## Routes and details
 
-| Purpose                  | Route                                       | Verb   | Purpose                     | Structure                                                     |
-| ------------------------ | ------------------------------------------- | ------ | --------------------------- | ------------------------------------------------------------- |
-| Show all messages        | `/messages`                                 | GET    | Return post data to display | JSON `{ArrayList<messages>}`                                  |
-| Show one post            | `/messages/id`                              | GET    | Return single post data     | JSON `{title, message, numLikes}`                             |
-| Create new Post          | `/messages`                                 | POST   | Creates a post              | Takes `{title, message}`, all other fields handled by backend |
-| Edit content of a post   | `/messages/id`                              | PUT    | Edits a post                | Takes `{title, message}` and backend handles updates          |
-| Delete a post            | `/messages/id`                              | DELETE | Deletes a post              | Returns `status`                                              |
-| Like a post              | `/messages/id/vote/voteValue/user/userInfo` | PUT    | Vote on a post              | Returns `1` on success                                        |
-| Like a post (deprecated) | `/messages/id/like`                         | PUT    | Likes a post                | Returns new number of `numLikes`                              |
+| Purpose                | Route                                     | Verb   | Purpose                     | Structure                                                             |
+| ---------------------- | ----------------------------------------- | ------ | --------------------------- | --------------------------------------------------------------------- |
+| Show all messages      | `/messages`                               | GET    | Return post data to display | JSON `{ArrayList<messages>}`                                          |
+| Show one post          | `/messages/id`                            | GET    | Return single post data     | JSON `{title, message, numLikes, userID}`                             |
+| Create new Post        | `/messages/user/userID`                   | POST   | Creates a post              | Takes `{title, message, userID}`, all other fields handled by backend |
+| Edit content of a post | `/messages/id/user/userID`                | PUT    | Edits a post                | Takes `{title, message, userID}` and backend handles updates          |
+| Delete a post          | `/messages/id/user/userID`                | DELETE | Deletes a post              | Returns `status`                                                      |
+| Like a post            | `/messages/id/vote/voteValue/user/userID` | PUT    | Vote on a post              | Returns `1` on success                                                |
+
+### Phase 1 methods: Outdated but not removed yet
+
+| Purpose                  | Route               | Verb   | Purpose        | Structure                                                     |
+| ------------------------ | ------------------- | ------ | -------------- | ------------------------------------------------------------- |
+| Like a post (deprecated) | `/messages/id/like` | PUT    | Likes a post   | Returns new number of `numLikes`                              |
+| Create new Post          | `/messages`         | POST   | Creates a post | Takes `{title, message}`, all other fields handled by backend |
+| Edit content of a post   | `/messages/id`      | PUT    | Edits a post   | Takes `{title, message}` and backend handles updates          |
+| Delete a post            | `/messages/id`      | DELETE | Deletes a post | Returns `status`                                              |
 
 ## Documentation for Branches
 
