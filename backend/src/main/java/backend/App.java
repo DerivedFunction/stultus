@@ -53,11 +53,11 @@ public class App {
    */
   private static final String FORMAT = String.format("%s/:%s", CONTEXT, ID_PARAM);
   /**
-   * parameters for basic message with id in website
+   * parameters for netVotes with id in website
    */
   private static final String NET_VOTE_FORMAT = String.format("%s/%s", FORMAT, VOTE_CONTEXT);
   /**
-   * parameters for basic message with id in website
+   * parameters for basic voting with userid andid in website
    */
   private static final String VOTE_FORMAT = String.format("%s/:%s/%s/:%s", NET_VOTE_FORMAT, VOTE_PARAM,
       USER_CONTEXT, USER_PARAM);
@@ -263,7 +263,7 @@ public class App {
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
       // createEntry checks for null title/message (-1)
-      int rowsAdded = db.insertRow(req.mTitle, req.mMessage);
+      int rowsAdded = db.insertRow(req.mTitle, req.mMessage, 1);
       String errorType = "error performing insertion";
       boolean checkResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
