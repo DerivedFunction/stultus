@@ -359,8 +359,12 @@ public class Database {
    * @param id The id of the row to delete
    * @return the number of rows deleted, -1 if error
    */
-  int deleteRow(int id) {
+  int deleteRow(int id, int userID) {
     int res = -1;
+    RowData data = selectOne(id);
+    // Wrong user cannot update post
+    if (data.mUserID != userID)
+      return res;
     try {
       mDeleteOne.setInt(1, id);
       res = mDeleteOne.executeUpdate();
