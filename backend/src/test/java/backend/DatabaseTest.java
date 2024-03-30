@@ -160,7 +160,7 @@ public class DatabaseTest extends TestCase {
           int id = row.mId;
           String subject = "Subject" + rngString();
           String message = "Message" + rngString();
-          db.updateOne(id, subject, message);
+          db.updateOne(id, subject, message, 1);
           RowData changed = db.selectOne(id);
           assertEquals(changed.mMessage, message);
           assertEquals(changed.mSubject, subject);
