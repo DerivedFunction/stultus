@@ -17,6 +17,7 @@ public class DatabaseTest extends TestCase {
     ArrayList<String> ret = new ArrayList<>();
     ret.add("tblTest");
     ret.add("likeTest");
+    ret.add("userTest");
     return ret;
   }
 
@@ -141,7 +142,7 @@ public class DatabaseTest extends TestCase {
       String message = "Message" + rngString();
       sub.add(new RowData(i, subject, message, 0));
       if (isInsert)
-        assertTrue(db.insertRow(subject, message) == 1); // Assert and new element
+        assertTrue(db.insertRow(subject, message, 1) == 1); // Assert and new element
     }
     return sub;
   }
