@@ -204,9 +204,9 @@ public class Database {
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM " + tableName + " WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO  " + tableName + "  VALUES (default, ?, ?,default)");
+          "INSERT INTO  " + tableName + "  VALUES (default, ?, ?,default,?)");
       db.mSelectAll = db.mConnection.prepareStatement(
-          "SELECT id, subject, message, likes FROM  " + tableName + "  ORDER BY id DESC");
+          "SELECT * FROM  " + tableName + "  ORDER BY id DESC");
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from  " + tableName + "  WHERE id=?");
       db.mUpdateOne = db.mConnection.prepareStatement(
           "UPDATE  " + tableName + "  SET subject=?, message=? WHERE id=?");
@@ -273,11 +273,12 @@ public class Database {
    *
    * @return The number of rows that were inserted
    */
-  int insertRow(String subject, String message) {
+  int insertRow(String subject, String message, int userid) {
     int count = 0;
     try {
       mInsertOne.setString(1, subject);
       mInsertOne.setString(2, message);
+      mInsertOne.setInt(3, userid);
       count += mInsertOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
