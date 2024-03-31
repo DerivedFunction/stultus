@@ -1,6 +1,7 @@
 package backend;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.*;
@@ -65,6 +66,11 @@ public class App {
    */
   private static final String VOTE_FORMAT = String.format("%s/%s/:%s/%s/:%s", FORMAT, VOTE_CONTEXT, VOTE_PARAM,
       USER_CONTEXT, USER_PARAM);
+
+  /**
+   * The redirect parameter
+   */
+  private static final String AUTH_FORMAT = "/authenticate";
   /**
    * deprecated method: parameters for like in website
    */
@@ -83,6 +89,7 @@ public class App {
     ArrayList<String> ret = new ArrayList<>();
     ret.add("tblData");
     ret.add("likeData");
+    ret.add("userData");
     return ret;
   }
 
@@ -160,6 +167,8 @@ public class App {
      * and also the object.
      */
     Spark.post(ADD_FORMAT, postIdea(gson, db));
+
+    Spark.post(AUTH_FORMAT, authenticateToken(gson, db));
 
     /*
      * PUT route for updating a row in DataStore. Almost the same
@@ -394,6 +403,33 @@ public class App {
       boolean checkResult = (data == null);
       String message = null;
       return JSONResponse(gson, errorType, checkResult, message, data);
+    };
+  }
+
+  /**
+   * Authenticates Token via `Oauth.java`
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json behavior
+   * 
+   */
+  private static Route authenticateToken(final Gson gson, Database db) {
+    return (req, res) -> {
+      String idToken = req.queryParams("credential"); // Assuming the ID token is sent as a query parameter
+      boolean verified = idToken != null && Oauth.verifyToken(idToken);
+      String email = "null";
+      if (verified) {
+        // Token is valid, extract email from payload
+        email = Oauth.getEmail(idToken);
+      } else {
+        // Token is invalid or missing
+        res.status(401); // Unauthorized status code
+
+      }
+      String errorType = "Invalid or missing ID token";
+      boolean checkResult = !verified;
+      return JSONResponse(gson, errorType, checkResult, null, email);
     };
   }
 
