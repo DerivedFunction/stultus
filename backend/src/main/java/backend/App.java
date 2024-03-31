@@ -421,7 +421,7 @@ public class App {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
         name = Oauth.getName(idToken);
-        res.redirect("/index.html");
+        // res.redirect("/index.html");
       } else {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
