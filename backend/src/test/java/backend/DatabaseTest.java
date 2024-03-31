@@ -1,6 +1,5 @@
 package backend;
 
-import backend.Database.RowData;
 import java.util.ArrayList;
 import java.util.Random;
 import junit.framework.Test;
@@ -53,12 +52,12 @@ public class DatabaseTest extends TestCase {
    * Tests that inserts work properly (cleanup coupled with delete)
    */
   public static void testInsert() {
-    ArrayList<RowData> sub = addElementstoDB(true);
+    ArrayList<PostData> sub = addElementstoDB(true);
     // Check if database contains all elements we just added
-    ArrayList<RowData> res = db.selectAll();
+    ArrayList<PostData> res = db.selectAll();
     assertTrue(res.containsAll(sub));
-    for (RowData row : res) {
-      for (RowData su : sub) {
+    for (PostData row : res) {
+      for (PostData su : sub) {
         if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
           db.deleteRow(row.mId, 1);
         }
@@ -70,11 +69,11 @@ public class DatabaseTest extends TestCase {
    * Tests for deletion (relies on insert for test articles)
    */
   public static void testDelete() {
-    ArrayList<RowData> sub = addElementstoDB(false);
+    ArrayList<PostData> sub = addElementstoDB(false);
     // Check if database contains all elements we just added
-    ArrayList<RowData> res = db.selectAll();
-    for (RowData row : res) {
-      for (RowData su : sub) {
+    ArrayList<PostData> res = db.selectAll();
+    for (PostData row : res) {
+      for (PostData su : sub) {
         if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
           int success = db.deleteRow(row.mId, 1);
           assertEquals(success, 1);
@@ -89,13 +88,13 @@ public class DatabaseTest extends TestCase {
    */
   public static void testSelects() {
 
-    ArrayList<RowData> sub = addElementstoDB(false);
+    ArrayList<PostData> sub = addElementstoDB(false);
     // Check if database contains all elements we just added
-    ArrayList<RowData> res = db.selectAll();
-    for (RowData row : res) {
-      for (RowData su : sub) {
+    ArrayList<PostData> res = db.selectAll();
+    for (PostData row : res) {
+      for (PostData su : sub) {
         if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
-          RowData select = db.selectOne(row.mId);
+          PostData select = db.selectOne(row.mId);
           assertTrue(select.mId == row.mId);
           assertTrue(select.mMessage == row.mMessage);
           assertTrue(select.mSubject == row.mSubject);
@@ -110,16 +109,16 @@ public class DatabaseTest extends TestCase {
    * selects)
    */
   public static void testLikes() {
-    ArrayList<RowData> sub = addElementstoDB(false);
+    ArrayList<PostData> sub = addElementstoDB(false);
     ;
     // Check if database contains all elements we just added
-    ArrayList<RowData> res = db.selectAll();
-    for (RowData row : res) {
-      for (RowData su : sub) {
+    ArrayList<PostData> res = db.selectAll();
+    for (PostData row : res) {
+      for (PostData su : sub) {
         if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
           int likeStatus = row.numLikes;
           db.toggleLike(row.mId);
-          RowData changed = db.selectOne(row.mId);
+          PostData changed = db.selectOne(row.mId);
           assertTrue(changed.numLikes == likeStatus + 1);
           db.toggleLike(row.mId);
           changed = db.selectOne(row.mId);
@@ -135,12 +134,12 @@ public class DatabaseTest extends TestCase {
    * 
    * @param sub the ArrayList to add elements
    */
-  private static ArrayList<RowData> addElementstoDB(boolean isInsert) {
-    ArrayList<RowData> sub = new ArrayList<>();
+  private static ArrayList<PostData> addElementstoDB(boolean isInsert) {
+    ArrayList<PostData> sub = new ArrayList<>();
     for (int i = 0; i < num; i++) {
       String subject = "Subject" + rngString();
       String message = "Message" + rngString();
-      sub.add(new RowData(i, subject, message, 0));
+      sub.add(new PostData(i, subject, message, 0));
       if (isInsert)
         assertTrue(db.insertRow(subject, message, 1) == 1); // Assert and new element
     }
@@ -151,17 +150,17 @@ public class DatabaseTest extends TestCase {
    * test updates (relies on insert and select)
    */
   public static void testUpdates() {
-    ArrayList<RowData> sub = addElementstoDB(false);
+    ArrayList<PostData> sub = addElementstoDB(false);
     // Check if database contains all elements we just added
-    ArrayList<RowData> res = db.selectAll();
-    for (RowData row : res) {
-      for (RowData su : sub) {
+    ArrayList<PostData> res = db.selectAll();
+    for (PostData row : res) {
+      for (PostData su : sub) {
         if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
           int id = row.mId;
           String subject = "Subject" + rngString();
           String message = "Message" + rngString();
           db.updateOne(id, subject, message, 1);
-          RowData changed = db.selectOne(id);
+          PostData changed = db.selectOne(id);
           assertEquals(changed.mMessage, message);
           assertEquals(changed.mSubject, subject);
         }

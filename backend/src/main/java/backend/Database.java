@@ -71,82 +71,6 @@ public class Database {
   private PreparedStatement mDeleteVote;
 
   /**
-   * In the context of the database, RowData represents the data
-   * we'd see in a row.
-   *
-   * We make RowData a static class of Database because it is only
-   * an abstract representation of a row of the database. RowData
-   * and Database are connected: Both gets updated if one changes.
-   */
-  public static class RowData {
-    /**
-     * The ID of this row of the database
-     */
-    int mId;
-
-    /**
-     * The subject stored in this row
-     */
-    String mSubject;
-
-    /**
-     * The message stored in this row
-     */
-    String mMessage;
-
-    /**
-     * The number of likes on the object
-     */
-    int numLikes;
-
-    /**
-     * The userID on the object
-     */
-    int mUserID;
-
-    /**
-     * Construct a RowData object by providing values for its fields
-     * 
-     * @param id      The ID of post
-     * @param subject The subject of post
-     * @param message The message of post
-     * @param likes   (Deprecated method)
-     */
-    public RowData(int id, String subject, String message, int likes) {
-      mId = id;
-      mSubject = subject;
-      mMessage = message;
-      numLikes = likes;
-      mUserID = 1;
-    }
-
-    /**
-     * Construct a RowData object by providing values for its fields
-     * 
-     * @param id      The ID of post
-     * @param subject The subject of post
-     * @param message The message of post
-     * @param likes   (Deprecated method)
-     * @param userID  The author's id
-     */
-    public RowData(int id, String subject, String message, int likes, int userID) {
-      mId = id;
-      mSubject = subject;
-      mMessage = message;
-      numLikes = likes;
-      mUserID = userID;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-      RowData obj = (RowData) other;
-      if (!this.mSubject.equals(obj.mSubject))
-        return false;
-      return this.mMessage.equals(obj.mMessage);
-    }
-  }
-
-  /**
    * Database constructor is private
    */
   private Database() {
@@ -314,13 +238,13 @@ public class Database {
    * 
    * @return All rows, as an ArrayList
    */
-  ArrayList<RowData> selectAll() {
-    ArrayList<RowData> res = new ArrayList<>();
+  ArrayList<PostData> selectAll() {
+    ArrayList<PostData> res = new ArrayList<>();
     try {
       ResultSet rs = mSelectAll.executeQuery();
       while (rs.next()) {
         int id = rs.getInt("id");
-        res.add(new RowData(id, rs.getString("subject"),
+        res.add(new PostData(id, rs.getString("subject"),
             rs.getString("message"), totalVotes(id) + rs.getInt("likes"), rs.getInt("userid")));
       }
       rs.close();
@@ -337,14 +261,14 @@ public class Database {
    * @param id The id being requested
    * @return the data for the requested row, null otherwise
    */
-  RowData selectOne(int id) {
-    RowData res = null;
+  PostData selectOne(int id) {
+    PostData res = null;
     try {
       mSelectOne.setInt(1, id);
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
         int postID = rs.getInt("id");
-        res = new RowData(postID, rs.getString("subject"),
+        res = new PostData(postID, rs.getString("subject"),
             rs.getString("message"), totalVotes(postID) + rs.getInt("likes"), rs.getInt("userid"));
       }
     } catch (SQLException e) {
@@ -362,7 +286,7 @@ public class Database {
    */
   int deleteRow(int id, int userID) {
     int res = -1;
-    RowData data = selectOne(id);
+    PostData data = selectOne(id);
     // Wrong user cannot update post
     if (data.mUserID != userID)
       return res;
@@ -387,7 +311,7 @@ public class Database {
    */
   int updateOne(int id, String title, String message, int userID) {
     int res = -1;
-    RowData data = selectOne(id);
+    PostData data = selectOne(id);
     // Wrong user cannot update post
     if (data.mUserID != userID)
       return res;

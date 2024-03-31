@@ -389,7 +389,7 @@ public class App {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params(ID_PARAM));
       extractResponse(response);
-      Database.RowData data = db.selectOne(idx);
+      PostData data = db.selectOne(idx);
       String errorType = idx + " not found";
       boolean checkResult = (data == null);
       String message = null;
