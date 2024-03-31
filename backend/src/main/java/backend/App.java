@@ -1,15 +1,12 @@
 package backend;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.*;
 import spark.Response;
 import spark.Route;
 import spark.Spark;
-
-import backend.Oauth;
 
 /**
  * Default backend App
@@ -418,10 +415,13 @@ public class App {
     return (req, res) -> {
       String idToken = req.queryParams("credential"); // Assuming the ID token is sent as a query parameter
       boolean verified = idToken != null && Oauth.verifyToken(idToken);
-      String email = "null";
+      String email = null;
+      String name = null;
       if (verified) {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
+        name = Oauth.getName(idToken);
+        res.redirect("/index.html");
       } else {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
@@ -429,7 +429,8 @@ public class App {
       }
       String errorType = "Invalid or missing ID token";
       boolean checkResult = !verified;
-      return JSONResponse(gson, errorType, checkResult, null, email);
+      UserData user = new UserData(0, name, email);
+      return JSONResponse(gson, errorType, checkResult, null, user);
     };
   }
 
