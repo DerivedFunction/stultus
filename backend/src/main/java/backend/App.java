@@ -214,8 +214,8 @@ public class App {
       extractResponse(response);
       int result = db.deleteRow(idx, 1);
       String errorType = "unable to delete row " + idx;
-      boolean checkResult = (result == -1);
-      return JSONResponse(gson, errorType, checkResult, null, null);
+      boolean errResult = (result == -1);
+      return JSONResponse(gson, errorType, errResult, null, null);
     };
   }
 
@@ -234,8 +234,8 @@ public class App {
       extractResponse(response);
       int result = db.deleteRow(idx, userID);
       String errorType = "unable to delete row " + idx;
-      boolean checkResult = (result == -1);
-      return JSONResponse(gson, errorType, checkResult, null, null);
+      boolean errResult = (result == -1);
+      return JSONResponse(gson, errorType, errResult, null, null);
     };
   }
 
@@ -256,8 +256,8 @@ public class App {
       extractResponse(response);
       Integer result = db.updateOne(idx, req.mTitle, req.mMessage, 1);
       String errorType = "unable to update row " + idx;
-      boolean checkResult = (result < 1);
-      return JSONResponse(gson, errorType, checkResult, null, result);
+      boolean errResult = (result < 1);
+      return JSONResponse(gson, errorType, errResult, null, result);
     };
   }
 
@@ -277,8 +277,8 @@ public class App {
       extractResponse(response);
       Integer result = db.updateOne(idx, req.mTitle, req.mMessage, userID);
       String errorType = "unable to update row " + idx;
-      boolean checkResult = (result < 1);
-      return JSONResponse(gson, errorType, checkResult, null, result);
+      boolean errResult = (result < 1);
+      return JSONResponse(gson, errorType, errResult, null, result);
     };
   }
 
@@ -297,8 +297,8 @@ public class App {
       int idx = Integer.parseInt(request.params(ID_PARAM));
       int result = db.toggleLike(idx);
       String errorType = "error performing like";
-      boolean checkResult = (result == -1);
-      return JSONResponse(gson, errorType, checkResult, null, null);
+      boolean errResult = (result == -1);
+      return JSONResponse(gson, errorType, errResult, null, null);
     };
   }
 
@@ -317,8 +317,8 @@ public class App {
       int user = Integer.parseInt(request.params(USER_PARAM));
       int result = db.toggleVote(idx, vote, user);
       String errorType = "error updating vote: post id=" + idx + " vote=" + vote;
-      boolean checkResult = (result == -1);
-      return JSONResponse(gson, errorType, checkResult, null, null);
+      boolean errResult = (result == -1);
+      return JSONResponse(gson, errorType, errResult, null, null);
     };
   }
 
@@ -339,9 +339,9 @@ public class App {
       // createEntry checks for null title/message (-1)
       int rowsAdded = db.insertRow(req.mTitle, req.mMessage, 1);
       String errorType = "error performing insertion";
-      boolean checkResult = (rowsAdded <= 0);
+      boolean errResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
-      return JSONResponse(gson, errorType, checkResult, message, null);
+      return JSONResponse(gson, errorType, errResult, message, null);
     };
   }
 
@@ -361,9 +361,9 @@ public class App {
       // createEntry checks for null title/message (-1)
       int rowsAdded = db.insertRow(req.mTitle, req.mMessage, id);
       String errorType = "error performing insertion";
-      boolean checkResult = (rowsAdded <= 0);
+      boolean errResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
-      return JSONResponse(gson, errorType, checkResult, message, null);
+      return JSONResponse(gson, errorType, errResult, message, null);
     };
   }
 
@@ -397,9 +397,9 @@ public class App {
       extractResponse(response);
       PostData data = db.selectOne(idx);
       String errorType = idx + " not found";
-      boolean checkResult = (data == null);
+      boolean errResult = (data == null);
       String message = null;
-      return JSONResponse(gson, errorType, checkResult, message, data);
+      return JSONResponse(gson, errorType, errResult, message, data);
     };
   }
 
@@ -428,9 +428,9 @@ public class App {
 
       }
       String errorType = "Invalid or missing ID token";
-      boolean checkResult = !verified;
+      boolean errResult = !verified;
       UserData user = new UserData(0, name, email);
-      return JSONResponse(gson, errorType, checkResult, null, user);
+      return JSONResponse(gson, errorType, errResult, null, user);
     };
   }
 
@@ -447,18 +447,18 @@ public class App {
   /**
    * Returns JSON response on error or OK
    * 
-   * @param gson        GSON to convert to JSON
-   * @param errorType   Error Message
-   * @param checkResult Evaluation of result
-   * @param message     mMessage for JSON on OK
-   * @param data        mData for JSON on OK
+   * @param gson      GSON to convert to JSON
+   * @param errorType Error Message
+   * @param errResult Evaluation of result
+   * @param message   mMessage for JSON on OK
+   * @param data      mData for JSON on OK
    * @return JSON response
    */
-  private static Object JSONResponse(final Gson gson, String errorType, boolean checkResult, String message,
+  private static Object JSONResponse(final Gson gson, String errorType, boolean errResult, String message,
       Object data) {
-    if (checkResult) {
+    if (errResult) {
       return gson.toJson(new StructuredResponse(
-          "error", errorType, null));
+          "error", errorType, data));
     } else {
       return gson.toJson(new StructuredResponse("ok", message, data));
     }
