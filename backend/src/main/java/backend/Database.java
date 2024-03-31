@@ -293,7 +293,7 @@ public class Database {
    *
    * @param subject The subject for this new row
    * @param message The message body for this new row
-   *
+   * @param userid  The userID of author
    * @return The number of rows that were inserted
    */
   int insertRow(String subject, String message, int userid) {
@@ -356,7 +356,8 @@ public class Database {
   /**
    * Delete a row by ID
    * 
-   * @param id The id of the row to delete
+   * @param id     The id of the row to delete
+   * @param userID The id of user wanting to delete it
    * @return the number of rows deleted, -1 if error
    */
   int deleteRow(int id, int userID) {
@@ -381,7 +382,7 @@ public class Database {
    * @param id      The id of the row to update
    * @param title   The title of the message
    * @param message The new msg contents
-   *
+   * @param userID  The id of user wanting to update it
    * @return the number of rows updated, -1 on error
    */
   int updateOne(int id, String title, String message, int userID) {
