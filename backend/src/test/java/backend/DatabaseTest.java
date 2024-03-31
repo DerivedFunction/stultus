@@ -22,6 +22,7 @@ public class DatabaseTest extends TestCase {
 
   static Database db = App.getDatabaseConnection(dbTable);
   static int num = App.getIntFromEnv("NUM_TESTS", 2);
+  static int USERID = 2;
 
   /**
    * Create the test case
@@ -59,7 +60,7 @@ public class DatabaseTest extends TestCase {
     for (PostData row : res) {
       for (PostData su : sub) {
         if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
-          db.deleteRow(row.mId, 1);
+          db.deleteRow(row.mId, USERID);
         }
       }
     }
@@ -75,8 +76,8 @@ public class DatabaseTest extends TestCase {
     for (PostData row : res) {
       for (PostData su : sub) {
         if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
-          int success = db.deleteRow(row.mId, 1);
-          assertEquals(success, 1);
+          int success = db.deleteRow(row.mId, USERID);
+          assertEquals(success, USERID);
         }
       }
     }
@@ -98,7 +99,7 @@ public class DatabaseTest extends TestCase {
           assertTrue(select.mId == row.mId);
           assertTrue(select.mMessage == row.mMessage);
           assertTrue(select.mSubject == row.mSubject);
-          db.deleteRow(select.mId, 1);
+          db.deleteRow(select.mId, USERID);
         }
       }
     }
@@ -123,7 +124,7 @@ public class DatabaseTest extends TestCase {
           db.toggleLike(row.mId);
           changed = db.selectOne(row.mId);
           assertTrue(changed.numLikes == likeStatus - 1);
-          db.deleteRow(row.mId, 1);
+          db.deleteRow(row.mId, USERID);
         }
       }
     }
@@ -141,7 +142,7 @@ public class DatabaseTest extends TestCase {
       String message = "Message" + rngString();
       sub.add(new PostData(i, subject, message, 0));
       if (isInsert)
-        assertTrue(db.insertRow(subject, message, 1) == 1); // Assert and new element
+        assertTrue(db.insertRow(subject, message, USERID) == 1); // Assert and new element
     }
     return sub;
   }
@@ -159,12 +160,54 @@ public class DatabaseTest extends TestCase {
           int id = row.mId;
           String subject = "Subject" + rngString();
           String message = "Message" + rngString();
-          db.updateOne(id, subject, message, 1);
+          db.updateOne(id, subject, message, USERID);
           PostData changed = db.selectOne(id);
           assertEquals(changed.mMessage, message);
           assertEquals(changed.mSubject, subject);
         }
       }
     }
+  }
+
+  /**
+   * Test user creation
+   */
+  public static void testUser() {
+    String email = rngString() + "@example.com";
+    String username = "test account";
+    UserData test = new UserData(0, username, email);
+    // First time it works
+    assertEquals(db.insertUser(username, email), 1);
+    // Second time it doesn't
+    assertEquals(db.insertUser(username, email), 0);
+    // We can delete it
+    assertEquals(db.deleteUser(db.findUser(email)), 1);
+  }
+
+  /**
+   * Tests if we can update a user
+   */
+  public static void testUpdateUser() {
+    UserData test = createUser();
+    String email = test.mEmail;
+    String username = test.mUsername;
+    int gender = test.mGender;
+    String so = test.mSO;
+    int userID = db.findUser(email);
+    db.updateUser(email, "a", gender + 1, "a");
+    test = db.getUserFull(userID);
+    assertFalse(email == test.mEmail);
+    assertFalse(username == test.mUsername);
+    assertFalse(gender == test.mGender);
+    assertFalse(so == test.mSO);
+    db.deleteUser(userID);
+  }
+
+  private static UserData createUser() {
+    String email = rngString() + "@example.com";
+    String username = "test account";
+    UserData test = new UserData(0, username, email);
+    db.insertUser(username, email);
+    return test;
   }
 }
