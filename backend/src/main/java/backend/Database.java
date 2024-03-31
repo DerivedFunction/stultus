@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.eclipse.jetty.server.Authentication.User;
+
 /**
  * SQL Database for our App
  */
@@ -467,7 +469,7 @@ public class Database {
    * @param email Email to check
    * @return 1 if it exists
    */
-  int findUser(String email) {
+  boolean findUser(String email) {
     int res = 0;
     try {
       mFindUser.setString(1, email);
@@ -478,6 +480,50 @@ public class Database {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+    }
+    return res > 0;
+  }
+
+  /**
+   * Gets simple user information from email
+   * 
+   * @param email Gets email
+   * @return UserData of id, username, and email
+   */
+  UserData getUserSimple(String email) {
+    UserData res = null;
+    boolean exist = findUser(email);
+    if (exist) {
+      try {
+        mGetUserSimple.setString(1, email);
+        ResultSet rs = mGetUserSimple.executeQuery();
+        res = new UserData(rs.getInt("id"), rs.getString("username"), rs.getString("email"));
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return res;
+  }
+
+  /**
+   * Gets full user information from email
+   * 
+   * @param email Gets email
+   * @return UserData of id, username, email, gender, and SO)
+   */
+  UserData getUserFull(String email) {
+    UserData res = null;
+    boolean exist = findUser(email);
+    if (exist) {
+      try {
+        mGetUserSimple.setString(1, email);
+        ResultSet rs = mGetUserSimple.executeQuery();
+        res = new UserData(rs.getInt("id"), rs.getString("username"),
+            rs.getString("email"), rs.getInt("gender"),
+            rs.getString("so"));
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return res;
   }
