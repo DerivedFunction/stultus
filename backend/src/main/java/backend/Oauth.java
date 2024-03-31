@@ -11,6 +11,9 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 
+/**
+ * The Oauth 2.0 implementation from sample code
+ */
 public class Oauth {
 
     /**
