@@ -198,7 +198,7 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @deprecated In favor of deleting with userID verification
-   *             {@link #deleteWithID(gson, db)}
+   *             {@link #deleteWithID(Gson, Database)}
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.deleteOne
    */
@@ -239,7 +239,7 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @deprecated In favor of editing with userID verification
-   *             {@link #putWithID(gson, db)}
+   *             {@link #putWithID(Gson, Database)}
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.updatedOne
    */
@@ -280,7 +280,7 @@ public class App {
    * Creates the route to handle like changes
    * 
    * @deprecated As of Sprint 8, this method is deprecated in favor of
-   *             {@link #putVote(gson, db)}
+   *             {@link #putVote(Gson, Database)}
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
@@ -322,7 +322,7 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @deprecated In favor of adding a post with userID verification
-   *             {@link #postIdea(gson, db)}
+   *             {@link #postIdea(Gson, Database)}
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.insertRow
    */

@@ -406,7 +406,7 @@ public class Database {
    * Add a like to a row in the database
    * 
    * @deprecated As of sprint 8, this feature has been deprecated in favor of
-   *             {@link #toggleVote(id, vote, userID)}
+   *             {@link #toggleVote(int, int, int)}
    * @param id The id of the row to add the like
    * @return the number of rows updated
    */
