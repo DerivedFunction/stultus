@@ -1,6 +1,5 @@
 # Phase 2
 
-
 [Click here for Google Doc](https://docs.google.com/document/d1tA9TysKklLKxRtsTPn_6faa6bT1jq_oNIiBSduttw50/edit)
 
 ## Entity Relationship Diagram
@@ -26,7 +25,7 @@
 ## Mock User Interface
 
 ![Main UI](img-assets/MainUI-phase2.png)
-![Edit UI](img-assets/EditUI-phase2.png
+![Edit UI](img-assets/EditUI-phase2.png)
 ![Login UI](img-assets/LoginUI-phase2.png)
 ![Login Fail](img-assets/LoginFail-phase2.png)
 ![Profile UI](img-assets/ProfileUI-phase2.png)
@@ -46,7 +45,6 @@ Because security policy says that I cannot do anything else without it
 
 ---
 
-
 As an authorized User
 
 I want to be able to see my profile
@@ -61,7 +59,6 @@ Integration test can probably be manual
 
 ---
 
-
 As an authorized user
 
 I want to be able to edit my profile
@@ -73,7 +70,6 @@ To correct information I don’t like
 (Test on backend on test user)
 
 Integration test can probably be manual
-
 
 ---
 
@@ -88,7 +84,6 @@ To show my approval and disapproval
 (Automated test of frontend with jasmine)
 
 Integration test can probably be manual
-
 
 ---
 
@@ -108,7 +103,6 @@ Integration test can be manual of looking at website from full deployment
 
 ---
 
-
 As a authorized User
 
 I want to be able to post messages
@@ -123,7 +117,6 @@ Integration test by uses of example operation, could only be automated if delete
 
 ---
 
-
 As an authorized User
 
 I want to be able to edit messages
@@ -136,10 +129,7 @@ So that I can change my ideas based on feedback
 
 Can be integration tested live
 
-
 ---
-
-
 
 As an authorized User
 
@@ -153,9 +143,7 @@ So that I can withdraw mistaken submissions
 
 Integration test can probably be manual
 
-
 ---
-
 
 As an authorized User
 
@@ -169,10 +157,7 @@ So that I can give feedback
 
 Integration test manaul
 
-
 ---
-
-
 
 As an authorized User
 
@@ -188,10 +173,7 @@ Integration test manual
 
 ---
 
-
-
 (All manual integration tests could be replaced if we have a test DB, but should not be replaced unless this is true)
-
 
 ---
 
@@ -205,7 +187,6 @@ Automated testing with PreparedStatements (Create a test DB, first half of test)
 
 ---
 
-
 As an admin
 
 I want to be able to delete tables
@@ -213,7 +194,6 @@ I want to be able to delete tables
 So that I can limit costs and resource use
 
 Automated testing with PreparedStatement (second half of test with creating a DB)
-
 
 ---
 
@@ -227,7 +207,6 @@ Automated testing with PreparedStatements (Create a post and delete by id)
 
 ---
 
-
 As an admin
 
 I want to be able to connect to the database
@@ -240,7 +219,6 @@ Automated testing with PreparedStatements (Create a post and delete by id)
 
 ---
 
-
 As an admin
 
 I want to be able remove users
@@ -251,7 +229,6 @@ Manual or automated test of prepared statment
 
 ---
 
-
 As an admin
 
 I want to be able to prepopulate tables
@@ -261,7 +238,6 @@ To allow information to persist across transfers
 Manual or Automated Testing of prepared statments to post to all tables
 
 ---
-
 
 ## Description of Tests (Automated)
 
@@ -292,15 +268,23 @@ May wish to add edge case testing (such as overlength messages or empty messages
 
 ## Routes and details
 
-| Purpose                  | Route                                       | Verb   | Purpose                     | Structure                                                     |
-| ------------------------ | ------------------------------------------- | ------ | --------------------------- | ------------------------------------------------------------- |
-| Show all messages        | `/messages`                                 | GET    | Return post data to display | JSON `{ArrayList<messages>}`                                  |
-| Show one post            | `/messages/id`                              | GET    | Return single post data     | JSON `{title, message, numLikes}`                             |
-| Create new Post          | `/messages`                                 | POST   | Creates a post              | Takes `{title, message}`, all other fields handled by backend |
-| Edit content of a post   | `/messages/id`                              | PUT    | Edits a post                | Takes `{title, message}` and backend handles updates          |
-| Delete a post            | `/messages/id`                              | DELETE | Deletes a post              | Returns `status`                                              |
-| Like a post              | `/messages/id/vote/voteValue/user/userInfo` | PUT    | Vote on a post              | Returns `1` on success                                        |
-| Like a post (deprecated) | `/messages/id/like`                         | PUT    | Likes a post                | Returns new number of `numLikes`                              |
+| Purpose                | Route                                     | Verb   | Purpose                     | Structure                                                             |
+| ---------------------- | ----------------------------------------- | ------ | --------------------------- | --------------------------------------------------------------------- |
+| Show all messages      | `/messages`                               | GET    | Return post data to display | JSON `{ArrayList<messages>}`                                          |
+| Show one post          | `/messages/id`                            | GET    | Return single post data     | JSON `{title, message, numLikes, userID}`                             |
+| Create new Post        | `/messages/user/userID`                   | POST   | Creates a post              | Takes `{title, message, userID}`, all other fields handled by backend |
+| Edit content of a post | `/messages/id/user/userID`                | PUT    | Edits a post                | Takes `{title, message, userID}` and backend handles updates          |
+| Delete a post          | `/messages/id/user/userID`                | DELETE | Deletes a post              | Returns `status`                                                      |
+| Like a post            | `/messages/id/vote/voteValue/user/userID` | PUT    | Vote on a post              | Returns `1` on success                                                |
+
+### Phase 1 methods: Outdated but not removed yet
+
+| Purpose                  | Route               | Verb   | Purpose        | Structure                                                     |
+| ------------------------ | ------------------- | ------ | -------------- | ------------------------------------------------------------- |
+| Like a post (deprecated) | `/messages/id/like` | PUT    | Likes a post   | Returns new number of `numLikes`                              |
+| Create new Post          | `/messages`         | POST   | Creates a post | Takes `{title, message}`, all other fields handled by backend |
+| Edit content of a post   | `/messages/id`      | PUT    | Edits a post   | Takes `{title, message}` and backend handles updates          |
+| Delete a post            | `/messages/id`      | DELETE | Deletes a post | Returns `status`                                              |
 
 ## Documentation for Branches
 

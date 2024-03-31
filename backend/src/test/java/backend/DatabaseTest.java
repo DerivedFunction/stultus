@@ -17,6 +17,7 @@ public class DatabaseTest extends TestCase {
     ArrayList<String> ret = new ArrayList<>();
     ret.add("tblTest");
     ret.add("likeTest");
+    ret.add("userTest");
     return ret;
   }
 
@@ -59,7 +60,7 @@ public class DatabaseTest extends TestCase {
     for (RowData row : res) {
       for (RowData su : sub) {
         if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
-          db.deleteRow(row.mId);
+          db.deleteRow(row.mId, 1);
         }
       }
     }
@@ -75,7 +76,7 @@ public class DatabaseTest extends TestCase {
     for (RowData row : res) {
       for (RowData su : sub) {
         if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
-          int success = db.deleteRow(row.mId);
+          int success = db.deleteRow(row.mId, 1);
           assertEquals(success, 1);
         }
       }
@@ -98,7 +99,7 @@ public class DatabaseTest extends TestCase {
           assertTrue(select.mId == row.mId);
           assertTrue(select.mMessage == row.mMessage);
           assertTrue(select.mSubject == row.mSubject);
-          db.deleteRow(select.mId);
+          db.deleteRow(select.mId, 1);
         }
       }
     }
@@ -123,7 +124,7 @@ public class DatabaseTest extends TestCase {
           db.toggleLike(row.mId);
           changed = db.selectOne(row.mId);
           assertTrue(changed.numLikes == likeStatus - 1);
-          db.deleteRow(row.mId);
+          db.deleteRow(row.mId, 1);
         }
       }
     }
@@ -141,7 +142,7 @@ public class DatabaseTest extends TestCase {
       String message = "Message" + rngString();
       sub.add(new RowData(i, subject, message, 0));
       if (isInsert)
-        assertTrue(db.insertRow(subject, message) == 1); // Assert and new element
+        assertTrue(db.insertRow(subject, message, 1) == 1); // Assert and new element
     }
     return sub;
   }
@@ -159,7 +160,7 @@ public class DatabaseTest extends TestCase {
           int id = row.mId;
           String subject = "Subject" + rngString();
           String message = "Message" + rngString();
-          db.updateOne(id, subject, message);
+          db.updateOne(id, subject, message, 1);
           RowData changed = db.selectOne(id);
           assertEquals(changed.mMessage, message);
           assertEquals(changed.mSubject, subject);

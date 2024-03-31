@@ -100,6 +100,11 @@ public class Database {
     int numLikes;
 
     /**
+     * The userID on the object
+     */
+    int mUserID;
+
+    /**
      * Construct a RowData object by providing values for its fields
      * 
      * @param id      The ID of post
@@ -112,6 +117,24 @@ public class Database {
       mSubject = subject;
       mMessage = message;
       numLikes = likes;
+      mUserID = 1;
+    }
+
+    /**
+     * Construct a RowData object by providing values for its fields
+     * 
+     * @param id      The ID of post
+     * @param subject The subject of post
+     * @param message The message of post
+     * @param likes   (Deprecated method)
+     * @param userID  The author's id
+     */
+    public RowData(int id, String subject, String message, int likes, int userID) {
+      mId = id;
+      mSubject = subject;
+      mMessage = message;
+      numLikes = likes;
+      mUserID = userID;
     }
 
     @Override
@@ -204,9 +227,9 @@ public class Database {
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM " + tableName + " WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO  " + tableName + "  VALUES (default, ?, ?,default)");
+          "INSERT INTO  " + tableName + "  VALUES (default, ?, ?,default,?)");
       db.mSelectAll = db.mConnection.prepareStatement(
-          "SELECT id, subject, message, likes FROM  " + tableName + "  ORDER BY id DESC");
+          "SELECT * FROM  " + tableName + "  ORDER BY id DESC");
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from  " + tableName + "  WHERE id=?");
       db.mUpdateOne = db.mConnection.prepareStatement(
           "UPDATE  " + tableName + "  SET subject=?, message=? WHERE id=?");
@@ -270,14 +293,15 @@ public class Database {
    *
    * @param subject The subject for this new row
    * @param message The message body for this new row
-   *
+   * @param userid  The userID of author
    * @return The number of rows that were inserted
    */
-  int insertRow(String subject, String message) {
+  int insertRow(String subject, String message, int userid) {
     int count = 0;
     try {
       mInsertOne.setString(1, subject);
       mInsertOne.setString(2, message);
+      mInsertOne.setInt(3, userid);
       count += mInsertOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -297,7 +321,7 @@ public class Database {
       while (rs.next()) {
         int id = rs.getInt("id");
         res.add(new RowData(id, rs.getString("subject"),
-            rs.getString("message"), totalVotes(id) + rs.getInt("likes")));
+            rs.getString("message"), totalVotes(id) + rs.getInt("likes"), rs.getInt("userid")));
       }
       rs.close();
       return res;
@@ -321,7 +345,7 @@ public class Database {
       if (rs.next()) {
         int postID = rs.getInt("id");
         res = new RowData(postID, rs.getString("subject"),
-            rs.getString("message"), totalVotes(postID) + rs.getInt("likes"));
+            rs.getString("message"), totalVotes(postID) + rs.getInt("likes"), rs.getInt("userid"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -332,11 +356,16 @@ public class Database {
   /**
    * Delete a row by ID
    * 
-   * @param id The id of the row to delete
+   * @param id     The id of the row to delete
+   * @param userID The id of user wanting to delete it
    * @return the number of rows deleted, -1 if error
    */
-  int deleteRow(int id) {
+  int deleteRow(int id, int userID) {
     int res = -1;
+    RowData data = selectOne(id);
+    // Wrong user cannot update post
+    if (data.mUserID != userID)
+      return res;
     try {
       mDeleteOne.setInt(1, id);
       res = mDeleteOne.executeUpdate();
@@ -353,11 +382,15 @@ public class Database {
    * @param id      The id of the row to update
    * @param title   The title of the message
    * @param message The new msg contents
-   *
+   * @param userID  The id of user wanting to update it
    * @return the number of rows updated, -1 on error
    */
-  int updateOne(int id, String title, String message) {
+  int updateOne(int id, String title, String message, int userID) {
     int res = -1;
+    RowData data = selectOne(id);
+    // Wrong user cannot update post
+    if (data.mUserID != userID)
+      return res;
     try {
       mUpdateOne.setString(1, title);
       mUpdateOne.setString(2, message);
@@ -372,6 +405,8 @@ public class Database {
   /**
    * Add a like to a row in the database
    * 
+   * @deprecated As of sprint 8, this feature has been deprecated in favor of
+   *             {@link #toggleVote(int, int, int)}
    * @param id The id of the row to add the like
    * @return the number of rows updated
    */

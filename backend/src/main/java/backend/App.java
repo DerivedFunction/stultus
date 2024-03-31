@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import com.google.gson.*;
-
 import spark.Response;
 import spark.Route;
 import spark.Spark;
+
+import backend.Oauth;
 
 /**
  * Default backend App
  */
 public class App {
+
   /**
    * Default port to listen to database
    */
@@ -44,20 +46,24 @@ public class App {
   /**
    * parameters for user in website
    */
-  private static final String USER_PARAM = "userInfo";
+  private static final String USER_PARAM = "userID";
 
   /**
    * parameters for basic message with id in website
    */
   private static final String FORMAT = String.format("%s/:%s", CONTEXT, ID_PARAM);
   /**
-   * parameters for basic message with id in website
+   * parameters for adding a basic message with userid in website
    */
-  private static final String NET_VOTE_FORMAT = String.format("%s/%s", FORMAT, VOTE_CONTEXT);
+  private static final String ADD_FORMAT = String.format("%s/%s/:%s", CONTEXT, USER_CONTEXT, USER_PARAM);
   /**
-   * parameters for basic message with id in website
+   * parameters for editing a basic message with userid in website
    */
-  private static final String VOTE_FORMAT = String.format("%s/:%s/%s/:%s", NET_VOTE_FORMAT, VOTE_PARAM,
+  private static final String EDIT_FORMAT = String.format("%s/%s/:%s", FORMAT, USER_CONTEXT, USER_PARAM);
+  /**
+   * parameters for basic voting with userid andid in website
+   */
+  private static final String VOTE_FORMAT = String.format("%s/%s/:%s/%s/:%s", FORMAT, VOTE_CONTEXT, VOTE_PARAM,
       USER_CONTEXT, USER_PARAM);
   /**
    * deprecated method: parameters for like in website
@@ -144,14 +150,27 @@ public class App {
      * Reads JSON from body of request and turns it to a
      * SimpleRequest object, extracting the title and msg,
      * and also the object.
+     * 
      */
-    Spark.post(CONTEXT, postIdea(gson, db));
+    Spark.post(CONTEXT, postIdea_old(gson, db));
+    /*
+     * POST route that adds a new element to DataStore.
+     * Reads JSON from body of request and turns it to a
+     * SimpleRequest object, extracting the title and msg,
+     * and also the object.
+     */
+    Spark.post(ADD_FORMAT, postIdea(gson, db));
 
     /*
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
      */
-    Spark.put(FORMAT, putWithID(gson, db));
+    Spark.put(FORMAT, putWithID_old(gson, db));
+    /*
+     * PUT route for updating a row in DataStore. Almost the same
+     * as POST
+     */
+    Spark.put(EDIT_FORMAT, putWithID(gson, db));
 
     /*
      * PUT route for voting
@@ -166,7 +185,32 @@ public class App {
     /*
      * Delete route for removing a row from DataStore
      */
-    Spark.delete(FORMAT, deleteWithID(gson, db));
+    Spark.delete(FORMAT, deleteWithID_old(gson, db));
+    /*
+     * Delete route for removing a row from DataStore
+     */
+    Spark.delete(EDIT_FORMAT, deleteWithID(gson, db));
+  }
+
+  /**
+   * Creates the route to handle delete requests
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @deprecated In favor of deleting with userID verification
+   *             {@link #deleteWithID(Gson, Database)}
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.deleteOne
+   */
+  private static Route deleteWithID_old(final Gson gson, Database db) {
+    return (request, response) -> {
+      int idx = Integer.parseInt(request.params(ID_PARAM));
+      extractResponse(response);
+      int result = db.deleteRow(idx, 1);
+      String errorType = "unable to delete row " + idx;
+      boolean checkResult = (result == -1);
+      return JSONResponse(gson, errorType, checkResult, null, null);
+    };
   }
 
   /**
@@ -180,8 +224,9 @@ public class App {
   private static Route deleteWithID(final Gson gson, Database db) {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params(ID_PARAM));
+      int userID = Integer.parseInt(request.params(USER_PARAM));
       extractResponse(response);
-      int result = db.deleteRow(idx);
+      int result = db.deleteRow(idx, userID);
       String errorType = "unable to delete row " + idx;
       boolean checkResult = (result == -1);
       return JSONResponse(gson, errorType, checkResult, null, null);
@@ -193,15 +238,38 @@ public class App {
    * 
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
+   * @deprecated In favor of editing with userID verification
+   *             {@link #putWithID(Gson, Database)}
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.updatedOne
+   */
+  private static Route putWithID_old(final Gson gson, Database db) {
+    return (request, response) -> {
+      int idx = Integer.parseInt(request.params(ID_PARAM));
+      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+      extractResponse(response);
+      Integer result = db.updateOne(idx, req.mTitle, req.mMessage, 1);
+      String errorType = "unable to update row " + idx;
+      boolean checkResult = (result < 1);
+      return JSONResponse(gson, errorType, checkResult, null, result);
+    };
+  }
+
+  /**
+   * Creates the route to handle content changes with USER id
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.updatedOne
    */
   private static Route putWithID(final Gson gson, Database db) {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params(ID_PARAM));
+      int userID = Integer.parseInt(request.params(USER_PARAM));
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
-      Integer result = db.updateOne(idx, req.mTitle, req.mMessage);
+      Integer result = db.updateOne(idx, req.mTitle, req.mMessage, userID);
       String errorType = "unable to update row " + idx;
       boolean checkResult = (result < 1);
       return JSONResponse(gson, errorType, checkResult, null, result);
@@ -211,6 +279,8 @@ public class App {
   /**
    * Creates the route to handle like changes
    * 
+   * @deprecated As of Sprint 8, this method is deprecated in favor of
+   *             {@link #putVote(Gson, Database)}
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
@@ -251,15 +321,17 @@ public class App {
    * 
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
+   * @deprecated In favor of adding a post with userID verification
+   *             {@link #postIdea(Gson, Database)}
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.insertRow
    */
-  private static Route postIdea(final Gson gson, Database db) {
+  private static Route postIdea_old(final Gson gson, Database db) {
     return (request, response) -> {
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
       // createEntry checks for null title/message (-1)
-      int rowsAdded = db.insertRow(req.mTitle, req.mMessage);
+      int rowsAdded = db.insertRow(req.mTitle, req.mMessage, 1);
       String errorType = "error performing insertion";
       boolean checkResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
@@ -268,23 +340,25 @@ public class App {
   }
 
   /**
-   * Returns JSON response on error or OK
+   * Creates the route to handle put requests with userID
    * 
-   * @param gson        GSON to convert to JSON
-   * @param errorType   Error Message
-   * @param checkResult Evaluation of result
-   * @param message     mMessage for JSON on OK
-   * @param data        mData for JSON on OK
-   * @return JSON response
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.insertRow
    */
-  private static Object JSONResponse(final Gson gson, String errorType, boolean checkResult, String message,
-      Object data) {
-    if (checkResult) {
-      return gson.toJson(new StructuredResponse(
-          "error", errorType, null));
-    } else {
-      return gson.toJson(new StructuredResponse("ok", message, data));
-    }
+  private static Route postIdea(final Gson gson, Database db) {
+    return (request, response) -> {
+      int id = Integer.parseInt(request.params(USER_PARAM));
+      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+      extractResponse(response);
+      // createEntry checks for null title/message (-1)
+      int rowsAdded = db.insertRow(req.mTitle, req.mMessage, id);
+      String errorType = "error performing insertion";
+      boolean checkResult = (rowsAdded <= 0);
+      String message = "" + rowsAdded;
+      return JSONResponse(gson, errorType, checkResult, message, null);
+    };
   }
 
   /**
@@ -331,6 +405,26 @@ public class App {
   private static void extractResponse(Response response) {
     response.status(200);
     response.type("application/json");
+  }
+
+  /**
+   * Returns JSON response on error or OK
+   * 
+   * @param gson        GSON to convert to JSON
+   * @param errorType   Error Message
+   * @param checkResult Evaluation of result
+   * @param message     mMessage for JSON on OK
+   * @param data        mData for JSON on OK
+   * @return JSON response
+   */
+  private static Object JSONResponse(final Gson gson, String errorType, boolean checkResult, String message,
+      Object data) {
+    if (checkResult) {
+      return gson.toJson(new StructuredResponse(
+          "error", errorType, null));
+    } else {
+      return gson.toJson(new StructuredResponse("ok", message, data));
+    }
   }
 
   /**
@@ -405,5 +499,7 @@ public class App {
       response.header("Access-Control-Request-Method", methods);
       response.header("Access-Control-Allow-Headers", headers);
     });
+
   }
+
 }
