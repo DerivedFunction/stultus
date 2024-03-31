@@ -93,6 +93,11 @@ public class Database {
   private PreparedStatement mUpdateUser;
 
   /**
+   * A prepared statement to get delete a user
+   */
+  private PreparedStatement mDeleteUser;
+
+  /**
    * Database constructor is private
    */
   private Database() {
@@ -210,6 +215,8 @@ public class Database {
           "SELECT * FROM " + userTable + " WHERE id=?");
       db.mUpdateUser = db.mConnection.prepareStatement(
           "UPDATE " + userTable + " SET username=?, gender=?, so=? where id=?");
+      db.mDeleteUser = db.mConnection.prepareStatement(
+          "DELETE FROM " + userTable + " WHERE id=?");
       // deprecated statements
       db.mAddLike_deprecated = db.mConnection
           .prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
@@ -577,14 +584,33 @@ public class Database {
   int updateUser(String email, String username, int gender, String SO) {
     int count = 0;
     // Did not find user
-    if (findUser(email) < 1) {
+    int userID = findUser(email);
+    if (userID < 1) {
       return 0;
     }
     try {
       mUpdateUser.setString(1, username);
       mUpdateUser.setInt(2, gender);
       mUpdateUser.setString(3, SO);
+      mUpdateUser.setInt(4, userID);
       count += mUpdateUser.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
+  }
+
+  /**
+   * Deletes a user from database
+   * 
+   * @param userID to delete
+   * @return 1 on success, 0 on failure
+   */
+  int deleteUser(int userID) {
+    int count = 0;
+    try {
+      mDeleteUser.setInt(1, userID);
+      count += mDeleteUser.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
