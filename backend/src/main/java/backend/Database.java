@@ -78,6 +78,8 @@ public class Database {
   private PreparedStatement mGetUserSimple;
   private PreparedStatement mGetUserFull;
 
+  private PreparedStatement mUpdateUser;
+
   /**
    * Database constructor is private
    */
@@ -186,14 +188,16 @@ public class Database {
               " WHERE post_id=? AND userID=?");
       db.mAddUser = db.mConnection.prepareStatement(
           "INSERT INTO " + userTable +
-              " (username,email,gender) VALUES" +
-              " (?,?,?)");
+              " (username,email) VALUES" +
+              " (?,?)");
       db.mFindUser = db.mConnection.prepareStatement(
-          "SELECT COUNT(*) FROM " + userTable + " WHERE email=?");
+          "SELECT id FROM " + userTable + " WHERE email=?");
       db.mGetUserSimple = db.mConnection.prepareStatement(
-          "SELECT (id,username,email) FROM " + userTable + " WHERE email=?");
+          "SELECT id, username, email FROM " + userTable + " WHERE id=?");
       db.mGetUserFull = db.mConnection.prepareStatement(
-          "SELECT  * FROM " + userTable + " WHERE email=?");
+          "SELECT * FROM " + userTable + " WHERE id=?");
+      db.mUpdateUser = db.mConnection.prepareStatement(
+          "update userdata SET username=?, gender=?, so=? where id=?");
       // deprecated statements
       db.mAddLike_deprecated = db.mConnection
           .prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
@@ -467,21 +471,21 @@ public class Database {
    * Checks if user exists given the email
    * 
    * @param email Email to check
-   * @return 1 if it exists
+   * @return id of user, 0 on nothing
    */
-  boolean findUser(String email) {
+  int findUser(String email) {
     int res = 0;
     try {
       mFindUser.setString(1, email);
       ResultSet resultSet = mFindUser.executeQuery();
       // Get the count
       if (resultSet.next()) {
-        res = resultSet.getInt(1);
+        res = resultSet.getInt("id");
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return res > 0;
+    return res;
   }
 
   /**
@@ -492,10 +496,11 @@ public class Database {
    */
   UserData getUserSimple(String email) {
     UserData res = null;
-    boolean exist = findUser(email);
-    if (exist) {
+    int userID = findUser(email);
+    // User exists
+    if (userID > 0) {
       try {
-        mGetUserSimple.setString(1, email);
+        mGetUserSimple.setInt(1, userID);
         ResultSet rs = mGetUserSimple.executeQuery();
         res = new UserData(rs.getInt("id"), rs.getString("username"), rs.getString("email"));
       } catch (SQLException e) {
@@ -513,10 +518,11 @@ public class Database {
    */
   UserData getUserFull(String email) {
     UserData res = null;
-    boolean exist = findUser(email);
-    if (exist) {
+    int userID = findUser(email);
+    // User exists
+    if (userID > 0) {
       try {
-        mGetUserFull.setString(1, email);
+        mGetUserFull.setInt(1, userID);
         ResultSet rs = mGetUserFull.executeQuery();
         res = new UserData(rs.getInt("id"), rs.getString("username"),
             rs.getString("email"), rs.getInt("gender"),
@@ -526,5 +532,54 @@ public class Database {
       }
     }
     return res;
+  }
+
+  /**
+   * Adds a new user
+   * 
+   * @param username The username to add
+   * @param email    The email to add
+   * @return 1 on success, 0 if fail or already exists
+   */
+  int insertUser(String username, String email) {
+    int count = 0;
+    // User already exists, so don't add
+    if (findUser(email) > 0) {
+      return 0;
+    }
+    try {
+      mAddUser.setString(1, username);
+      mAddUser.setString(2, email);
+      count += mAddUser.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
+  }
+
+  /**
+   * Updates user profile
+   * 
+   * @param email    The email associated with user
+   * @param username The new username
+   * @param gender   The new gender
+   * @param SO       The new SO
+   * @return 1 on sucess, 0 on fail
+   */
+  int updateUser(String email, String username, int gender, String SO) {
+    int count = 0;
+    // User doesn't exists, so don't update
+    if (findUser(email) < 1) {
+      return 0;
+    }
+    try {
+      mUpdateUser.setString(1, username);
+      mUpdateUser.setInt(2, gender);
+      mUpdateUser.setString(3, SO);
+      count += mUpdateUser.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
   }
 }
