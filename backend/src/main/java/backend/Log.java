@@ -8,7 +8,7 @@ import java.util.logging.Logger;
  */
 public class Log {
 
-    private static final Logger logger = Logger.getLogger("MyLogger");
+    private static final Logger logger = Logger.getLogger("Backend");
 
     /**
      * Logs an informational message.
