@@ -53,7 +53,7 @@ a new button
 
 #### Defined in
 
-[app.ts:401](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-401)
+[app.ts:401](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-401)
 
 ___
 
@@ -75,7 +75,7 @@ Delete the item off the table
 
 #### Defined in
 
-[app.ts:437](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-437)
+[app.ts:437](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-437)
 
 ___
 
@@ -97,7 +97,7 @@ clickEdit is the code we run in response to a click of a delete button
 
 #### Defined in
 
-[app.ts:515](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-515)
+[app.ts:515](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-515)
 
 ___
 
@@ -119,7 +119,7 @@ Ajax function that sends HTTP function to update like count
 
 #### Defined in
 
-[app.ts:476](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-476)
+[app.ts:476](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-476)
 
 ___
 
@@ -136,7 +136,7 @@ Refresh updates the messageList
 
 #### Defined in
 
-[app.ts:306](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-306)
+[app.ts:306](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-306)
 
 ___
 
@@ -158,4 +158,4 @@ Update the data
 
 #### Defined in
 
-[app.ts:341](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-341)
+[app.ts:341](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-341)
