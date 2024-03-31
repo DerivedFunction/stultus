@@ -516,8 +516,8 @@ public class Database {
     boolean exist = findUser(email);
     if (exist) {
       try {
-        mGetUserSimple.setString(1, email);
-        ResultSet rs = mGetUserSimple.executeQuery();
+        mGetUserFull.setString(1, email);
+        ResultSet rs = mGetUserFull.executeQuery();
         res = new UserData(rs.getInt("id"), rs.getString("username"),
             rs.getString("email"), rs.getInt("gender"),
             rs.getString("so"));
