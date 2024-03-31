@@ -51,6 +51,10 @@ public class App {
    */
   private static final String FORMAT = String.format("%s/:%s", CONTEXT, ID_PARAM);
   /**
+   * parameters for basic message with id in website
+   */
+  private static final String USER_FORMAT = String.format("%s/:%s", USER_CONTEXT, USER_PARAM);
+  /**
    * parameters for adding a basic message with userid in website
    */
   private static final String ADD_FORMAT = String.format("%s/%s/:%s", CONTEXT, USER_CONTEXT, USER_PARAM);
@@ -59,7 +63,7 @@ public class App {
    */
   private static final String EDIT_FORMAT = String.format("%s/%s/:%s", FORMAT, USER_CONTEXT, USER_PARAM);
   /**
-   * parameters for basic voting with userid andid in website
+   * parameters for basic voting with userid and post id in website
    */
   private static final String VOTE_FORMAT = String.format("%s/%s/:%s/%s/:%s", FORMAT, VOTE_CONTEXT, VOTE_PARAM,
       USER_CONTEXT, USER_PARAM);
@@ -120,7 +124,7 @@ public class App {
     if (static_location_override == null) {
       Spark.staticFileLocation("/web");
     } else {
-      System.out.println("New location: " + static_location_override);
+      Log.info("New location: " + static_location_override);
       Spark.staticFiles.externalLocation(static_location_override);
     }
     // if CORS enablesd, set backend to accept foriegn requests
@@ -148,6 +152,8 @@ public class App {
      * Converts StructuredResponses to JSON
      */
     Spark.get(FORMAT, getWithId(gson, db));
+
+    Spark.get(USER_FORMAT, getUser(gson, db));
 
     /*
      * POST route that adds a new element to DataStore.
@@ -404,6 +410,26 @@ public class App {
   }
 
   /**
+   * Creates the route to handle get requests that give a specific id
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json behavior for
+   *         db.selectOne()
+   */
+  private static Route getUser(final Gson gson, Database db) {
+    return (request, response) -> {
+      int userID = Integer.parseInt(request.params(USER_PARAM));
+      extractResponse(response);
+      UserData data = db.getUserSimple(userID);
+      String errorType = userID + " not found";
+      boolean errResult = (data == null);
+      String message = null;
+      return JSONResponse(gson, errorType, errResult, message, data);
+    };
+  }
+
+  /**
    * Authenticates Token via `Oauth.java`
    * 
    * @param gson Gson object that handles shared serialization
@@ -421,15 +447,22 @@ public class App {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
         name = Oauth.getName(idToken);
-        // res.redirect("/index.html");
+        // Checks if user exists in Database
+        UserData user = db.getUserFull(db.findUser(email));
+        if (user == null) { // creating a new user account
+          Log.info("new account detected creating new user");
+          db.insertUser(name, email);
+        }
+        TokenManager.addToken(db.findUser(email), idToken);
+        Log.info("Added new token: " + idToken);
+        // res.redirect("/");
       } else {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
-
       }
       String errorType = "Invalid or missing ID token: " + idToken;
       boolean errResult = !verified;
-      UserData user = new UserData(0, name, email);
+      UserData user = db.getUserFull(db.findUser(email));
       return JSONResponse(gson, errorType, errResult, null, user);
     };
   }
