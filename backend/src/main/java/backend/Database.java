@@ -70,6 +70,12 @@ public class Database {
    */
   private PreparedStatement mDeleteVote;
 
+  private PreparedStatement mAddUser;
+
+  private PreparedStatement mFindUser;
+  private PreparedStatement mGetUserSimple;
+  private PreparedStatement mGetUserFull;
+
   /**
    * Database constructor is private
    */
@@ -147,6 +153,7 @@ public class Database {
   private static Database createPreparedStatements(Database db, ArrayList<String> dbTable) {
     String tableName = dbTable.get(0);
     String likeTable = dbTable.get(1);
+    String userTable = dbTable.get(2);
     try {
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM " + tableName + " WHERE id=?");
@@ -175,6 +182,16 @@ public class Database {
       db.mDeleteVote = db.mConnection.prepareStatement(
           "DELETE FROM " + likeTable +
               " WHERE post_id=? AND userID=?");
+      db.mAddUser = db.mConnection.prepareStatement(
+          "INSERT INTO " + userTable +
+              " (username,email,gender) VALUES" +
+              " (?,?,?)");
+      db.mFindUser = db.mConnection.prepareStatement(
+          "SELECT COUNT(*) FROM " + userTable + " WHERE email=?");
+      db.mGetUserSimple = db.mConnection.prepareStatement(
+          "SELECT (id,username,email) FROM " + userTable + " WHERE email=?");
+      db.mGetUserFull = db.mConnection.prepareStatement(
+          "SELECT  * FROM " + userTable + " WHERE email=?");
       // deprecated statements
       db.mAddLike_deprecated = db.mConnection
           .prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
@@ -437,6 +454,27 @@ public class Database {
       ResultSet resultSet = mfindTotalVotes.executeQuery();
       if (resultSet.next()) {
         res = resultSet.getInt("netVotes");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  /**
+   * Checks if user exists given the email
+   * 
+   * @param email Email to check
+   * @return 1 if it exists
+   */
+  int findUser(String email) {
+    int res = 0;
+    try {
+      mFindUser.setString(1, email);
+      ResultSet resultSet = mFindUser.executeQuery();
+      // Get the count
+      if (resultSet.next()) {
+        res = resultSet.getInt(1);
       }
     } catch (SQLException e) {
       e.printStackTrace();
