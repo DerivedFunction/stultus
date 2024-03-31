@@ -9,8 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.eclipse.jetty.server.Authentication.User;
-
 /**
  * SQL Database for our App
  */
@@ -72,12 +70,26 @@ public class Database {
    */
   private PreparedStatement mDeleteVote;
 
+  /**
+   * A prepared statement for adding a user
+   */
   private PreparedStatement mAddUser;
-
+  /**
+   * A prepared statement to find the userID based on email
+   */
   private PreparedStatement mFindUser;
+  /**
+   * A prepared statement to get simple information of a user
+   */
   private PreparedStatement mGetUserSimple;
+  /**
+   * A prepared statement to get the full information of a user
+   */
   private PreparedStatement mGetUserFull;
 
+  /**
+   * A prepared statement to get update user information
+   */
   private PreparedStatement mUpdateUser;
 
   /**
@@ -197,7 +209,7 @@ public class Database {
       db.mGetUserFull = db.mConnection.prepareStatement(
           "SELECT * FROM " + userTable + " WHERE id=?");
       db.mUpdateUser = db.mConnection.prepareStatement(
-          "update userdata SET username=?, gender=?, so=? where id=?");
+          "UPDATE " + userTable + " SET username=?, gender=?, so=? where id=?");
       // deprecated statements
       db.mAddLike_deprecated = db.mConnection
           .prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
@@ -418,9 +430,9 @@ public class Database {
     try {
       mfindVoteforUser.setInt(1, postID);
       mfindVoteforUser.setInt(2, userID);
-      ResultSet resultSet = mfindVoteforUser.executeQuery();
-      if (resultSet.next()) {
-        res = resultSet.getInt("vote");
+      ResultSet rs = mfindVoteforUser.executeQuery();
+      if (rs.next()) {
+        res = rs.getInt("vote");
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -457,9 +469,9 @@ public class Database {
     int res = 0;
     try {
       mfindTotalVotes.setInt(1, postID);
-      ResultSet resultSet = mfindTotalVotes.executeQuery();
-      if (resultSet.next()) {
-        res = resultSet.getInt("netVotes");
+      ResultSet rs = mfindTotalVotes.executeQuery();
+      if (rs.next()) {
+        res = rs.getInt("netVotes");
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -468,19 +480,19 @@ public class Database {
   }
 
   /**
-   * Checks if user exists given the email
+   * find the userid based on email
    * 
-   * @param email Email to check
+   * @param email to find
    * @return id of user, 0 on nothing
    */
   int findUser(String email) {
     int res = 0;
     try {
       mFindUser.setString(1, email);
-      ResultSet resultSet = mFindUser.executeQuery();
+      ResultSet rs = mFindUser.executeQuery();
       // Get the count
-      if (resultSet.next()) {
-        res = resultSet.getInt("id");
+      if (rs.next()) {
+        res = rs.getInt("id");
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -489,23 +501,21 @@ public class Database {
   }
 
   /**
-   * Gets simple user information from email
+   * Gets simple user information from id
    * 
-   * @param email Gets email
+   * @param userID id of user
    * @return UserData of id, username, and email
    */
-  UserData getUserSimple(String email) {
+  UserData getUserSimple(int userID) {
     UserData res = null;
-    int userID = findUser(email);
-    // User exists
-    if (userID > 0) {
-      try {
-        mGetUserSimple.setInt(1, userID);
-        ResultSet rs = mGetUserSimple.executeQuery();
+    try {
+      mGetUserSimple.setInt(1, userID);
+      ResultSet rs = mGetUserSimple.executeQuery();
+      if (rs.next()) {
         res = new UserData(rs.getInt("id"), rs.getString("username"), rs.getString("email"));
-      } catch (SQLException e) {
-        e.printStackTrace();
       }
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
     return res;
   }
@@ -513,23 +523,21 @@ public class Database {
   /**
    * Gets full user information from email
    * 
-   * @param email Gets email
+   * @param userID Gets email
    * @return UserData of id, username, email, gender, and SO)
    */
-  UserData getUserFull(String email) {
+  UserData getUserFull(int userID) {
     UserData res = null;
-    int userID = findUser(email);
-    // User exists
-    if (userID > 0) {
-      try {
-        mGetUserFull.setInt(1, userID);
-        ResultSet rs = mGetUserFull.executeQuery();
+    try {
+      mGetUserFull.setInt(1, userID);
+      ResultSet rs = mGetUserFull.executeQuery();
+      if (rs.next()) {
         res = new UserData(rs.getInt("id"), rs.getString("username"),
             rs.getString("email"), rs.getInt("gender"),
             rs.getString("so"));
-      } catch (SQLException e) {
-        e.printStackTrace();
       }
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
     return res;
   }
@@ -543,7 +551,7 @@ public class Database {
    */
   int insertUser(String username, String email) {
     int count = 0;
-    // User already exists, so don't add
+    // User already existrs
     if (findUser(email) > 0) {
       return 0;
     }
@@ -568,7 +576,7 @@ public class Database {
    */
   int updateUser(String email, String username, int gender, String SO) {
     int count = 0;
-    // User doesn't exists, so don't update
+    // Did not find user
     if (findUser(email) < 1) {
       return 0;
     }
