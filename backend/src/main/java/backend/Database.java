@@ -118,7 +118,7 @@ public class Database {
 
       return getDatabase(host, port, path, username, password, dbTable);
     } catch (URISyntaxException s) {
-      System.out.println("URI Syntax Error");
+      Log.error("URI Syntax Error");
       return null;
     }
   }
@@ -146,12 +146,12 @@ public class Database {
       Connection conn = DriverManager.getConnection(
           "jdbc:postgresql://" + ip + ":" + port + path, user, pass);
       if (conn == null) {
-        System.err.println("Error: DriverManager.getConnection() returns null");
+        Log.error("Error: DriverManager.getConnection() returns null");
         return null;
       }
       db.mConnection = conn;
     } catch (SQLException e) {
-      System.err.println(
+      Log.error(
           "Error: DriverManager.getConnection() threw a SQLException");
       e.printStackTrace();
       return null;
@@ -217,7 +217,7 @@ public class Database {
           .prepareStatement("UPDATE  " + tableName + "  SET likes=likes-1 WHERE id=? AND likes=1");
 
     } catch (SQLException e) {
-      System.err.println("Error creating prepared statement");
+      Log.error("Error creating prepared statement");
       e.printStackTrace();
       db.disconnect();
       return null;
@@ -232,13 +232,13 @@ public class Database {
    */
   boolean disconnect() {
     if (mConnection == null) {
-      System.err.println("Unable to close connection: Connection was null");
+      Log.error("Unable to close connection: Connection was null");
       return false;
     }
     try {
       mConnection.close();
     } catch (SQLException e) {
-      System.err.println("Error: Connection.close() threw a SQLException");
+      Log.error("Error: Connection.close() threw a SQLException");
       e.printStackTrace();
       mConnection = null;
       return false;
