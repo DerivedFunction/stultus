@@ -427,7 +427,7 @@ public class App {
         res.status(401); // Unauthorized status code
 
       }
-      String errorType = "Invalid or missing ID token";
+      String errorType = "Invalid or missing ID token: " + idToken;
       boolean errResult = !verified;
       UserData user = new UserData(0, name, email);
       return JSONResponse(gson, errorType, errResult, null, user);
