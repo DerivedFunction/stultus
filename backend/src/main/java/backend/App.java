@@ -443,6 +443,7 @@ public class App {
       boolean verified = idToken != null && Oauth.verifyToken(idToken);
       String email = null;
       String name = null;
+      int userID = 0;
       if (verified) {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
@@ -453,8 +454,13 @@ public class App {
           Log.info("new account detected creating new user");
           db.insertUser(name, email);
         }
-        TokenManager.addToken(db.findUser(email), idToken);
-        Log.info("Added new token: " + idToken);
+        userID = db.findUser(email);
+        if (TokenManager.getToken(userID) != null) {
+          Log.info("User has already logged in. Deleting old credentials");
+          TokenManager.removeToken(userID);
+        }
+        TokenManager.addToken(userID, idToken);
+        Log.info("Added new token to TokenManager");
         // res.redirect("/");
       } else {
         // Token is invalid or missing
