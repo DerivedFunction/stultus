@@ -32,7 +32,7 @@ Intialize the object  setting buttons to do actions when clicked
 
 #### Defined in
 
-[app.ts:34](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-34)
+[app.ts:34](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-34)
 
 ## Methods
 
@@ -48,7 +48,7 @@ Clear the input fields
 
 #### Defined in
 
-[app.ts:47](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-47)
+[app.ts:47](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-47)
 
 ___
 
@@ -70,7 +70,7 @@ Runs when AJAX call in submitForm() returns a result
 
 #### Defined in
 
-[app.ts:121](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-121)
+[app.ts:121](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-121)
 
 ___
 
@@ -86,4 +86,4 @@ Check if input is valid before submitting with AJAX call
 
 #### Defined in
 
-[app.ts:62](https://bitbucket.org/sml3/cse216_sp24_team_21/src/cfb416c/web/app.ts#lines-62)
+[app.ts:62](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-62)

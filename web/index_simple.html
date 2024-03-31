@@ -1,13 +1,9 @@
-<!DOCTYPE html />
+<!DOCTYPE html>
 <html lang="en">
-
-
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-
     <title>Stultus</title>
     <script src="app.js"></script>
     <link rel="stylesheet" href="app.css" />
@@ -15,8 +11,8 @@
     <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Madimi One' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Sumana' rel='stylesheet'>
+    <script src="https://accounts.google.com/gsi/client" async></script>
 </head>
-
 
 <body>
     <div id="addElement">
@@ -24,21 +20,21 @@
             <h3>Create A New Idea</h3>
         </div>
         <div style="height: 100;"></div>
-        <label id = "Title">Title</label>
+        <label id="Title">Title</label>
         <input type="text" id="newTitle" />
-        <label id = Message>Message</label>
+        <label id="Message">Message</label>
         <textarea id="newMessage"></textarea>
         <button id="addButton">Add</button>
         <button id="addCancel">Cancel</button>
     </div>
     <div id="editElement">
-        <div id = "scrollTitle">
+        <div id="scrollTitle">
             <h3>Edit Your Idea</h3>
         </div>
         <div style="height: 100;"></div>
-        <label id = "Title">Title</label>
+        <label id="Title">Title</label>
         <input type="text" id="editTitle" />
-        <label id = Message>Message</label>
+        <label id="Message">Message</label>
         <textarea id="editMessage"></textarea>
         <span id="editCreated"></span>
         <input type="hidden" id="editId" />
@@ -47,17 +43,46 @@
     </div>
     <div id="showElements">
         <div id="scrollTitle">
-                <h3>Stultus</h3>
-                <button id="showFormButton">New Post</button>
+            <h3>Stultus</h3>
+            <button id="showFormButton">New Post</button>
         </div>
         <div style="height: 100;"></div>
         <!--<button id="refreshFormButton">Refresh</button> -->
-    <div id="messageList"></div>
+        <div id="messageList"></div>
     </div>
-    <div id = "InvalidContent">
+    <div id="InvalidContent">
         Invalid Title/Message: Please Try Again
     </div>
+    <div id="g_id_onload"
+        data-client_id="732167497663-u42guu2ktqercj2ic4ippp4nkfkobjfu.apps.googleusercontent.com"
+        data-login_uri="https://team-stultus.dokku.cse.lehigh.edu/index.html">
+    </div>
+    <div class="g_id_signin"
+        data-type="standard"
+        data-size="large"
+        data-theme="outline"
+        data-text="sign_in_with"
+        data-shape="rectangular"
+        data-logo_alignment="left">
+    </div>
+
+    <script>
+        function handleCredentialResponse(response){
+
+            const responsePayload = decodeJwtResponse(response.credential);
+                console.log("ID: " + responsePayload.sub);
+                console.log("Full Name: " + responsePayload.name);
+                console.log("Given Name: " + responsePayload.given_name);
+                console.log("Family Name: " + responsePayload.family_name);
+                console.log("Image URL: " + responsePayload.picture);
+                console.log("Email: " + responsePayload.email);
+        }
+
+        //Decode JWT
+        function decodeJwtResponse(data){
+            var tokens = data.split(".");
+            return JSON.parse(atob(tokens[1]));
+        }
+    </script>
 </body>
-
-
 </html>
