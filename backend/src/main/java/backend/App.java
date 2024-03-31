@@ -197,6 +197,8 @@ public class App {
    * 
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
+   * @deprecated In favor of deleting with userID verification
+   *             {@link #deleteWithID(gson, db)}
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.deleteOne
    */
@@ -236,6 +238,8 @@ public class App {
    * 
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
+   * @deprecated In favor of editing with userID verification
+   *             {@link #putWithID(gson, db)}
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.updatedOne
    */
@@ -317,6 +321,8 @@ public class App {
    * 
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
+   * @deprecated In favor of adding a post with userID verification
+   *             {@link #postIdea(gson, db)}
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.insertRow
    */
