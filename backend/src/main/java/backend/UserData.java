@@ -45,4 +45,22 @@ public class UserData extends UserDataLite {
         this.mSO = mSO;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        UserData obj = (UserData) other;
+        if (!this.mUsername.equals(obj.mUsername))
+            return false;
+        if (!this.mEmail.equals(obj.mEmail))
+            return false;
+        if (this.mGender != obj.mGender)
+            return false;
+        if (!this.mSO.equals(obj.mSO))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + String.format("mGender: %d%nmSO: %s%n", this.mGender, this.mSO);
+    }
 }

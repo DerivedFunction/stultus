@@ -37,4 +37,20 @@ public class UserDataLite {
         this.mEmail = mEmail;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        UserDataLite obj = (UserDataLite) other;
+        if (!this.mUsername.equals(obj.mUsername))
+            return false;
+        if (!this.mEmail.equals(obj.mEmail))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("mId: %d%nmUsername: %s%nmEmail: %s%n",
+                this.mId, this.mUsername,
+                this.mEmail);
+    }
 }
