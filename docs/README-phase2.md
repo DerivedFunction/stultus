@@ -4,32 +4,32 @@
 
 ## Entity Relationship Diagram
 
-![Entity Relationship Diagram](img-assets/ERD-phase2.png)
+![Entity Relationship Diagram](img-assets/phase2/ERD-phase2.png)
 
 ## UML Diagram
 
-![UML Diagram](img-assets/UML-phase2.png)
+![UML Diagram](img-assets/phase2/UML-phase2.png)
 
 ## Admin FSM
 
-![Admin FSM Diagram](img-assets/AdminFSM-phase2.png)
+![Admin FSM Diagram](img-assets/phase2/AdminFSM-phase2.png)
 
 ## Web FSM
 
-![Web FSM Diagram](img-assets/WebFSM-phase2.png)
+![Web FSM Diagram](img-assets/phase2/WebFSM_phase2.png)
 
 ## Idea FSm
 
-![Idea FSM diagram](img-assets/IdeasFSM-phase2.png)
+![Idea FSM diagram](img-assets/phase2/IdeasFSM-phase2.png)
 
 ## Mock User Interface
 
-![Main UI](img-assets/MainUI-phase2.png)
-![Edit UI](img-assets/EditUI-phase2.png)
-![Login UI](img-assets/LoginUI-phase2.png)
-![Login Fail](img-assets/LoginFail-phase2.png)
-![Profile UI](img-assets/ProfileUI-phase2.png)
-![Profile Edit UI](img-assets/ProfileEditUI-phase2.png)
+![Main UI](img-assets/phase2/webUI/MainUI-phase2.png)
+![Edit UI](img-assets/phase2/webUI/EditUI-phase2.png)
+![Login UI](img-assets/phase2/webUI/LoginUI-phase2.png)
+![Login Fail](img-assets/phase2/webUI/LoginFail-phase2.png)
+![Profile UI](img-assets/phase2/webUI/ProfileUI-phase2.png)
+![Profile Edit UI](img-assets/phase2/webUI/ProfileEditUI-phase2.png)
 
 Comment operations and profile will maintain visual consistency with the site
 
