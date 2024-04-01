@@ -581,13 +581,9 @@ public class Database {
    * @param SO       The new SO
    * @return 1 on sucess, 0 on fail
    */
-  int updateUser(String email, String username, int gender, String SO) {
+  int updateUser(int userID, String username, int gender, String SO) {
     int count = 0;
-    // Did not find user
-    int userID = findUser(email);
-    if (userID < 1) {
-      return 0;
-    }
+
     try {
       mUpdateUser.setString(1, username);
       mUpdateUser.setInt(2, gender);
