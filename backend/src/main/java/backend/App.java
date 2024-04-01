@@ -461,7 +461,7 @@ public class App {
         }
         TokenManager.addToken(userID, idToken);
         Log.info("Added new token to TokenManager");
-        // res.redirect("/");
+        res.redirect("/index.html");
       } else {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
