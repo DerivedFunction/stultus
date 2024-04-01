@@ -173,7 +173,6 @@ public class DatabaseTest extends TestCase {
   public static void testUser() {
     String email = rngString() + "@example.com";
     String username = "test account";
-    UserData test = new UserData(0, username, email);
     // First time it works
     assertEquals(db.insertUser(username, email), 1);
     // Second time it doesn't
@@ -193,19 +192,19 @@ public class DatabaseTest extends TestCase {
     String so = test.mSO;
     int userID = db.findUser(email);
     db.updateUser(userID, "a", gender + 1, "a");
-    test = db.getUserFull(userID);
-    assertFalse(email == test.mEmail);
-    assertFalse(username == test.mUsername);
-    assertFalse(gender == test.mGender);
-    assertFalse(so == test.mSO);
+    UserData updated = db.getUserFull(userID);
+    assertFalse(test.equals(updated));
+    db.updateUser(userID, username, gender, so);
+    updated = db.getUserFull(userID);
+    assertTrue(test.equals(updated));
     db.deleteUser(userID);
   }
 
   private static UserData createUser() {
     String email = rngString() + "@example.com";
     String username = "test account";
-    UserData test = new UserData(0, username, email);
     db.insertUser(username, email);
+    UserData test = db.getUserFull(db.findUser(email));
     return test;
   }
 }
