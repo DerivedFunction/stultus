@@ -194,7 +194,7 @@ public class DatabaseTest extends TestCase {
     int gender = test.mGender;
     String so = test.mSO;
     int userID = db.findUser(email);
-    db.updateUser(email, "a", gender + 1, "a");
+    db.updateUser(userID, "a", gender + 1, "a");
     test = db.getUserFull(userID);
     assertFalse(email == test.mEmail);
     assertFalse(username == test.mUsername);
