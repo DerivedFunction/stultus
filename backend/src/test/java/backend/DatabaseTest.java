@@ -200,11 +200,55 @@ public class DatabaseTest extends TestCase {
     db.deleteUser(userID);
   }
 
+  /**
+   * Creates a new user
+   * 
+   * @return UserData of added user
+   */
   private static UserData createUser() {
     String email = rngString() + "@example.com";
     String username = "test account";
     db.insertUser(username, email);
     UserData test = db.getUserFull(db.findUser(email));
     return test;
+  }
+
+  /**
+   * Tests voting system
+   */
+  public static void testVote() {
+    UserData test = createUser();
+    int userID = test.mId;
+    db.insertRow("test", "test", userID);
+    PostData post = db.selectAll().get(0);
+
+    int postID = post.mId;
+    int oldVotes = db.totalVotes(postID);
+    // Upvote
+    assertTrue(db.toggleVote(postID, 1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes + 1);
+    // Upvote again to cancel
+    assertTrue(db.toggleVote(postID, 1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes);
+
+    // Downvote
+    assertTrue(db.toggleVote(postID, -1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes - 1);
+    // Downvote again to cancel
+    assertTrue(db.toggleVote(postID, -1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes);
+
+    // Upvote
+    assertTrue(db.toggleVote(postID, 1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes + 1);
+    // Downvote to undo the upvote
+    assertTrue(db.toggleVote(postID, -1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes - 1);
+
+    // Remove it from like table
+    assertTrue(db.deleteVote(postID, userID) == 1);
+    db.deleteRow(postID, userID);
+    db.deleteUser(userID);
+
   }
 }
