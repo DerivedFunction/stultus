@@ -575,7 +575,7 @@ public class Database {
   /**
    * Updates user profile
    * 
-   * @param email    The email associated with user
+   * @param userID   The userID associated with user
    * @param username The new username
    * @param gender   The new gender
    * @param SO       The new SO

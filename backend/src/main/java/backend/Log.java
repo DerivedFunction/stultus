@@ -8,6 +8,9 @@ import java.util.logging.Logger;
  */
 public class Log {
 
+    /**
+     * Our logger for backend
+     */
     private static final Logger logger = Logger.getLogger("Backend");
 
     /**
