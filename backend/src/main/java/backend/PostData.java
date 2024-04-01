@@ -1,0 +1,77 @@
+package backend;
+
+/**
+ * In the context of the database, RowData represents the data
+ * we'd see in a row.
+ *
+ * We make RowData a static class of Database because it is only
+ * an abstract representation of a row of the database. RowData
+ * and Database are connected: Both gets updated if one changes.
+ */
+public class PostData {
+    /**
+     * The ID of this row of the database
+     */
+    int mId;
+
+    /**
+     * The subject stored in this row
+     */
+    String mSubject;
+
+    /**
+     * The message stored in this row
+     */
+    String mMessage;
+
+    /**
+     * The number of likes on the object
+     */
+    int numLikes;
+
+    /**
+     * The userID on the object
+     */
+    int mUserID;
+
+    /**
+     * Construct a RowData object by providing values for its fields
+     * 
+     * @param id      The ID of post
+     * @param subject The subject of post
+     * @param message The message of post
+     * @param likes   (Deprecated method)
+     */
+    public PostData(int id, String subject, String message, int likes) {
+        mId = id;
+        mSubject = subject;
+        mMessage = message;
+        numLikes = likes;
+        mUserID = 1;
+    }
+
+    /**
+     * Construct a RowData object by providing values for its fields
+     * 
+     * @param id      The ID of post
+     * @param subject The subject of post
+     * @param message The message of post
+     * @param likes   (Deprecated method)
+     * @param userID  The author's id
+     */
+    public PostData(int id, String subject, String message, int likes, int userID) {
+        mId = id;
+        mSubject = subject;
+        mMessage = message;
+        numLikes = likes;
+        mUserID = userID;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        PostData obj = (PostData) other;
+        if (!this.mSubject.equals(obj.mSubject))
+            return false;
+        return this.mMessage.equals(obj.mMessage);
+    }
+}

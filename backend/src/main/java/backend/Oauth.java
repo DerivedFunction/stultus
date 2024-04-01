@@ -41,6 +41,17 @@ public class Oauth {
     }
 
     /**
+     * Gets the payload's name
+     * 
+     * @param idTokenString The token to get the payload
+     * @return name as a string
+     */
+    public static String getName(String idTokenString) {
+        Payload payload = getPayload(idTokenString);
+        return payload != null ? payload.get("name").toString() : null;
+    }
+
+    /**
      * Verifies if the token is valid
      * 
      * @param idTokenString The token to verify

@@ -8,8 +8,6 @@ import spark.Response;
 import spark.Route;
 import spark.Spark;
 
-import backend.Oauth;
-
 /**
  * Default backend App
  */
@@ -53,6 +51,10 @@ public class App {
    */
   private static final String FORMAT = String.format("%s/:%s", CONTEXT, ID_PARAM);
   /**
+   * parameters for basic message with id in website
+   */
+  private static final String USER_FORMAT = String.format("%s/:%s", USER_CONTEXT, USER_PARAM);
+  /**
    * parameters for adding a basic message with userid in website
    */
   private static final String ADD_FORMAT = String.format("%s/%s/:%s", CONTEXT, USER_CONTEXT, USER_PARAM);
@@ -61,10 +63,15 @@ public class App {
    */
   private static final String EDIT_FORMAT = String.format("%s/%s/:%s", FORMAT, USER_CONTEXT, USER_PARAM);
   /**
-   * parameters for basic voting with userid andid in website
+   * parameters for basic voting with userid and post id in website
    */
   private static final String VOTE_FORMAT = String.format("%s/%s/:%s/%s/:%s", FORMAT, VOTE_CONTEXT, VOTE_PARAM,
       USER_CONTEXT, USER_PARAM);
+
+  /**
+   * The redirect parameter
+   */
+  private static final String AUTH_FORMAT = "/authenticate";
   /**
    * deprecated method: parameters for like in website
    */
@@ -83,6 +90,7 @@ public class App {
     ArrayList<String> ret = new ArrayList<>();
     ret.add("tblData");
     ret.add("likeData");
+    ret.add("userData");
     return ret;
   }
 
@@ -116,7 +124,7 @@ public class App {
     if (static_location_override == null) {
       Spark.staticFileLocation("/web");
     } else {
-      System.out.println("New location: " + static_location_override);
+      Log.info("New location: " + static_location_override);
       Spark.staticFiles.externalLocation(static_location_override);
     }
     // if CORS enablesd, set backend to accept foriegn requests
@@ -145,6 +153,8 @@ public class App {
      */
     Spark.get(FORMAT, getWithId(gson, db));
 
+    Spark.get(USER_FORMAT, getUser(gson, db));
+
     /*
      * POST route that adds a new element to DataStore.
      * Reads JSON from body of request and turns it to a
@@ -160,6 +170,8 @@ public class App {
      * and also the object.
      */
     Spark.post(ADD_FORMAT, postIdea(gson, db));
+
+    Spark.post(AUTH_FORMAT, authenticateToken(gson, db));
 
     /*
      * PUT route for updating a row in DataStore. Almost the same
@@ -208,8 +220,8 @@ public class App {
       extractResponse(response);
       int result = db.deleteRow(idx, 1);
       String errorType = "unable to delete row " + idx;
-      boolean checkResult = (result == -1);
-      return JSONResponse(gson, errorType, checkResult, null, null);
+      boolean errResult = (result == -1);
+      return JSONResponse(gson, errorType, errResult, null, null);
     };
   }
 
@@ -228,8 +240,8 @@ public class App {
       extractResponse(response);
       int result = db.deleteRow(idx, userID);
       String errorType = "unable to delete row " + idx;
-      boolean checkResult = (result == -1);
-      return JSONResponse(gson, errorType, checkResult, null, null);
+      boolean errResult = (result == -1);
+      return JSONResponse(gson, errorType, errResult, null, null);
     };
   }
 
@@ -250,8 +262,8 @@ public class App {
       extractResponse(response);
       Integer result = db.updateOne(idx, req.mTitle, req.mMessage, 1);
       String errorType = "unable to update row " + idx;
-      boolean checkResult = (result < 1);
-      return JSONResponse(gson, errorType, checkResult, null, result);
+      boolean errResult = (result < 1);
+      return JSONResponse(gson, errorType, errResult, null, result);
     };
   }
 
@@ -271,8 +283,8 @@ public class App {
       extractResponse(response);
       Integer result = db.updateOne(idx, req.mTitle, req.mMessage, userID);
       String errorType = "unable to update row " + idx;
-      boolean checkResult = (result < 1);
-      return JSONResponse(gson, errorType, checkResult, null, result);
+      boolean errResult = (result < 1);
+      return JSONResponse(gson, errorType, errResult, null, result);
     };
   }
 
@@ -291,8 +303,8 @@ public class App {
       int idx = Integer.parseInt(request.params(ID_PARAM));
       int result = db.toggleLike(idx);
       String errorType = "error performing like";
-      boolean checkResult = (result == -1);
-      return JSONResponse(gson, errorType, checkResult, null, null);
+      boolean errResult = (result == -1);
+      return JSONResponse(gson, errorType, errResult, null, null);
     };
   }
 
@@ -311,8 +323,8 @@ public class App {
       int user = Integer.parseInt(request.params(USER_PARAM));
       int result = db.toggleVote(idx, vote, user);
       String errorType = "error updating vote: post id=" + idx + " vote=" + vote;
-      boolean checkResult = (result == -1);
-      return JSONResponse(gson, errorType, checkResult, null, null);
+      boolean errResult = (result == -1);
+      return JSONResponse(gson, errorType, errResult, null, null);
     };
   }
 
@@ -333,9 +345,9 @@ public class App {
       // createEntry checks for null title/message (-1)
       int rowsAdded = db.insertRow(req.mTitle, req.mMessage, 1);
       String errorType = "error performing insertion";
-      boolean checkResult = (rowsAdded <= 0);
+      boolean errResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
-      return JSONResponse(gson, errorType, checkResult, message, null);
+      return JSONResponse(gson, errorType, errResult, message, null);
     };
   }
 
@@ -355,9 +367,9 @@ public class App {
       // createEntry checks for null title/message (-1)
       int rowsAdded = db.insertRow(req.mTitle, req.mMessage, id);
       String errorType = "error performing insertion";
-      boolean checkResult = (rowsAdded <= 0);
+      boolean errResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
-      return JSONResponse(gson, errorType, checkResult, message, null);
+      return JSONResponse(gson, errorType, errResult, message, null);
     };
   }
 
@@ -389,11 +401,75 @@ public class App {
     return (request, response) -> {
       int idx = Integer.parseInt(request.params(ID_PARAM));
       extractResponse(response);
-      Database.RowData data = db.selectOne(idx);
+      PostData data = db.selectOne(idx);
       String errorType = idx + " not found";
-      boolean checkResult = (data == null);
+      boolean errResult = (data == null);
       String message = null;
-      return JSONResponse(gson, errorType, checkResult, message, data);
+      return JSONResponse(gson, errorType, errResult, message, data);
+    };
+  }
+
+  /**
+   * Creates the route to handle get requests that give a specific id
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json behavior for
+   *         db.selectOne()
+   */
+  private static Route getUser(final Gson gson, Database db) {
+    return (request, response) -> {
+      int userID = Integer.parseInt(request.params(USER_PARAM));
+      extractResponse(response);
+      UserData data = db.getUserSimple(userID);
+      String errorType = userID + " not found";
+      boolean errResult = (data == null);
+      String message = null;
+      return JSONResponse(gson, errorType, errResult, message, data);
+    };
+  }
+
+  /**
+   * Authenticates Token via `Oauth.java`
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json behavior
+   * 
+   */
+  private static Route authenticateToken(final Gson gson, Database db) {
+    return (req, res) -> {
+      String idToken = req.queryParams("credential"); // Assuming the ID token is sent as a query parameter
+      boolean verified = idToken != null && Oauth.verifyToken(idToken);
+      String email = null;
+      String name = null;
+      int userID = 0;
+      if (verified) {
+        // Token is valid, extract email from payload
+        email = Oauth.getEmail(idToken);
+        name = Oauth.getName(idToken);
+        // Checks if user exists in Database
+        UserData user = db.getUserFull(db.findUser(email));
+        if (user == null) { // creating a new user account
+          Log.info("new account detected creating new user");
+          db.insertUser(name, email);
+        }
+        userID = db.findUser(email);
+        if (TokenManager.getToken(userID) != null) {
+          Log.info("User has already logged in. Deleting old credentials");
+          TokenManager.removeToken(userID);
+        }
+        TokenManager.addToken(userID, idToken);
+        Log.info("Added new token to TokenManager");
+        // res.redirect("/");
+      } else {
+        // Token is invalid or missing
+        res.status(401); // Unauthorized status code
+      }
+      String errorType = "Invalid or missing ID token: " + idToken;
+      boolean errResult = !verified;
+      UserData user = db.getUserFull(db.findUser(email));
+      return JSONResponse(gson, errorType, errResult, null, user);
     };
   }
 
@@ -410,18 +486,18 @@ public class App {
   /**
    * Returns JSON response on error or OK
    * 
-   * @param gson        GSON to convert to JSON
-   * @param errorType   Error Message
-   * @param checkResult Evaluation of result
-   * @param message     mMessage for JSON on OK
-   * @param data        mData for JSON on OK
+   * @param gson      GSON to convert to JSON
+   * @param errorType Error Message
+   * @param errResult Evaluation of result
+   * @param message   mMessage for JSON on OK
+   * @param data      mData for JSON on OK
    * @return JSON response
    */
-  private static Object JSONResponse(final Gson gson, String errorType, boolean checkResult, String message,
+  private static Object JSONResponse(final Gson gson, String errorType, boolean errResult, String message,
       Object data) {
-    if (checkResult) {
+    if (errResult) {
       return gson.toJson(new StructuredResponse(
-          "error", errorType, null));
+          "error", errorType, data));
     } else {
       return gson.toJson(new StructuredResponse("ok", message, data));
     }
