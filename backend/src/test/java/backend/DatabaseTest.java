@@ -59,7 +59,7 @@ public class DatabaseTest extends TestCase {
     assertTrue(res.containsAll(sub));
     for (PostData row : res) {
       for (PostData su : sub) {
-        if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
+        if (row.equals(su)) {
           db.deleteRow(row.mId, USERID);
         }
       }
@@ -75,7 +75,7 @@ public class DatabaseTest extends TestCase {
     ArrayList<PostData> res = db.selectAll();
     for (PostData row : res) {
       for (PostData su : sub) {
-        if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
+        if (row.equals(su)) {
           int success = db.deleteRow(row.mId, USERID);
           assertEquals(success, USERID);
         }
@@ -94,11 +94,9 @@ public class DatabaseTest extends TestCase {
     ArrayList<PostData> res = db.selectAll();
     for (PostData row : res) {
       for (PostData su : sub) {
-        if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
+        if (row.equals(su)) {
           PostData select = db.selectOne(row.mId);
-          assertTrue(select.mId == row.mId);
-          assertTrue(select.mMessage == row.mMessage);
-          assertTrue(select.mSubject == row.mSubject);
+          assertTrue(select.equals(row));
           db.deleteRow(select.mId, USERID);
         }
       }
@@ -116,7 +114,7 @@ public class DatabaseTest extends TestCase {
     ArrayList<PostData> res = db.selectAll();
     for (PostData row : res) {
       for (PostData su : sub) {
-        if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
+        if (row.equals(su)) {
           int likeStatus = row.numLikes;
           db.toggleLike(row.mId);
           PostData changed = db.selectOne(row.mId);
@@ -140,7 +138,7 @@ public class DatabaseTest extends TestCase {
     for (int i = 0; i < num; i++) {
       String subject = "Subject" + rngString();
       String message = "Message" + rngString();
-      sub.add(new PostData(i, subject, message, 0));
+      sub.add(new PostData(i, subject, message, 0, USERID));
       if (isInsert)
         assertTrue(db.insertRow(subject, message, USERID) == 1); // Assert and new element
     }
@@ -156,7 +154,7 @@ public class DatabaseTest extends TestCase {
     ArrayList<PostData> res = db.selectAll();
     for (PostData row : res) {
       for (PostData su : sub) {
-        if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
+        if (row.equals(su)) {
           int id = row.mId;
           String subject = "Subject" + rngString();
           String message = "Message" + rngString();
