@@ -513,13 +513,13 @@ public class Database {
    * @param userID id of user
    * @return UserData of id, username, and email
    */
-  UserData getUserSimple(int userID) {
-    UserData res = null;
+  UserDataLite getUserSimple(int userID) {
+    UserDataLite res = null;
     try {
       mGetUserSimple.setInt(1, userID);
       ResultSet rs = mGetUserSimple.executeQuery();
       if (rs.next()) {
-        res = new UserData(rs.getInt("id"), rs.getString("username"), rs.getString("email"));
+        res = new UserDataLite(rs.getInt("id"), rs.getString("username"), rs.getString("email"));
       }
     } catch (SQLException e) {
       e.printStackTrace();

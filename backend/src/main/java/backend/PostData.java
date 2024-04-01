@@ -72,6 +72,17 @@ public class PostData {
         PostData obj = (PostData) other;
         if (!this.mSubject.equals(obj.mSubject))
             return false;
-        return this.mMessage.equals(obj.mMessage);
+        if (!this.mMessage.equals(obj.mMessage))
+            return false;
+        if (this.mUserID != obj.mUserID)
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Subject: %s%nMessage: %s%nuserID: %d%nmId: %d%n",
+                this.mSubject, this.mMessage,
+                this.mUserID, this.mId);
     }
 }

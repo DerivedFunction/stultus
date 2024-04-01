@@ -421,7 +421,7 @@ public class App {
     return (request, response) -> {
       int userID = Integer.parseInt(request.params(USER_PARAM));
       extractResponse(response);
-      UserData data = db.getUserSimple(userID);
+      UserDataLite data = db.getUserSimple(userID);
       String errorType = userID + " not found";
       boolean errResult = (data == null);
       String message = null;
@@ -461,7 +461,7 @@ public class App {
         }
         TokenManager.addToken(userID, idToken);
         Log.info("Added new token to TokenManager");
-        // res.redirect("/");
+        // res.redirect("/index.html");
       } else {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
@@ -469,6 +469,7 @@ public class App {
       String errorType = "Invalid or missing ID token: " + idToken;
       boolean errResult = !verified;
       UserData user = db.getUserFull(db.findUser(email));
+      res.type("application/json");
       return JSONResponse(gson, errorType, errResult, null, user);
     };
   }

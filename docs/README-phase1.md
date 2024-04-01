@@ -13,28 +13,28 @@ change my ideas based on feedback
 
 ## Entity Relationship Diagram
 
-![Entity Relationship Diagram](img-assets/ERD.png)
+![Entity Relationship Diagram](img-assets/phase1/ERD.png)
 
 ## UML Diagram
 
-![UML Diagram](img-assets/UML.png)
+![UML Diagram](img-assets/phase1/UML.png)
 
 ## Admin FSM
 
-![Admin FSM Diagram](img-assets/AdminFSM.png)
+![Admin FSM Diagram](img-assets/phase1/AdminFSM.png)
 
 ## Web FSM
 
-![Web FSM Diagram](img-assets/WebFSM.png)
+![Web FSM Diagram](img-assets/phase1/WebFSM.png)
 
 ## Mock User Interface
 
-![Main UI](img-assets/MainUI.png)
-![Edit UI](img-assets/EditUI.png)
+![Main UI](img-assets/phase1/MainUI.png)
+![Edit UI](img-assets/phase1/EditUI.png)
 
 ## User Stories
 
-![User Stories](img-assets/UserStories.png)
+![User Stories](img-assets/phase1/UserStories.png)
 
 ## Description of Tests (Automated)
 
@@ -65,9 +65,6 @@ May wish to add edge case testing (such as overlength messages or empty messages
 
 ## Routes and details
 
-
-
-
 | Purpose                | Route               | Verb   | Purpose                     | Structure                                                     |
 | ---------------------- | ------------------- | ------ | --------------------------- | ------------------------------------------------------------- |
 | Show all messages      | `/messages`         | GET    | Return post data to display | JSON `{ArrayList<messages>}`                                  |
@@ -77,8 +74,8 @@ May wish to add edge case testing (such as overlength messages or empty messages
 | Delete a post          | `/messages/id`      | DELETE | Deletes a post              | Returns `status`                                              |
 | Like a post            | `/messages/id/like` | PUT    | Likes a post                | Returns new number of `numLikes`                              |
 
-
 ## Documentation for Branches
+
 - [Admin](../admin-cli/README.md)
 - [Backend](../backend/README.md)
 - [Web](../web/README.md#documentation)

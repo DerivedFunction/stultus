@@ -59,7 +59,7 @@ public class DatabaseTest extends TestCase {
     assertTrue(res.containsAll(sub));
     for (PostData row : res) {
       for (PostData su : sub) {
-        if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
+        if (row.equals(su)) {
           db.deleteRow(row.mId, USERID);
         }
       }
@@ -75,7 +75,7 @@ public class DatabaseTest extends TestCase {
     ArrayList<PostData> res = db.selectAll();
     for (PostData row : res) {
       for (PostData su : sub) {
-        if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
+        if (row.equals(su)) {
           int success = db.deleteRow(row.mId, USERID);
           assertEquals(success, USERID);
         }
@@ -94,11 +94,9 @@ public class DatabaseTest extends TestCase {
     ArrayList<PostData> res = db.selectAll();
     for (PostData row : res) {
       for (PostData su : sub) {
-        if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
+        if (row.equals(su)) {
           PostData select = db.selectOne(row.mId);
-          assertTrue(select.mId == row.mId);
-          assertTrue(select.mMessage == row.mMessage);
-          assertTrue(select.mSubject == row.mSubject);
+          assertTrue(select.equals(row));
           db.deleteRow(select.mId, USERID);
         }
       }
@@ -116,7 +114,7 @@ public class DatabaseTest extends TestCase {
     ArrayList<PostData> res = db.selectAll();
     for (PostData row : res) {
       for (PostData su : sub) {
-        if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
+        if (row.equals(su)) {
           int likeStatus = row.numLikes;
           db.toggleLike(row.mId);
           PostData changed = db.selectOne(row.mId);
@@ -140,7 +138,7 @@ public class DatabaseTest extends TestCase {
     for (int i = 0; i < num; i++) {
       String subject = "Subject" + rngString();
       String message = "Message" + rngString();
-      sub.add(new PostData(i, subject, message, 0));
+      sub.add(new PostData(i, subject, message, 0, USERID));
       if (isInsert)
         assertTrue(db.insertRow(subject, message, USERID) == 1); // Assert and new element
     }
@@ -156,7 +154,7 @@ public class DatabaseTest extends TestCase {
     ArrayList<PostData> res = db.selectAll();
     for (PostData row : res) {
       for (PostData su : sub) {
-        if (row.mMessage.equals(su.mMessage) && row.mSubject.equals(su.mSubject)) {
+        if (row.equals(su)) {
           int id = row.mId;
           String subject = "Subject" + rngString();
           String message = "Message" + rngString();
@@ -175,7 +173,6 @@ public class DatabaseTest extends TestCase {
   public static void testUser() {
     String email = rngString() + "@example.com";
     String username = "test account";
-    UserData test = new UserData(0, username, email);
     // First time it works
     assertEquals(db.insertUser(username, email), 1);
     // Second time it doesn't
@@ -195,19 +192,63 @@ public class DatabaseTest extends TestCase {
     String so = test.mSO;
     int userID = db.findUser(email);
     db.updateUser(userID, "a", gender + 1, "a");
-    test = db.getUserFull(userID);
-    assertFalse(email == test.mEmail);
-    assertFalse(username == test.mUsername);
-    assertFalse(gender == test.mGender);
-    assertFalse(so == test.mSO);
+    UserData updated = db.getUserFull(userID);
+    assertFalse(test.equals(updated));
+    db.updateUser(userID, username, gender, so);
+    updated = db.getUserFull(userID);
+    assertTrue(test.equals(updated));
     db.deleteUser(userID);
   }
 
+  /**
+   * Creates a new user
+   * 
+   * @return UserData of added user
+   */
   private static UserData createUser() {
     String email = rngString() + "@example.com";
     String username = "test account";
-    UserData test = new UserData(0, username, email);
     db.insertUser(username, email);
+    UserData test = db.getUserFull(db.findUser(email));
     return test;
+  }
+
+  /**
+   * Tests voting system
+   */
+  public static void testVote() {
+    UserData test = createUser();
+    int userID = test.mId;
+    db.insertRow("test", "test", userID);
+    PostData post = db.selectAll().get(0);
+
+    int postID = post.mId;
+    int oldVotes = db.totalVotes(postID);
+    // Upvote
+    assertTrue(db.toggleVote(postID, 1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes + 1);
+    // Upvote again to cancel
+    assertTrue(db.toggleVote(postID, 1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes);
+
+    // Downvote
+    assertTrue(db.toggleVote(postID, -1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes - 1);
+    // Downvote again to cancel
+    assertTrue(db.toggleVote(postID, -1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes);
+
+    // Upvote
+    assertTrue(db.toggleVote(postID, 1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes + 1);
+    // Downvote to undo the upvote
+    assertTrue(db.toggleVote(postID, -1, userID) == 1);
+    assertTrue(db.totalVotes(postID) == oldVotes - 1);
+
+    // Remove it from like table
+    assertTrue(db.deleteVote(postID, userID) == 1);
+    db.deleteRow(postID, userID);
+    db.deleteUser(userID);
+
   }
 }

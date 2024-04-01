@@ -8,22 +8,7 @@ package backend;
  * an abstract representation of a row of the database. RowData
  * and Database are connected: Both gets updated if one changes.
  */
-public class UserData {
-    /**
-     * The ID of this row of the database
-     */
-    int mId;
-
-    /**
-     * The username of the user
-     */
-    String mUsername;
-
-    /**
-     * The email of the user
-     */
-    String mEmail;
-
+public class UserData extends UserDataLite {
     /**
      * The gender of the user
      */
@@ -42,9 +27,7 @@ public class UserData {
      * @param mEmail    The email
      */
     public UserData(int mId, String mUsername, String mEmail) {
-        this.mId = mId;
-        this.mUsername = mUsername;
-        this.mEmail = mEmail;
+        super(mId, mUsername, mEmail);
     }
 
     /**
@@ -57,11 +40,27 @@ public class UserData {
      * @param mSO       The SO
      */
     public UserData(int mId, String mUsername, String mEmail, int mGender, String mSO) {
-        this.mId = mId;
-        this.mUsername = mUsername;
-        this.mEmail = mEmail;
+        super(mId, mUsername, mEmail);
         this.mGender = mGender;
         this.mSO = mSO;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        UserData obj = (UserData) other;
+        if (!this.mUsername.equals(obj.mUsername))
+            return false;
+        if (!this.mEmail.equals(obj.mEmail))
+            return false;
+        if (this.mGender != obj.mGender)
+            return false;
+        if (!this.mSO.equals(obj.mSO))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + String.format("mGender: %d%nmSO: %s%n", this.mGender, this.mSO);
+    }
 }
