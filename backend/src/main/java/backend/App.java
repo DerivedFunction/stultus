@@ -421,7 +421,7 @@ public class App {
     return (request, response) -> {
       int userID = Integer.parseInt(request.params(USER_PARAM));
       extractResponse(response);
-      UserData data = db.getUserSimple(userID);
+      UserDataLite data = db.getUserSimple(userID);
       String errorType = userID + " not found";
       boolean errResult = (data == null);
       String message = null;
