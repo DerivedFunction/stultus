@@ -250,7 +250,7 @@ public class Database {
       db.mSelectOneComment = db.mConnection.prepareStatement(
           "SELECT * FROM " + commentTable + " WHERE id=?");
       db.mDeleteComment = db.mConnection.prepareStatement(
-          "DELETE FROM " + commentTable + " WHERE id=? AND post_id=?");
+          "DELETE FROM " + commentTable + " WHERE id=? AND userid=?");
       db.mUpdateComment = db.mConnection.prepareStatement(
           "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=?");
       db.mInsertComment = db.mConnection.prepareStatement(
@@ -692,4 +692,24 @@ public class Database {
     }
     return count;
   }
+
+  /**
+   * Deletes a comment
+   * 
+   * @param commentID id of comment
+   * @param userID    id of user
+   * @return
+   */
+  int deleteComment(int commentID, int userID) {
+    int count = 0;
+    try {
+      mDeleteComment.setInt(1, commentID);
+      mDeleteComment.setInt(2, userID);
+      count += mDeleteComment.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
+  }
+
 }
