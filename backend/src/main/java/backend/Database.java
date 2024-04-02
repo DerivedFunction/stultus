@@ -98,6 +98,31 @@ public class Database {
   private PreparedStatement mDeleteUser;
 
   /**
+   * A prepared statement to select all comments
+   */
+  private PreparedStatement mSelectAllCommentsForPost;
+  /**
+   * A prepared statement to select all comments
+   */
+  private PreparedStatement mSelectAllCommentsByUser;
+  /**
+   * A prepared statement to select one comment
+   */
+  private PreparedStatement mSelectOneComment;
+  /**
+   * A prepared statement to delete a comment
+   */
+  private PreparedStatement mDeleteComment;
+  /**
+   * A prepared statement to edit a comment
+   */
+  private PreparedStatement mUpdateComment;
+  /**
+   * A prepared statement to add a comment
+   */
+  private PreparedStatement mInsertComment;
+
+  /**
    * Database constructor is private
    */
   private Database() {
@@ -218,11 +243,23 @@ public class Database {
           "UPDATE " + userTable + " SET username=?, gender=?, so=? where id=?");
       db.mDeleteUser = db.mConnection.prepareStatement(
           "DELETE FROM " + userTable + " WHERE id=?");
+      db.mSelectAllCommentsForPost = db.mConnection.prepareStatement(
+          "SELECT * FROM " + commentTable + " WHERE post_id=? ORDER BY ID DESC");
+      db.mSelectAllCommentsByUser = db.mConnection.prepareStatement(
+          "SELECT * FROM " + commentTable + " WHERE userid=? ORDER BY ID DESC");
+      db.mSelectOneComment = db.mConnection.prepareStatement(
+          "SELECT * FROM " + commentTable + " WHERE id=?");
+      db.mDeleteComment = db.mConnection.prepareStatement(
+          "DELETE FROM " + commentTable + " WHERE id=? AND post_id=?");
+      db.mUpdateComment = db.mConnection.prepareStatement(
+          "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=?");
+      db.mInsertComment = db.mConnection.prepareStatement(
+          "INSERT INTO " + commentTable + " (mesage, post_id, userid) VALUES (?,?,?)");
       // deprecated statements
       db.mAddLike_deprecated = db.mConnection
-          .prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
+          .prepareStatement("UPDATE  " + tableName + " SET likes=likes+1 WHERE id=? AND likes=0");
       db.mRemoveLike_deprecated = db.mConnection
-          .prepareStatement("UPDATE  " + tableName + "  SET likes=likes-1 WHERE id=? AND likes=1");
+          .prepareStatement("UPDATE  " + tableName + " SET likes=likes-1 WHERE id=? AND likes=1");
 
     } catch (SQLException e) {
       Log.error("Error creating prepared statement");
@@ -613,4 +650,5 @@ public class Database {
     }
     return count;
   }
+
 }
