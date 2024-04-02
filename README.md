@@ -35,8 +35,10 @@ other's ideas. All relavant information about new updates and releases are in [`
 
 ```bash
 # Delete the backend-dokku branch from remote and locally
+git stash
 git push origin --delete backend-dokku
 git branch -D backend-dokku
+git push origin --prune
 # the following is to be done on your **local** host
 # start from the root folder of the master branch
 git checkout master
@@ -57,7 +59,8 @@ git branch -D backend-dokku
 git checkout -b backend-dokku origin/backend-dokku
 
 # we are now ready to deploy to dokku with (-f if necessary):
-git push dokku backend-dokku
+git push -f dokku backend-dokku
+
 ```
 
 ### Dokku configurations

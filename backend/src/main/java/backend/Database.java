@@ -98,6 +98,35 @@ public class Database {
   private PreparedStatement mDeleteUser;
 
   /**
+   * A prepared statement to select all comments
+   */
+  private PreparedStatement mSelectAllCommentsForPost;
+  /**
+   * A prepared statement to select all comments
+   */
+  private PreparedStatement mSelectAllCommentsByUser;
+  /**
+   * A prepared statement to select all comments
+   */
+  private PreparedStatement mSelectAllCommentsByUserAndPost;
+  /**
+   * A prepared statement to select one comment
+   */
+  private PreparedStatement mSelectOneComment;
+  /**
+   * A prepared statement to delete a comment
+   */
+  private PreparedStatement mDeleteComment;
+  /**
+   * A prepared statement to edit a comment
+   */
+  private PreparedStatement mUpdateComment;
+  /**
+   * A prepared statement to add a comment
+   */
+  private PreparedStatement mInsertComment;
+
+  /**
    * Database constructor is private
    */
   private Database() {
@@ -175,6 +204,7 @@ public class Database {
     String tableName = dbTable.get(0);
     String likeTable = dbTable.get(1);
     String userTable = dbTable.get(2);
+    String commentTable = dbTable.get(3);
     try {
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM " + tableName + " WHERE id=?");
@@ -217,11 +247,25 @@ public class Database {
           "UPDATE " + userTable + " SET username=?, gender=?, so=? where id=?");
       db.mDeleteUser = db.mConnection.prepareStatement(
           "DELETE FROM " + userTable + " WHERE id=?");
+      db.mSelectAllCommentsForPost = db.mConnection.prepareStatement(
+          "SELECT * FROM " + commentTable + " WHERE post_id=? ORDER BY ID DESC");
+      db.mSelectAllCommentsByUser = db.mConnection.prepareStatement(
+          "SELECT * FROM " + commentTable + " WHERE userid=? ORDER BY ID DESC");
+      db.mSelectAllCommentsByUserAndPost = db.mConnection.prepareStatement(
+          "SELECT * FROM " + commentTable + " WHERE userid=? AND post_id=? ORDER BY ID DESC");
+      db.mSelectOneComment = db.mConnection.prepareStatement(
+          "SELECT * FROM " + commentTable + " WHERE id=?");
+      db.mDeleteComment = db.mConnection.prepareStatement(
+          "DELETE FROM " + commentTable + " WHERE id=? AND userid=?");
+      db.mUpdateComment = db.mConnection.prepareStatement(
+          "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=?");
+      db.mInsertComment = db.mConnection.prepareStatement(
+          "INSERT INTO " + commentTable + " (mesage, post_id, userid) VALUES (?,?,?)");
       // deprecated statements
       db.mAddLike_deprecated = db.mConnection
-          .prepareStatement("UPDATE  " + tableName + "  SET likes=likes+1 WHERE id=? AND likes=0");
+          .prepareStatement("UPDATE  " + tableName + " SET likes=likes+1 WHERE id=? AND likes=0");
       db.mRemoveLike_deprecated = db.mConnection
-          .prepareStatement("UPDATE  " + tableName + "  SET likes=likes-1 WHERE id=? AND likes=1");
+          .prepareStatement("UPDATE  " + tableName + " SET likes=likes-1 WHERE id=? AND likes=1");
 
     } catch (SQLException e) {
       Log.error("Error creating prepared statement");
@@ -492,7 +536,7 @@ public class Database {
    * @param email to find
    * @return id of user, 0 on nothing
    */
-  int findUser(String email) {
+  int findUserID(String email) {
     int res = 0;
     try {
       mFindUser.setString(1, email);
@@ -559,7 +603,7 @@ public class Database {
   int insertUser(String username, String email) {
     int count = 0;
     // User already existrs
-    if (findUser(email) > 0) {
+    if (findUserID(email) > 0) {
       return 0;
     }
     try {
@@ -611,5 +655,159 @@ public class Database {
       e.printStackTrace();
     }
     return count;
+  }
+
+  /**
+   * Inserts a comment to a post
+   * 
+   * @param message Comment message
+   * @param postID  which post is commented
+   * @param userID  author of comment
+   * @return
+   */
+  int insertComment(String message, int postID, int userID) {
+    int count = 0;
+    try {
+      mInsertComment.setString(1, message);
+      mInsertComment.setInt(2, postID);
+      mInsertComment.setInt(3, userID);
+      count += mInsertComment.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
+  }
+
+  /**
+   * Updates a comment for user
+   * 
+   * @param message   Comment message
+   * @param commentID Which comment to update
+   * @param userID    Author of edited comment
+   * @return
+   */
+  int updateComment(String message, int commentID, int userID) {
+    int count = 0;
+    try {
+      mUpdateComment.setString(1, message);
+      mUpdateComment.setInt(2, commentID);
+      mUpdateComment.setInt(3, userID);
+      count += mUpdateComment.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
+  }
+
+  /**
+   * Deletes a comment
+   * 
+   * @param commentID id of comment
+   * @param userID    id of user
+   * @return
+   */
+  int deleteComment(int commentID, int userID) {
+    int count = 0;
+    try {
+      mDeleteComment.setInt(1, commentID);
+      mDeleteComment.setInt(2, userID);
+      count += mDeleteComment.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
+  }
+
+  /**
+   * Select a single comment
+   * 
+   * @param commentID comment's ID to select
+   * @return CommentData
+   */
+  CommentData selectComment(int commentID) {
+    CommentData res = null;
+    try {
+      mSelectOneComment.setInt(1, commentID);
+      ResultSet rs = mSelectOneComment.executeQuery();
+      if (rs.next()) {
+        res = new CommentData(rs.getInt("id"), rs.getString("message"),
+            rs.getInt("post_id"), rs.getInt("userid"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  /**
+   * Selects all comments for specific post
+   * 
+   * @param postID id of post
+   * @return ArrayList of CommentData
+   */
+  ArrayList<CommentData> selectAllCommentByPost(int postID) {
+    ArrayList<CommentData> res = new ArrayList<>();
+    try {
+      mSelectAllCommentsForPost.setInt(1, postID);
+      ResultSet rs = mSelectAllCommentsForPost.executeQuery();
+      while (rs.next()) {
+        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
+            rs.getInt("post_id"), rs.getInt("userid")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  /**
+   * Selects all comments for specific post
+   * 
+   * @param userID id of user
+   * @return ArrayList of CommentData
+   */
+  ArrayList<CommentData> selectAllCommentByUserID(int userID) {
+    ArrayList<CommentData> res = new ArrayList<>();
+    try {
+      mSelectAllCommentsByUser.setInt(1, userID);
+      ResultSet rs = mSelectAllCommentsByUser.executeQuery();
+      while (rs.next()) {
+        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
+            rs.getInt("post_id"), rs.getInt("userid")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  /**
+   * Selects all comments for specific post and user
+   * A user can make multiple comments to a single post
+   * 
+   * @param userID id of user
+   * @param postID id of post
+   * @return ArrayList of CommentData
+   */
+  ArrayList<CommentData> selectAllComments(int userID, int postID) {
+    ArrayList<CommentData> res = new ArrayList<>();
+    try {
+      mSelectAllCommentsByUserAndPost.setInt(1, userID);
+      mSelectAllCommentsByUserAndPost.setInt(2, postID);
+      ResultSet rs = mSelectAllCommentsByUserAndPost.executeQuery();
+      while (rs.next()) {
+        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
+            rs.getInt("post_id"), rs.getInt("userid")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 }

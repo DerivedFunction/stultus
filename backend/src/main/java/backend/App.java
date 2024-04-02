@@ -17,56 +17,66 @@ public class App {
    * Default port to listen to database
    */
   private static final String DEFAULT_PORT_DB = "5432";
+
   /**
    * Default port for Spark
    */
   private static final int DEFAULT_PORT_SPARK = 4567;
-  /**
-   * parameters for website
-   */
-  private static final String CONTEXT = "/messages";
-  /**
-   * parameters for id in website
-   */
-  private static final String ID_PARAM = "id";
-  /**
-   * parameter name for voting in website
-   */
-  private static final String VOTE_CONTEXT = "vote";
-  /**
-   * parameter name for voting in website
-   */
-  private static final String VOTE_PARAM = "voteValue";
-  /**
-   * parameter name for user in website
-   */
-  private static final String USER_CONTEXT = "user";
-  /**
-   * parameters for user in website
-   */
-  private static final String USER_PARAM = "userID";
 
   /**
-   * parameters for basic message with id in website
+   * Parameters for website context
    */
-  private static final String FORMAT = String.format("%s/:%s", CONTEXT, ID_PARAM);
+  private static final String CONTEXT = "/messages";
+
   /**
-   * parameters for basic message with id in website
+   * Parameter name for ID in website
    */
-  private static final String USER_FORMAT = String.format("%s/:%s", USER_CONTEXT, USER_PARAM);
+  private static final String MSG_ID = "id";
+
   /**
-   * parameters for adding a basic message with userid in website
+   * Parameter name for user in website
    */
-  private static final String ADD_FORMAT = String.format("%s/%s/:%s", CONTEXT, USER_CONTEXT, USER_PARAM);
+  private static final String USER_CONTEXT = "user";
+
   /**
-   * parameters for editing a basic message with userid in website
+   * Parameter name for user ID in website
    */
-  private static final String EDIT_FORMAT = String.format("%s/%s/:%s", FORMAT, USER_CONTEXT, USER_PARAM);
+  private static final String USER_ID = "userID";
+
   /**
-   * parameters for basic voting with userid and post id in website
+   * Parameters for basic message with ID in website
    */
-  private static final String VOTE_FORMAT = String.format("%s/%s/:%s/%s/:%s", FORMAT, VOTE_CONTEXT, VOTE_PARAM,
-      USER_CONTEXT, USER_PARAM);
+  private static final String FORMAT = String.format("%s/:%s", CONTEXT, MSG_ID); // "/messages/:id"
+
+  /**
+   * Parameters for basic message with user ID in website
+   */
+  private static final String USER_FORMAT = String.format("/%s/:%s", USER_CONTEXT, USER_ID); // "/user/:userID"
+
+  /**
+   * Parameters for adding a basic message with user ID in website
+   */
+  private static final String ADD_FORMAT = String.format("/%s/addMessage", USER_FORMAT); // "/user/:userID/addMessage"
+
+  /**
+   * Parameters for editing a basic message with user ID in website
+   */
+  private static final String EDIT_FORMAT = String.format("%s/editMessage/:%s", USER_FORMAT, MSG_ID); // "/user/:userID/editMessage/:id"
+
+  /**
+   * Parameters for deleting a basic message with user ID in website
+   */
+  private static final String DELETE_FORMAT = String.format("%s/deleteMessage/:%s", USER_FORMAT, MSG_ID); // "/user/:userID/deleteMessage/:id"
+
+  /**
+   * Parameters for basic voting with user ID and post ID in website
+   */
+  private static final String UPVOTE_FORMAT = String.format("%s/upvote/:%s", USER_FORMAT, MSG_ID); // "/user/:userID/upvote/:id"
+
+  /**
+   * Parameters for basic voting with user ID and post ID in website
+   */
+  private static final String DOWNVOTE_FORMAT = String.format("%s/downvote/:%s", USER_FORMAT, MSG_ID); // "/user/:userID/downvote/:id"
 
   /**
    * The redirect parameter
@@ -91,6 +101,7 @@ public class App {
     ret.add("tblData");
     ret.add("likeData");
     ret.add("userData");
+    ret.add("commentData");
     return ret;
   }
 
@@ -145,16 +156,54 @@ public class App {
      * GET route that returns all messages and ids.
      * Converts StructuredResponses to JSON
      */
-    Spark.get(CONTEXT, getAll(gson, db));
+    Spark.get(CONTEXT, getAll(gson, db)); // "/messages"
 
     /*
      * GET route that returns message with specific id.
      * Converts StructuredResponses to JSON
      */
-    Spark.get(FORMAT, getWithId(gson, db));
+    Spark.get(FORMAT, getWithId(gson, db)); // "/messages/:id"
 
-    Spark.get(USER_FORMAT, getUser(gson, db));
+    /*
+     * GET route that returns user information.
+     * Converts StructuredResponses to JSON
+     */
+    Spark.get(USER_FORMAT, getUser(gson, db)); // "/user/:userID"
 
+    /*
+     * POST route that adds a new element to DataStore.
+     * Reads JSON from body of request and turns it to a
+     * SimpleRequest object, extracting the title and msg,
+     * and also the object.
+     */
+    Spark.post(ADD_FORMAT, postIdea(gson, db)); // "/user/:userID/addMessage"
+
+    /*
+     * POST route that authenticates a token
+     */
+    Spark.post(AUTH_FORMAT, authenticateToken(gson, db)); // "/authenticate"
+
+    /*
+     * PUT route for updating a row in DataStore. Almost the same
+     * as POST
+     */
+    Spark.put(EDIT_FORMAT, putWithID(gson, db)); // "/user/:userID/editMessage/:id"
+
+    /*
+     * PUT route for voting
+     */
+    Spark.put(UPVOTE_FORMAT, putUpVote(gson, db)); // "/user/:userID/upvote/:id"
+    /*
+     * PUT route for voting
+     */
+    Spark.put(DOWNVOTE_FORMAT, putDownVote(gson, db)); // "/user/:userID/downvote/:id"
+
+    /*
+     * Delete route for removing a row from DataStore
+     */
+    Spark.delete(DELETE_FORMAT, deleteWithID(gson, db)); // "/user/:userID/deleteMessage/:id"
+
+    // Old methods
     /*
      * POST route that adds a new element to DataStore.
      * Reads JSON from body of request and turns it to a
@@ -162,46 +211,22 @@ public class App {
      * and also the object.
      * 
      */
-    Spark.post(CONTEXT, postIdea_old(gson, db));
-    /*
-     * POST route that adds a new element to DataStore.
-     * Reads JSON from body of request and turns it to a
-     * SimpleRequest object, extracting the title and msg,
-     * and also the object.
-     */
-    Spark.post(ADD_FORMAT, postIdea(gson, db));
-
-    Spark.post(AUTH_FORMAT, authenticateToken(gson, db));
-
+    Spark.post(CONTEXT, postIdea_old(gson, db)); // "/messages"
     /*
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
      */
-    Spark.put(FORMAT, putWithID_old(gson, db));
-    /*
-     * PUT route for updating a row in DataStore. Almost the same
-     * as POST
-     */
-    Spark.put(EDIT_FORMAT, putWithID(gson, db));
-
-    /*
-     * PUT route for voting
-     */
-    Spark.put(VOTE_FORMAT, putVote(gson, db));
-
+    Spark.put(FORMAT, putWithID_old(gson, db)); // "/messages/:id"
     /*
      * PUT route for adding a like,
      */
-    Spark.put(String.format("%s/%s", FORMAT, LIKE_PARAM), putLike(gson, db));
+    Spark.put(String.format("%s/%s", FORMAT, LIKE_PARAM), putLike(gson, db)); // "/messages/:id/like"
 
     /*
      * Delete route for removing a row from DataStore
      */
-    Spark.delete(FORMAT, deleteWithID_old(gson, db));
-    /*
-     * Delete route for removing a row from DataStore
-     */
-    Spark.delete(EDIT_FORMAT, deleteWithID(gson, db));
+    Spark.delete(FORMAT, deleteWithID_old(gson, db)); // "/messages/:id"
+
   }
 
   /**
@@ -216,7 +241,7 @@ public class App {
    */
   private static Route deleteWithID_old(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(ID_PARAM));
+      int idx = Integer.parseInt(request.params(MSG_ID));
       extractResponse(response);
       int result = db.deleteRow(idx, 1);
       String errorType = "unable to delete row " + idx;
@@ -235,8 +260,8 @@ public class App {
    */
   private static Route deleteWithID(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(ID_PARAM));
-      int userID = Integer.parseInt(request.params(USER_PARAM));
+      int idx = Integer.parseInt(request.params(MSG_ID));
+      int userID = Integer.parseInt(request.params(USER_ID));
       extractResponse(response);
       int result = db.deleteRow(idx, userID);
       String errorType = "unable to delete row " + idx;
@@ -257,7 +282,7 @@ public class App {
    */
   private static Route putWithID_old(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(ID_PARAM));
+      int idx = Integer.parseInt(request.params(MSG_ID));
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
       Integer result = db.updateOne(idx, req.mTitle, req.mMessage, 1);
@@ -277,8 +302,8 @@ public class App {
    */
   private static Route putWithID(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(ID_PARAM));
-      int userID = Integer.parseInt(request.params(USER_PARAM));
+      int idx = Integer.parseInt(request.params(MSG_ID));
+      int userID = Integer.parseInt(request.params(USER_ID));
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
       Integer result = db.updateOne(idx, req.mTitle, req.mMessage, userID);
@@ -292,7 +317,7 @@ public class App {
    * Creates the route to handle like changes
    * 
    * @deprecated As of Sprint 8, this method is deprecated in favor of
-   *             {@link #putVote(Gson, Database)}
+   *             {@link #putUpVote(Gson, Database)}
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
@@ -300,7 +325,7 @@ public class App {
    */
   private static Route putLike(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(ID_PARAM));
+      int idx = Integer.parseInt(request.params(MSG_ID));
       int result = db.toggleLike(idx);
       String errorType = "error performing like";
       boolean errResult = (result == -1);
@@ -316,13 +341,31 @@ public class App {
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.togglelike
    */
-  private static Route putVote(final Gson gson, Database db) {
+  private static Route putUpVote(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(ID_PARAM));
-      int vote = Integer.parseInt(request.params(VOTE_PARAM));
-      int user = Integer.parseInt(request.params(USER_PARAM));
-      int result = db.toggleVote(idx, vote, user);
-      String errorType = "error updating vote: post id=" + idx + " vote=" + vote;
+      int idx = Integer.parseInt(request.params(MSG_ID));
+      int user = Integer.parseInt(request.params(USER_ID));
+      int result = db.toggleVote(idx, 1, user);
+      String errorType = "error updating vote: post id=" + idx + " vote=" + 1;
+      boolean errResult = (result == -1);
+      return JSONResponse(gson, errorType, errResult, null, null);
+    };
+  }
+
+  /**
+   * Creates the route to handle like changes
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.togglelike
+   */
+  private static Route putDownVote(final Gson gson, Database db) {
+    return (request, response) -> {
+      int idx = Integer.parseInt(request.params(MSG_ID));
+      int user = Integer.parseInt(request.params(USER_ID));
+      int result = db.toggleVote(idx, -1, user);
+      String errorType = "error updating vote: post id=" + idx + " vote=" + -1;
       boolean errResult = (result == -1);
       return JSONResponse(gson, errorType, errResult, null, null);
     };
@@ -361,7 +404,7 @@ public class App {
    */
   private static Route postIdea(final Gson gson, Database db) {
     return (request, response) -> {
-      int id = Integer.parseInt(request.params(USER_PARAM));
+      int id = Integer.parseInt(request.params(USER_ID));
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
       // createEntry checks for null title/message (-1)
@@ -399,7 +442,7 @@ public class App {
    */
   private static Route getWithId(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(ID_PARAM));
+      int idx = Integer.parseInt(request.params(MSG_ID));
       extractResponse(response);
       PostData data = db.selectOne(idx);
       String errorType = idx + " not found";
@@ -419,7 +462,7 @@ public class App {
    */
   private static Route getUser(final Gson gson, Database db) {
     return (request, response) -> {
-      int userID = Integer.parseInt(request.params(USER_PARAM));
+      int userID = Integer.parseInt(request.params(USER_ID));
       extractResponse(response);
       UserDataLite data = db.getUserSimple(userID);
       String errorType = userID + " not found";
@@ -449,28 +492,26 @@ public class App {
         email = Oauth.getEmail(idToken);
         name = Oauth.getName(idToken);
         // Checks if user exists in Database
-        UserData user = db.getUserFull(db.findUser(email));
+        UserData user = db.getUserFull(db.findUserID(email));
         if (user == null) { // creating a new user account
           Log.info("new account detected creating new user");
           db.insertUser(name, email);
         }
-        userID = db.findUser(email);
+        userID = db.findUserID(email);
         if (TokenManager.getToken(userID) != null) {
           Log.info("User has already logged in. Deleting old credentials");
           TokenManager.removeToken(userID);
         }
         TokenManager.addToken(userID, idToken);
         Log.info("Added new token to TokenManager");
-        // res.redirect("/index.html");
       } else {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
       }
       String errorType = "Invalid or missing ID token: " + idToken;
       boolean errResult = !verified;
-      UserData user = db.getUserFull(db.findUser(email));
-      res.type("application/json");
-      return JSONResponse(gson, errorType, errResult, null, user);
+      UserData user = db.getUserFull(db.findUserID(email));
+      return JSONResponse(gson, errorType, errResult, idToken, user);
     };
   }
 
