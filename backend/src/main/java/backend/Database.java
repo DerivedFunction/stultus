@@ -671,4 +671,25 @@ public class Database {
     }
     return count;
   }
+
+  /**
+   * Updates a comment for user
+   * 
+   * @param message   Comment message
+   * @param commentID Which comment to update
+   * @param userID    Author of edited comment
+   * @return
+   */
+  int updateComment(String message, int commentID, int userID) {
+    int count = 0;
+    try {
+      mUpdateComment.setString(1, message);
+      mUpdateComment.setInt(2, commentID);
+      mUpdateComment.setInt(3, userID);
+      count += mUpdateComment.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
+  }
 }
