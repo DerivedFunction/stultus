@@ -53,39 +53,5 @@
     <div id="InvalidContent">
         Invalid Title/Message: Please Try Again
     </div>
-    <div id="g_id_onload"
-        data-client_id="732167497663-u42guu2ktqercj2ic4ippp4nkfkobjfu.apps.googleusercontent.com"
-        data-login_uri="https://team-stultus.dokku.cse.lehigh.edu/authenticate"
-        data-callback="handleCredentialResponse">
-    </div>
-    <div class="g_id_signin"
-        data-type="standard"
-        data-size="large"
-        data-theme="outline"
-        data-text="sign_in_with"
-        data-shape="rectangular"
-        data-logo_alignment="left">
-    </div>
-
-    <script>
-        function onSignIn(googleUser){
-
-            const responsePayload = decodeJwtResponse(googleUser.getAuthResponse().id_token);
-                console.log("ID: " + responsePayload.sub);
-                console.log("Full Name: " + responsePayload.name);
-                console.log("Given Name: " + responsePayload.given_name);
-                console.log("Family Name: " + responsePayload.family_name);
-                console.log("Image URL: " + responsePayload.picture);
-                console.log("Email: " + responsePayload.email);
-                console.log("OAuth  token: " + googleUser.getAuthResponse().id_token);
-                //window.location.href = 'index.html';
-        }
-
-        //Decode JWT
-        function decodeJwtResponse(data){
-            var tokens = data.split(".");
-            return JSON.parse(atob(tokens[1]));
-        }
-    </script>
 </body>
 </html>
