@@ -7,22 +7,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-public class Database {
+public class UserDatabase {
   /**
    * The connection to the database. When there is no connection, it
    * should be null. Otherwise, there is a valid open connection
    * */
-  private Connection mConnection;
+  private Connection uConnection;
 
   /**
    * A prepared statement for getting all the data in the Database
    * */
-  private PreparedStatement mSelectAll;
+  private PreparedStatement uSelectAll;
 
   /**
    * A Prepared Statement for getting one row from the Database
    * */
-  private PreparedStatement mSelectOne;
+  private PreparedStatement uSelectOne;
 
   /**
    * A Prepared Statement for deleting  one row from the Database
@@ -32,22 +32,22 @@ public class Database {
   /**
    * A Prepared Statement for inserting  one row from the Database
    * */
-  private PreparedStatement mInsertOne;
+  private PreparedStatement uInsertOne;
 
   /**
    * A Prepared Statement for updating  one row from the Database
    * */
-  private PreparedStatement mUpdateOne;
+  private PreparedStatement uUpdateOne;
 
   /**
    * A Prepared Statement for creating the table from the Database
    * */
-  private PreparedStatement mCreateTable;
+  private PreparedStatement uCreateTable;
 
   /**
    * A Prepared Statement for deleting the table from the Database
    * */
-  private PreparedStatement mDropTable;
+  private PreparedStatement uDropTable;
 
   /**
    * In the context of the database, RowData represents the data
@@ -61,22 +61,27 @@ public class Database {
     /**
      * The ID of this row of the database
      * */
-    int mId;
+    int uId;
 
     /**
-     * Likes for comments/posts
+     * Name for the user (username if you will) 
      */
-    int mLikes;
+    String uName;
 
     /**
-     * The subject stored in this row
+     * The email address stored in this row
      * */
-    String mSubject;
+    String uEmail;
 
     /**
-     * The message stored in this row
+     * The Gender Identity stored in this row
      * */
-    String mMessage;
+    int uGender;
+
+    /**
+     * The Sexual Orientation stored in this row
+     * */
+    String uSO;
 
     /**
      * Method that constructs a RowData object by providing values for its fields
@@ -86,14 +91,15 @@ public class Database {
      * @param message the user-inputted message/content of their post
      * @param likes the number of likes a message has
      * */
-    public RowData(int id, String subject, String message, int likes) {
-      mId = id;
-      mSubject = subject;
-      mMessage = message;
-      mLikes = likes;
+    public RowData(int id, String name, String email, int gender, String SO) {
+      uId = id;
+      uName = name;
+      uEmail = email;
+      uGender = gender;
+      uSO = SO;
     }
     /**
-     * Method that checks if the subject or message of one post is identical to another post
+     * Method that checks if the username or id of one post is identical to another post
      * 
      * @param other the other object(post) that is being compared to the post being created
      * @return boolean determining whether the two objects are equal or not
@@ -101,16 +107,16 @@ public class Database {
     @Override
     public boolean equals(Object other) {
       RowData obj = (RowData)other;
-      if (!this.mSubject.equals(obj.mSubject))
+      if (!this.uName.equals(obj.uName))
         return false;
-      if (!this.mMessage.equals(obj.mMessage))
+      if (this.uId != obj.uId )
         return false;
       return true;
     }
   }
 
   // Database constructor is private
-  private Database() {}
+  private UserDatabase() {}
 
   /**
    * Method that gets a fully configured connection to the database
@@ -122,10 +128,10 @@ public class Database {
    * @return the db object created in which we are connecting
    * */
 
-  static Database getDatabase(String ip, String port, String user,
+  static UserDatabase getDatabase(String ip, String port, String user,
                               String pass) {
     // Create an unconfigured Database obj
-    Database db = new Database();
+    UserDatabase db = new UserDatabase();
 
     // Give the Database obj a connection, or else fail
     try {
@@ -135,7 +141,7 @@ public class Database {
         System.err.println("Error: DriverManager.getConnection() returns null");
         return null;
       }
-      db.mConnection = conn;
+      db.uConnection = conn;
     } catch (SQLException e) {
       System.err.println(
           "Error: DriverManager.getConnection() threw a SQLException");
@@ -143,25 +149,31 @@ public class Database {
       return null;
     }
     try {
-      db.mCreateTable =
-          db.mConnection.prepareStatement("CREATE TABLE tblData ("
+      db.uCreateTable =
+          db.uConnection.prepareStatement("CREATE TABLE usrData ("
                                           + "id SERIAL PRIMARY KEY,"
-                                          + "subject VARCHAR(100) NOT NULL,"
-                                          + "message VARCHAR(1024) NOT NULL,"
-                                          + "likes INT DEFAULT 0)");
-      db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
+                                          + "username VARCHAR(50) NOT NULL UNIQUE,"
+                                          + "email VARCHAR(50) NOT NULL,"
+                                          + "gender INT DEFAULT 0,"
+                                          + "so VARCHAR(10) DEFAULT 'private')");
+      db.uDropTable = db.uConnection.prepareStatement("DROP TABLE usrData");
 
       // Standard CRUD operations
       db.mDeleteOne =
-          db.mConnection.prepareStatement("DELETE FROM tblData WHERE id=?");
-      db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO tblData VALUES (default, ?, ?, 0)");
-      db.mSelectAll = db.mConnection.prepareStatement(
-          "SELECT * FROM tblData");
-      db.mSelectOne =
-          db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
-      db.mUpdateOne = db.mConnection.prepareStatement(
-          "UPDATE tblData SET message=? WHERE id=?");
+          db.uConnection.prepareStatement("DELETE FROM usrData WHERE id=?");
+      db.mDeleteOne =
+          db.uConnection.prepareStatement("DELETE FROM tblData WHERE uid=?");
+      /*
+       * db.uInsertOne = db.uConnection.prepareStatement(
+          "INSERT INTO usrData VALUES (default, ?, ?, 0, default)");
+       */
+      
+      db.uSelectAll = db.uConnection.prepareStatement(
+          "SELECT * FROM usrData");
+      db.uSelectOne =
+          db.uConnection.prepareStatement("SELECT * from usrData WHERE id=?");
+      db.uUpdateOne = db.uConnection.prepareStatement(
+          "UPDATE usrData SET message=? WHERE id=?");
     } catch (SQLException e) {
       System.err.println("Error creating prepared statement");
       e.printStackTrace();
@@ -177,19 +189,19 @@ public class Database {
    * @return true if connection closes as expected
    * */
   boolean disconnect() {
-    if (mConnection == null) {
+    if (uConnection == null) {
       System.err.println("Unable to close connection: Connection was null");
       return false;
     }
     try {
-      mConnection.close();
+      uConnection.close();
     } catch (SQLException e) {
       System.err.println("Error: Connection.close() thre a SQLException");
       e.printStackTrace();
-      mConnection = null;
+      uConnection = null;
       return false;
     }
-    mConnection = null;
+    uConnection = null;
     return true;
   }
   /**
@@ -202,9 +214,9 @@ public class Database {
   int insertRow(String subject, String message) {
     int count = 0;
     try {
-      mInsertOne.setString(1, subject);
-      mInsertOne.setString(2, message);
-      count += mInsertOne.executeUpdate();
+      uInsertOne.setString(1, subject);
+      uInsertOne.setString(2, message);
+      count += uInsertOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -218,10 +230,10 @@ public class Database {
   ArrayList<RowData> selectAll() {
     ArrayList<RowData> res = new ArrayList<>();
     try {
-      ResultSet rs = mSelectAll.executeQuery();
+      ResultSet rs = uSelectAll.executeQuery();
       while (rs.next()) {
-        res.add(new RowData(rs.getInt("id"), rs.getString("subject"),
-                            rs.getString("message"), rs.getInt("likes")));
+        res.add(new RowData(rs.getInt("id"), rs.getString("username"),
+                            rs.getString("email"), rs.getInt("gender"), rs.getString("so")));
       }
       rs.close();
       return res;
@@ -240,11 +252,11 @@ public class Database {
   RowData selectOne(int id) {
     RowData res = null;
     try {
-      mSelectOne.setInt(1, id);
-      ResultSet rs = mSelectOne.executeQuery();
+      uSelectOne.setInt(1, id);
+      ResultSet rs = uSelectOne.executeQuery();
       if (rs.next()) {
-        res = new RowData(rs.getInt("id"), rs.getString("subject"),
-                          rs.getString("message"), rs.getInt("likes"));
+        res = new RowData(rs.getInt("id"), rs.getString("username"),
+                          rs.getString("email"), rs.getInt("gender"), rs.getString("so"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -279,9 +291,9 @@ public class Database {
   int updateOne(int id, String message) {
     int res = -1;
     try {
-      mUpdateOne.setString(1, message);
-      mUpdateOne.setInt(2, id);
-      res = mUpdateOne.executeUpdate();
+      uUpdateOne.setString(1, message);
+      uUpdateOne.setInt(2, id);
+      res = uUpdateOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -289,22 +301,22 @@ public class Database {
   }
 
   /**
-   * Method to create tblData. If it already exists, print error
+   * Method to create usrData. If it already exists, print error
    * */
   void createTable() {
     try {
-      mCreateTable.execute();
+      uCreateTable.execute();
     } catch (SQLException e) {
       e.printStackTrace();
     }
   }
 
   /**
-   * Method to remove tblData from the database, print error if DNE
+   * Method to remove usrData from the database, print error if DNE
    * */
   void dropTable() {
     try {
-      mDropTable.execute();
+      uDropTable.execute();
     } catch (SQLException e) {
       e.printStackTrace();
     }

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-public class Database {
+public class CommentDatabase {
   /**
    * The connection to the database. When there is no connection, it
    * should be null. Otherwise, there is a valid open connection
@@ -66,7 +66,7 @@ public class Database {
     /**
      * Likes for comments/posts
      */
-    int mLikes;
+    int mUsername;
 
     /**
      * The subject stored in this row
@@ -90,7 +90,7 @@ public class Database {
       mId = id;
       mSubject = subject;
       mMessage = message;
-      mLikes = likes;
+      mUsername = likes;
     }
     /**
      * Method that checks if the subject or message of one post is identical to another post
@@ -110,7 +110,7 @@ public class Database {
   }
 
   // Database constructor is private
-  private Database() {}
+  private CommentDatabase() {}
 
   /**
    * Method that gets a fully configured connection to the database
@@ -122,10 +122,10 @@ public class Database {
    * @return the db object created in which we are connecting
    * */
 
-  static Database getDatabase(String ip, String port, String user,
+  static CommentDatabase getDatabase(String ip, String port, String user,
                               String pass) {
     // Create an unconfigured Database obj
-    Database db = new Database();
+    CommentDatabase db = new CommentDatabase();
 
     // Give the Database obj a connection, or else fail
     try {
