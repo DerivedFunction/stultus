@@ -289,7 +289,8 @@ public class DatabaseTest extends TestCase {
       comments.add(createComment(userID2, postID));
       user1Comments = db.selectAllCommentByUserID(userID1);
       user2Comments = db.selectAllCommentByUserID(userID2);
-      assertTrue(user1Comments.size() == i);
+      assertTrue(db.selectAllComments(userID1, postID).size() == i);
+      assertTrue(db.selectAllComments(userID2, postID).size() == i);
       assertTrue(user2Comments.size() == i);
       assertTrue(db.selectAllCommentByPost(postID).size() == i * 2);
     }
