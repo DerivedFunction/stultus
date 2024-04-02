@@ -260,7 +260,7 @@ public class Database {
       db.mUpdateComment = db.mConnection.prepareStatement(
           "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=?");
       db.mInsertComment = db.mConnection.prepareStatement(
-          "INSERT INTO " + commentTable + " (mesage, post_id, userid) VALUES (?,?,?)");
+          "INSERT INTO " + commentTable + " (message, post_id, userid) VALUES (?,?,?)");
       // deprecated statements
       db.mAddLike_deprecated = db.mConnection
           .prepareStatement("UPDATE  " + tableName + " SET likes=likes+1 WHERE id=? AND likes=0");
@@ -663,7 +663,7 @@ public class Database {
    * @param message Comment message
    * @param postID  which post is commented
    * @param userID  author of comment
-   * @return
+   * @return 1 on success, 0 on failure
    */
   int insertComment(String message, int postID, int userID) {
     int count = 0;
@@ -684,7 +684,7 @@ public class Database {
    * @param message   Comment message
    * @param commentID Which comment to update
    * @param userID    Author of edited comment
-   * @return
+   * @return 1 on success, 0 on failure
    */
   int updateComment(String message, int commentID, int userID) {
     int count = 0;
@@ -704,7 +704,7 @@ public class Database {
    * 
    * @param commentID id of comment
    * @param userID    id of user
-   * @return
+   * @return 1 on success, 0 on failure
    */
   int deleteComment(int commentID, int userID) {
     int count = 0;

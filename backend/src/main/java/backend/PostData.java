@@ -82,7 +82,7 @@ public class PostData {
     @Override
     public String toString() {
         return String.format("Subject: %s%nMessage: %s%nuserID: %d%nmId: %d%n",
-                this.mSubject, this.mMessage,
+                this.mSubject.trim(), this.mMessage.trim(),
                 this.mUserID, this.mId);
     }
 }

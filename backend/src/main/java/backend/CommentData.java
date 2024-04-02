@@ -47,7 +47,7 @@ public class CommentData {
     @Override
     public String toString() {
         return String.format("PostID: %d%nMessage: %s%nuserID: %d%nmId: %d%n",
-                this.mPostID, this.mMessage,
+                this.mPostID, this.mMessage.trim(),
                 this.mUserID, this.mId);
     }
 
