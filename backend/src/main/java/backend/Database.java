@@ -651,4 +651,24 @@ public class Database {
     return count;
   }
 
+  /**
+   * Inserts a comment to a post
+   * 
+   * @param message Comment message
+   * @param postID  which post is commented
+   * @param userID  author of comment
+   * @return
+   */
+  int insertComment(String message, int postID, int userID) {
+    int count = 0;
+    try {
+      mInsertComment.setString(1, message);
+      mInsertComment.setInt(2, postID);
+      mInsertComment.setInt(3, userID);
+      count += mInsertComment.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
+  }
 }
