@@ -251,6 +251,8 @@ public class Database {
           "SELECT * FROM " + commentTable + " WHERE post_id=? ORDER BY ID DESC");
       db.mSelectAllCommentsByUser = db.mConnection.prepareStatement(
           "SELECT * FROM " + commentTable + " WHERE userid=? ORDER BY ID DESC");
+      db.mSelectAllCommentsByUserAndPost = db.mConnection.prepareStatement(
+          "SELECT * FROM " + commentTable + " WHERE userid=? AND post_id=? ORDER BY ID DESC");
       db.mSelectOneComment = db.mConnection.prepareStatement(
           "SELECT * FROM " + commentTable + " WHERE id=?");
       db.mDeleteComment = db.mConnection.prepareStatement(
@@ -748,6 +750,29 @@ public class Database {
     try {
       mSelectAllCommentsForPost.setInt(1, postID);
       ResultSet rs = mSelectAllCommentsForPost.executeQuery();
+      while (rs.next()) {
+        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
+            rs.getInt("post_id"), rs.getInt("userid")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  /**
+   * Selects all comments for specific post
+   * 
+   * @param userID id of user
+   * @return ArrayList of CommentData
+   */
+  ArrayList<CommentData> selectAllCommentByUserID(int userID) {
+    ArrayList<CommentData> res = new ArrayList<>();
+    try {
+      mSelectAllCommentsByUser.setInt(1, userID);
+      ResultSet rs = mSelectAllCommentsByUser.executeQuery();
       while (rs.next()) {
         res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
             rs.getInt("post_id"), rs.getInt("userid")));
