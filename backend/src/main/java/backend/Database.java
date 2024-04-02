@@ -712,4 +712,24 @@ public class Database {
     return count;
   }
 
+  /**
+   * Select a single comment
+   * 
+   * @param commentID comment's ID to select
+   * @return CommentData
+   */
+  CommentData selectComment(int commentID) {
+    CommentData res = null;
+    try {
+      mSelectOneComment.setInt(1, commentID);
+      ResultSet rs = mSelectOneComment.executeQuery();
+      if (rs.next()) {
+        res = new CommentData(rs.getInt("id"), rs.getString("message"),
+            rs.getInt("post_id"), rs.getInt("userid"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
 }
