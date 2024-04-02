@@ -106,6 +106,10 @@ public class Database {
    */
   private PreparedStatement mSelectAllCommentsByUser;
   /**
+   * A prepared statement to select all comments
+   */
+  private PreparedStatement mSelectAllCommentsByUserAndPost;
+  /**
    * A prepared statement to select one comment
    */
   private PreparedStatement mSelectOneComment;
@@ -731,5 +735,28 @@ public class Database {
       e.printStackTrace();
     }
     return res;
+  }
+
+  /**
+   * Selects all comments for specific post
+   * 
+   * @param postID id of post
+   * @return ArrayList of CommentData
+   */
+  ArrayList<CommentData> selectAllCommentByPost(int postID) {
+    ArrayList<CommentData> res = new ArrayList<>();
+    try {
+      mSelectAllCommentsForPost.setInt(1, postID);
+      ResultSet rs = mSelectAllCommentsForPost.executeQuery();
+      while (rs.next()) {
+        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
+            rs.getInt("post_id"), rs.getInt("userid")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 }
