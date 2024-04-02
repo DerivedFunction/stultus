@@ -246,7 +246,7 @@ public class DatabaseTest extends TestCase {
     assertTrue(db.toggleVote(postID, -1, userID) == 1);
     assertTrue(db.totalVotes(postID) == oldVotes - 1);
 
-    // Remove it from like table
+    // Remove it from table
     assertTrue(db.deleteVote(postID, userID) == 1);
     db.deleteRow(postID, userID);
     db.deleteUser(userID);
@@ -266,6 +266,10 @@ public class DatabaseTest extends TestCase {
     return comment.get(0);
   }
 
+  /**
+   * Tests if Comments to a specific post
+   * made by different users work
+   */
   public static void testComments() {
     UserData user = createUser();
     UserData user2 = createUser();
@@ -273,11 +277,13 @@ public class DatabaseTest extends TestCase {
     ArrayList<CommentData> user2Comments = new ArrayList<>();
     ArrayList<CommentData> comments = new ArrayList<>();
 
+    // Create a new post
     db.insertRow(rngString(), rngString(), USERID);
     ArrayList<PostData> post = db.selectAll();
     int postID = post.get(0).mId;
     int userID1 = user.mId;
     int userID2 = user2.mId;
+    // Each user will create a comment to that post
     for (int i = 1; i <= num; i++) {
       comments.add(createComment(userID1, postID));
       comments.add(createComment(userID2, postID));
@@ -287,11 +293,14 @@ public class DatabaseTest extends TestCase {
       assertTrue(user2Comments.size() == i);
       assertTrue(db.selectAllCommentByPost(postID).size() == i * 2);
     }
+    // Delete the comments
     for (int i = 0; i < num; i++) {
       assertTrue(1 == db.deleteComment(user1Comments.get(i).mId, userID1));
       assertTrue(1 == db.deleteComment(user2Comments.get(i).mId, userID2));
     }
+    // Delete the specific post
     db.deleteRow(postID, USERID);
+    // Delete the users
     db.deleteUser(userID1);
     db.deleteUser(userID2);
   }
