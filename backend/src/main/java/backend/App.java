@@ -31,7 +31,7 @@ public class App {
   /**
    * Parameter name for ID in website
    */
-  private static final String postID = "postID";
+  private static final String POST_ID = "postID";
 
   /**
    * Parameter name for user ID in website
@@ -46,7 +46,7 @@ public class App {
   /**
    * Parameters for basic message with ID in website
    */
-  private static final String MSG_FORMAT = String.format("%s/:%s", CONTEXT, postID); // "/messages/:postID"
+  private static final String POST_FORMAT = String.format("%s/:%s", CONTEXT, POST_ID); // "/messages/:postID"
 
   /**
    * Parameters for basic message with user ID in website
@@ -61,37 +61,37 @@ public class App {
   /**
    * Parameters for editing a basic message with user ID in website
    */
-  private static final String EDIT_FORMAT = String.format("%s/editMessage/:%s", USER_FORMAT, postID); // "/user/:userID/editMessage/:postID"
+  private static final String EDIT_FORMAT = String.format("%s/editMessage/:%s", USER_FORMAT, POST_ID); // "/user/:userID/editMessage/:postID"
 
   /**
    * Parameters for deleting a basic message with user ID in website
    */
-  private static final String DELETE_FORMAT = String.format("%s/deleteMessage/:%s", USER_FORMAT, postID); // "/user/:userID/deleteMessage/:postID"
+  private static final String DELETE_FORMAT = String.format("%s/deleteMessage/:%s", USER_FORMAT, POST_ID); // "/user/:userID/deleteMessage/:postID"
 
   /**
    * Parameters for basic voting with user ID and post ID in website
    */
-  private static final String UPVOTE_FORMAT = String.format("%s/upvote/:%s", USER_FORMAT, postID); // "/user/:userID/upvote/:postID"
+  private static final String UPVOTE_FORMAT = String.format("%s/upvote/:%s", USER_FORMAT, POST_ID); // "/user/:userID/upvote/:postID"
 
   /**
    * Parameters for basic voting with user ID and post ID in website
    */
-  private static final String DOWNVOTE_FORMAT = String.format("%s/downvote/:%s", USER_FORMAT, postID); // "/user/:userID/downvote/:postID"
+  private static final String DOWNVOTE_FORMAT = String.format("%s/downvote/:%s", USER_FORMAT, POST_ID); // "/user/:userID/downvote/:postID"
 
   /**
    * Parameters for getting all comments for a specific post
    */
-  private static final String GET_POST_COMMENT_FORMAT = String.format("%s/comments", MSG_FORMAT); // "/messages/:postID/comments"
+  private static final String GET_POST_COMMENT_FORMAT = String.format("%s/comments", POST_FORMAT); // "/messages/:postID/comments"
 
   /**
    * Parameters for getting all comments made by a user for a specific post
    */
-  private static final String GET_USER_COMMENTS_POSTS_FORMAT = String.format("%s/:%s", MSG_FORMAT, USER_ID); // "/messages/:postID/comments/:userID"
+  private static final String GET_USER_COMMENTS_POSTS_FORMAT = String.format("%s/:%s", POST_FORMAT, USER_ID); // "/messages/:postID/comments/:userID"
 
   /**
    * Parameters for adding a comment
    */
-  private static final String ADD_COMMENT_FORMAT = String.format("%s/addComment/:%s", USER_FORMAT, postID); // "/user/:userID/addComment/:postID"
+  private static final String ADD_COMMENT_FORMAT = String.format("%s/addComment/:%s", USER_FORMAT, POST_ID); // "/user/:userID/addComment/:postID"
 
   /**
    * The redirect parameter
@@ -179,7 +179,7 @@ public class App {
      * GET route that returns message with specific id.
      * Converts StructuredResponses to JSON
      */
-    Spark.get(MSG_FORMAT, getWithId(gson, db)); // "/messages/:postID"
+    Spark.get(POST_FORMAT, getWithId(gson, db)); // "/messages/:postID"
 
     /*
      * GET route that returns user information.
@@ -187,6 +187,15 @@ public class App {
      */
     Spark.get(USER_FORMAT, getUser(gson, db)); // "/user/:userID"
 
+    /**
+     * GET route that returns all comments for a post
+     */
+    Spark.get(GET_POST_COMMENT_FORMAT, getCommentsForPost(gson, db, false, true)); // "/messages/:postID/comments"
+
+    /**
+     * GET route that returns all comments for a post
+     */
+    Spark.get(GET_USER_COMMENTS_POSTS_FORMAT, getCommentsForPost(gson, db, true, true)); // "/messages/:postID/comments/:userID"
     /*
      * POST route that adds a new element to DataStore.
      * Reads JSON from body of request and turns it to a
@@ -233,16 +242,16 @@ public class App {
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
      */
-    Spark.put(MSG_FORMAT, putWithID_old(gson, db)); // "/messages/:postID"
+    Spark.put(POST_FORMAT, putWithID_old(gson, db)); // "/messages/:postID"
     /*
      * PUT route for adding a like,
      */
-    Spark.put(String.format("%s/%s", MSG_FORMAT, LIKE_PARAM), putLike(gson, db)); // "/messages/:postID/like"
+    Spark.put(String.format("%s/%s", POST_FORMAT, LIKE_PARAM), putLike(gson, db)); // "/messages/:postID/like"
 
     /*
      * Delete route for removing a row from DataStore
      */
-    Spark.delete(MSG_FORMAT, deleteWithID_old(gson, db)); // "/messages/:postID"
+    Spark.delete(POST_FORMAT, deleteWithID_old(gson, db)); // "/messages/:postID"
 
   }
 
@@ -258,7 +267,7 @@ public class App {
    */
   private static Route deleteWithID_old(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(postID));
+      int idx = Integer.parseInt(request.params(POST_ID));
       extractResponse(response);
       int result = db.deleteRow(idx, 1);
       String errorType = "unable to delete row " + idx;
@@ -277,7 +286,7 @@ public class App {
    */
   private static Route deleteWithID(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(postID));
+      int idx = Integer.parseInt(request.params(POST_ID));
       int userID = Integer.parseInt(request.params(USER_ID));
       extractResponse(response);
       int result = db.deleteRow(idx, userID);
@@ -299,7 +308,7 @@ public class App {
    */
   private static Route putWithID_old(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(postID));
+      int idx = Integer.parseInt(request.params(POST_ID));
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
       Integer result = db.updateOne(idx, req.mTitle, req.mMessage, 1);
@@ -319,7 +328,7 @@ public class App {
    */
   private static Route putWithID(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(postID));
+      int idx = Integer.parseInt(request.params(POST_ID));
       int userID = Integer.parseInt(request.params(USER_ID));
       SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
       extractResponse(response);
@@ -342,7 +351,7 @@ public class App {
    */
   private static Route putLike(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(postID));
+      int idx = Integer.parseInt(request.params(POST_ID));
       int result = db.toggleLike(idx);
       String errorType = "error performing like";
       boolean errResult = (result == -1);
@@ -360,7 +369,7 @@ public class App {
    */
   private static Route putUpVote(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(postID));
+      int idx = Integer.parseInt(request.params(POST_ID));
       int user = Integer.parseInt(request.params(USER_ID));
       int result = db.toggleVote(idx, 1, user);
       String errorType = "error updating vote: post id=" + idx + " vote=" + 1;
@@ -379,7 +388,7 @@ public class App {
    */
   private static Route putDownVote(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(postID));
+      int idx = Integer.parseInt(request.params(POST_ID));
       int user = Integer.parseInt(request.params(USER_ID));
       int result = db.toggleVote(idx, -1, user);
       String errorType = "error updating vote: post id=" + idx + " vote=" + -1;
@@ -459,7 +468,7 @@ public class App {
    */
   private static Route getWithId(final Gson gson, Database db) {
     return (request, response) -> {
-      int idx = Integer.parseInt(request.params(postID));
+      int idx = Integer.parseInt(request.params(POST_ID));
       extractResponse(response);
       PostData data = db.selectOne(idx);
       String errorType = idx + " not found";
@@ -486,6 +495,36 @@ public class App {
       boolean errResult = (data == null);
       String message = null;
       return JSONResponse(gson, errorType, errResult, message, data);
+    };
+  }
+
+  /**
+   * Creates the route to handle get requests that do not give a specific id
+   * 
+   * @param gson      Gson object that handles shared serialization
+   * @param db        Database object to execute the method of
+   * @param needsUser If a specific userID is needed
+   * @param needsPost If a specific postID is needed
+   * @return Returns a spark Route object that handles the json behavior for
+   *         comments
+   * 
+   */
+  private static Route getCommentsForPost(final Gson gson, Database db, boolean needsUser, boolean needsPost) {
+    return (request, response) -> {
+      int postID = needsPost ? 0 : Integer.parseInt(request.params(POST_ID));
+      int userID = needsUser ? 0 : Integer.parseInt(request.params(USER_ID));
+      extractResponse(response);
+      // Needs both of them
+      if (needsUser && needsPost) {
+        return gson.toJson(
+            new StructuredResponse("ok", null, db.selectAllComments(userID, postID)));
+      } else if (needsPost && !needsUser) { // Only needs postID
+        return gson.toJson(
+            new StructuredResponse("ok", null, db.selectAllCommentByPost(postID)));
+      } else { // Only needs userID
+        return gson.toJson(
+            new StructuredResponse("ok", null, db.selectAllCommentByUserID(userID)));
+      }
     };
   }
 
