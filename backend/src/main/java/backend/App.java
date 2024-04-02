@@ -288,11 +288,11 @@ public class App {
    *         for db.deleteOne
    */
   private static Route deleteWithID_old(final Gson gson, Database db) {
-    return (request, response) -> {
-      int idx = Integer.parseInt(request.params(POST_ID));
-      extractResponse(response);
-      int result = db.deleteRow(idx, 1);
-      String errorType = "unable to delete row " + idx;
+    return (req, res) -> {
+      int postID = Integer.parseInt(req.params(POST_ID));
+      extractResponse(res);
+      int result = db.deleteRow(postID, 1);
+      String errorType = "unable to delete row " + postID;
       boolean errResult = (result == -1);
       return JSONResponse(gson, errorType, errResult, null, null);
     };
@@ -307,12 +307,12 @@ public class App {
    *         for db.deleteOne
    */
   private static Route deleteWithID(final Gson gson, Database db) {
-    return (request, response) -> {
-      int idx = Integer.parseInt(request.params(POST_ID));
-      int userID = Integer.parseInt(request.params(USER_ID));
-      extractResponse(response);
-      int result = db.deleteRow(idx, userID);
-      String errorType = "unable to delete row " + idx;
+    return (req, res) -> {
+      int postID = Integer.parseInt(req.params(POST_ID));
+      int userID = Integer.parseInt(req.params(USER_ID));
+      extractResponse(res);
+      int result = db.deleteRow(postID, userID);
+      String errorType = "unable to delete row " + postID;
       boolean errResult = (result == -1);
       return JSONResponse(gson, errorType, errResult, null, null);
     };
@@ -329,12 +329,12 @@ public class App {
    *         for db.updatedOne
    */
   private static Route putWithID_old(final Gson gson, Database db) {
-    return (request, response) -> {
-      int idx = Integer.parseInt(request.params(POST_ID));
-      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
-      extractResponse(response);
-      Integer result = db.updateOne(idx, req.mTitle, req.mMessage, 1);
-      String errorType = "unable to update row " + idx;
+    return (req, res) -> {
+      int postID = Integer.parseInt(req.params(POST_ID));
+      SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
+      extractResponse(res);
+      Integer result = db.updateOne(postID, sReq.mTitle, sReq.mMessage, 1);
+      String errorType = "unable to update row " + postID;
       boolean errResult = (result < 1);
       return JSONResponse(gson, errorType, errResult, null, result);
     };
@@ -349,13 +349,13 @@ public class App {
    *         for db.updatedOne
    */
   private static Route putWithID(final Gson gson, Database db) {
-    return (request, response) -> {
-      int idx = Integer.parseInt(request.params(POST_ID));
-      int userID = Integer.parseInt(request.params(USER_ID));
-      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
-      extractResponse(response);
-      Integer result = db.updateOne(idx, req.mTitle, req.mMessage, userID);
-      String errorType = "unable to update row " + idx;
+    return (req, res) -> {
+      int postID = Integer.parseInt(req.params(POST_ID));
+      int userID = Integer.parseInt(req.params(USER_ID));
+      SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
+      extractResponse(res);
+      Integer result = db.updateOne(postID, sReq.mTitle, sReq.mMessage, userID);
+      String errorType = "unable to update row " + postID;
       boolean errResult = (result < 1);
       return JSONResponse(gson, errorType, errResult, null, result);
     };
@@ -372,9 +372,9 @@ public class App {
    *         for db.togglelike
    */
   private static Route putLike(final Gson gson, Database db) {
-    return (request, response) -> {
-      int idx = Integer.parseInt(request.params(POST_ID));
-      int result = db.toggleLike(idx);
+    return (req, res) -> {
+      int postID = Integer.parseInt(req.params(POST_ID));
+      int result = db.toggleLike(postID);
       String errorType = "error performing like";
       boolean errResult = (result == -1);
       return JSONResponse(gson, errorType, errResult, null, null);
@@ -390,11 +390,11 @@ public class App {
    *         for db.togglelike
    */
   private static Route putUpVote(final Gson gson, Database db) {
-    return (request, response) -> {
-      int idx = Integer.parseInt(request.params(POST_ID));
-      int user = Integer.parseInt(request.params(USER_ID));
-      int result = db.toggleVote(idx, 1, user);
-      String errorType = "error updating vote: post id=" + idx + " vote=" + 1;
+    return (req, res) -> {
+      int postID = Integer.parseInt(req.params(POST_ID));
+      int userID = Integer.parseInt(req.params(USER_ID));
+      int result = db.toggleVote(postID, 1, userID);
+      String errorType = "error updating vote: post id=" + postID + " vote=" + 1;
       boolean errResult = (result == -1);
       return JSONResponse(gson, errorType, errResult, null, null);
     };
@@ -409,11 +409,11 @@ public class App {
    *         for db.togglelike
    */
   private static Route putDownVote(final Gson gson, Database db) {
-    return (request, response) -> {
-      int idx = Integer.parseInt(request.params(POST_ID));
-      int user = Integer.parseInt(request.params(USER_ID));
-      int result = db.toggleVote(idx, -1, user);
-      String errorType = "error updating vote: post id=" + idx + " vote=" + -1;
+    return (req, res) -> {
+      int postID = Integer.parseInt(req.params(POST_ID));
+      int userID = Integer.parseInt(req.params(USER_ID));
+      int result = db.toggleVote(postID, -1, userID);
+      String errorType = "error updating vote: post id=" + postID + " vote=" + -1;
       boolean errResult = (result == -1);
       return JSONResponse(gson, errorType, errResult, null, null);
     };
@@ -430,11 +430,11 @@ public class App {
    *         for db.insertRow
    */
   private static Route postIdea_old(final Gson gson, Database db) {
-    return (request, response) -> {
-      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
-      extractResponse(response);
+    return (req, res) -> {
+      SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
+      extractResponse(res);
       // createEntry checks for null title/message (-1)
-      int rowsAdded = db.insertRow(req.mTitle, req.mMessage, 1);
+      int rowsAdded = db.insertRow(sReq.mTitle, sReq.mMessage, 1);
       String errorType = "error performing insertion";
       boolean errResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
@@ -451,12 +451,12 @@ public class App {
    *         for db.insertRow
    */
   private static Route postIdea(final Gson gson, Database db) {
-    return (request, response) -> {
-      int id = Integer.parseInt(request.params(USER_ID));
-      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
-      extractResponse(response);
+    return (req, res) -> {
+      int id = Integer.parseInt(req.params(USER_ID));
+      SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
+      extractResponse(res);
       // createEntry checks for null title/message (-1)
-      int rowsAdded = db.insertRow(req.mTitle, req.mMessage, id);
+      int rowsAdded = db.insertRow(sReq.mTitle, sReq.mMessage, id);
       String errorType = "error performing insertion";
       boolean errResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
@@ -514,11 +514,11 @@ public class App {
    *         db.selectOne()
    */
   private static Route getWithId(final Gson gson, Database db) {
-    return (request, response) -> {
-      int idx = Integer.parseInt(request.params(POST_ID));
-      extractResponse(response);
-      PostData data = db.selectOne(idx);
-      String errorType = idx + " not found";
+    return (req, res) -> {
+      int postID = Integer.parseInt(req.params(POST_ID));
+      extractResponse(res);
+      PostData data = db.selectOne(postID);
+      String errorType = postID + " not found";
       boolean errResult = (data == null);
       String message = null;
       return JSONResponse(gson, errorType, errResult, message, data);
@@ -534,9 +534,9 @@ public class App {
    *         db.selectOne()
    */
   private static Route getUser(final Gson gson, Database db) {
-    return (request, response) -> {
-      int userID = Integer.parseInt(request.params(USER_ID));
-      extractResponse(response);
+    return (req, res) -> {
+      int userID = Integer.parseInt(req.params(USER_ID));
+      extractResponse(res);
       UserDataLite data = db.getUserSimple(userID);
       String errorType = userID + " not found";
       boolean errResult = (data == null);
@@ -557,11 +557,11 @@ public class App {
    * 
    */
   private static Route getCommentsForPost(final Gson gson, Database db, boolean needsUser, boolean needsPost) {
-    return (request, response) -> {
-      int postID = needsPost ? 0 : Integer.parseInt(request.params(POST_ID));
-      int userID = needsUser ? 0 : Integer.parseInt(request.params(USER_ID));
+    return (req, res) -> {
+      int postID = needsPost ? 0 : Integer.parseInt(req.params(POST_ID));
+      int userID = needsUser ? 0 : Integer.parseInt(req.params(USER_ID));
 
-      extractResponse(response);
+      extractResponse(res);
       // Needs both of them
       if (needsUser && needsPost) {
         return gson.toJson(
@@ -573,7 +573,7 @@ public class App {
         return gson.toJson(
             new StructuredResponse("ok", null, db.selectAllCommentByUserID(userID)));
       } else { // needs neither postID nor userID, so get the commentID
-        int commentID = Integer.parseInt(request.params(COMMENT_ID));
+        int commentID = Integer.parseInt(req.params(COMMENT_ID));
         return gson.toJson(
             new StructuredResponse("ok", null, db.selectComment(commentID)));
       }
