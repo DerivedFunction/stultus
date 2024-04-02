@@ -94,9 +94,9 @@ public class App {
    */
   private static final String GET_USER_COMMENTS_FORMAT = String.format("%s/comments", USER_FORMAT); // "/user/:userID/comments"
   /**
-   * Parameters for adding a comment
+   * Parameters for adding, editing, deleting a comment
    */
-  private static final String ADD_COMMENT_FORMAT = String.format("%s/addComment/:%s", USER_FORMAT, POST_ID); // "/user/:userID/addComment/:postID"
+  private static final String COMMENT_FORMAT = String.format("%s/comment/:%s", USER_FORMAT, POST_ID); // "/user/:userID/comment/:postID"
 
   /**
    * Parameters for getting a single comment
@@ -223,12 +223,10 @@ public class App {
      */
     Spark.post(ADD_FORMAT, postIdea(gson, db)); // "/user/:userID/addMessage"
 
-    /*
-     * POST route that authenticates a token
+    /**
+     * POST route that adds a new comment
      */
-    Spark.post(AUTH_FORMAT, authenticateToken(gson, db)); // "/authenticate"
-
-    Spark.post(ADD_COMMENT_FORMAT, postComment(gson, db)); // "/user/:userID/addComment/:postID"
+    Spark.post(COMMENT_FORMAT, postComment(gson, db)); // "/user/:userID/comment/:postID"
     /*
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
@@ -248,6 +246,11 @@ public class App {
      * Delete route for removing a row from DataStore
      */
     Spark.delete(DELETE_FORMAT, deleteWithID(gson, db)); // "/user/:userID/deleteMessage/:postID"
+
+    /*
+     * POST route that authenticates a token
+     */
+    Spark.post(AUTH_FORMAT, authenticateToken(gson, db)); // "/authenticate"
 
     // Old methods
     /*
