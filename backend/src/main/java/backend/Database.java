@@ -260,7 +260,7 @@ public class Database {
       db.mUpdateComment = db.mConnection.prepareStatement(
           "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=?");
       db.mInsertComment = db.mConnection.prepareStatement(
-          "INSERT INTO " + commentTable + " (mesage, post_id, userid) VALUES (?,?,?)");
+          "INSERT INTO " + commentTable + " (message, post_id, userid) VALUES (?,?,?)");
       // deprecated statements
       db.mAddLike_deprecated = db.mConnection
           .prepareStatement("UPDATE  " + tableName + " SET likes=likes+1 WHERE id=? AND likes=0");
