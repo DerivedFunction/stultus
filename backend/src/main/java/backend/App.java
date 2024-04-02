@@ -101,7 +101,7 @@ public class App {
   /**
    * Parameters for getting a single comment
    */
-  private static final String GET_SINGLE_COMMENT_FORMAT = String.format("/comment/:%s", COMMENT_ID); // "/comment/:commentID"
+  private static final String SINGLE_COMMENT_FORMAT = String.format("/comment/:%s", COMMENT_ID); // "/comment/:commentID"
   /**
    * The redirect parameter
    */
@@ -214,7 +214,7 @@ public class App {
     /**
      * GET route that returns a comments by commentID
      */
-    Spark.get(GET_SINGLE_COMMENT_FORMAT, getCommentsForPost(gson, db, false, false));
+    Spark.get(SINGLE_COMMENT_FORMAT, getCommentsForPost(gson, db, false, false));
     /*
      * POST route that adds a new element to DataStore.
      * Reads JSON from body of request and turns it to a
