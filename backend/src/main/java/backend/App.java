@@ -66,7 +66,7 @@ public class App {
   /**
    * Parameters for deleting a basic message with user ID in website
    */
-  private static final String DELETE_FORMAT = String.format("%s/deleteMessage/:%s", USER_FORMAT, MSG_ID); // "/user/:userID/editMessage/:id"
+  private static final String DELETE_FORMAT = String.format("%s/deleteMessage/:%s", USER_FORMAT, MSG_ID); // "/user/:userID/deleteMessage/:id"
 
   /**
    * Parameters for basic voting with user ID and post ID in website
@@ -174,14 +174,6 @@ public class App {
      * Reads JSON from body of request and turns it to a
      * SimpleRequest object, extracting the title and msg,
      * and also the object.
-     * 
-     */
-    Spark.post(CONTEXT, postIdea_old(gson, db)); // "/messages"
-    /*
-     * POST route that adds a new element to DataStore.
-     * Reads JSON from body of request and turns it to a
-     * SimpleRequest object, extracting the title and msg,
-     * and also the object.
      */
     Spark.post(ADD_FORMAT, postIdea(gson, db)); // "/user/:userID/addMessage"
 
@@ -190,11 +182,6 @@ public class App {
      */
     Spark.post(AUTH_FORMAT, authenticateToken(gson, db)); // "/authenticate"
 
-    /*
-     * PUT route for updating a row in DataStore. Almost the same
-     * as POST
-     */
-    Spark.put(FORMAT, putWithID_old(gson, db)); // "/messages/:id"
     /*
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
@@ -211,6 +198,25 @@ public class App {
     Spark.put(DOWNVOTE_FORMAT, putDownVote(gson, db)); // "/user/:userID/downvote/:id"
 
     /*
+     * Delete route for removing a row from DataStore
+     */
+    Spark.delete(DELETE_FORMAT, deleteWithID(gson, db)); // "/user/:userID/deleteMessage/:id"
+
+    // Old methods
+    /*
+     * POST route that adds a new element to DataStore.
+     * Reads JSON from body of request and turns it to a
+     * SimpleRequest object, extracting the title and msg,
+     * and also the object.
+     * 
+     */
+    Spark.post(CONTEXT, postIdea_old(gson, db)); // "/messages"
+    /*
+     * PUT route for updating a row in DataStore. Almost the same
+     * as POST
+     */
+    Spark.put(FORMAT, putWithID_old(gson, db)); // "/messages/:id"
+    /*
      * PUT route for adding a like,
      */
     Spark.put(String.format("%s/%s", FORMAT, LIKE_PARAM), putLike(gson, db)); // "/messages/:id/like"
@@ -219,10 +225,6 @@ public class App {
      * Delete route for removing a row from DataStore
      */
     Spark.delete(FORMAT, deleteWithID_old(gson, db)); // "/messages/:id"
-    /*
-     * Delete route for removing a row from DataStore
-     */
-    Spark.delete(DELETE_FORMAT, deleteWithID(gson, db)); // "/user/:userID/deleteMessage/:id"
 
   }
 
@@ -508,7 +510,6 @@ public class App {
       String errorType = "Invalid or missing ID token: " + idToken;
       boolean errResult = !verified;
       UserData user = db.getUserFull(db.findUser(email));
-      res.type("application/json");
       return JSONResponse(gson, errorType, errResult, idToken, user);
     };
   }
