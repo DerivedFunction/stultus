@@ -784,4 +784,30 @@ public class Database {
       return null;
     }
   }
+
+  /**
+   * Selects all comments for specific post and user
+   * A user can make multiple comments to a single post
+   * 
+   * @param userID id of user
+   * @param postID id of post
+   * @return ArrayList of CommentData
+   */
+  ArrayList<CommentData> selectAllComments(int userID, int postID) {
+    ArrayList<CommentData> res = new ArrayList<>();
+    try {
+      mSelectAllCommentsByUserAndPost.setInt(1, userID);
+      mSelectAllCommentsByUserAndPost.setInt(2, postID);
+      ResultSet rs = mSelectAllCommentsByUserAndPost.executeQuery();
+      while (rs.next()) {
+        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
+            rs.getInt("post_id"), rs.getInt("userid")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 }
