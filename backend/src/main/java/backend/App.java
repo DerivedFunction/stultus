@@ -86,13 +86,22 @@ public class App {
   /**
    * Parameters for getting all comments made by a user for a specific post
    */
-  private static final String GET_USER_COMMENTS_POSTS_FORMAT = String.format("%s/:%s", POST_FORMAT, USER_ID); // "/messages/:postID/comments/:userID"
+  private static final String GET_USER_COMMENTS_POSTS_FORMAT = String.format("%s/:%s",
+      GET_POST_COMMENT_FORMAT, USER_ID); // "/messages/:postID/comments/:userID"
 
+  /**
+   * Parameters for getting all coments made a specific user
+   */
+  private static final String GET_USER_COMMENTS_FORMAT = String.format("%s/comments", USER_FORMAT); // "/user/:userID/comments"
   /**
    * Parameters for adding a comment
    */
   private static final String ADD_COMMENT_FORMAT = String.format("%s/addComment/:%s", USER_FORMAT, POST_ID); // "/user/:userID/addComment/:postID"
 
+  /**
+   * Parameters for getting a single comment
+   */
+  private static final String GET_SINGLE_COMMENT_FORMAT = String.format("/comment/:%s", COMMENT_ID); // "/comment/:commentID"
   /**
    * The redirect parameter
    */
@@ -188,14 +197,24 @@ public class App {
     Spark.get(USER_FORMAT, getUser(gson, db)); // "/user/:userID"
 
     /**
-     * GET route that returns all comments for a post
+     * GET route that returns all comments for specific post
      */
     Spark.get(GET_POST_COMMENT_FORMAT, getCommentsForPost(gson, db, false, true)); // "/messages/:postID/comments"
 
     /**
-     * GET route that returns all comments for a post
+     * GET route that returns all comments for specific post by a user
      */
     Spark.get(GET_USER_COMMENTS_POSTS_FORMAT, getCommentsForPost(gson, db, true, true)); // "/messages/:postID/comments/:userID"
+
+    /**
+     * GET route that returns all comments made by a user
+     */
+    Spark.get(GET_USER_COMMENTS_FORMAT, getCommentsForPost(gson, db, true, false)); // "/user/:userID/comments"
+
+    /**
+     * GET route that returns a comments by commentID
+     */
+    Spark.get(GET_SINGLE_COMMENT_FORMAT, getCommentsForPost(gson, db, false, false));
     /*
      * POST route that adds a new element to DataStore.
      * Reads JSON from body of request and turns it to a
@@ -238,11 +257,13 @@ public class App {
      * 
      */
     Spark.post(CONTEXT, postIdea_old(gson, db)); // "/messages"
+
     /*
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
      */
     Spark.put(POST_FORMAT, putWithID_old(gson, db)); // "/messages/:postID"
+
     /*
      * PUT route for adding a like,
      */
@@ -513,6 +534,7 @@ public class App {
     return (request, response) -> {
       int postID = needsPost ? 0 : Integer.parseInt(request.params(POST_ID));
       int userID = needsUser ? 0 : Integer.parseInt(request.params(USER_ID));
+
       extractResponse(response);
       // Needs both of them
       if (needsUser && needsPost) {
@@ -521,9 +543,13 @@ public class App {
       } else if (needsPost && !needsUser) { // Only needs postID
         return gson.toJson(
             new StructuredResponse("ok", null, db.selectAllCommentByPost(postID)));
-      } else { // Only needs userID
+      } else if (!needsPost && needsUser) { // Only needs userID
         return gson.toJson(
             new StructuredResponse("ok", null, db.selectAllCommentByUserID(userID)));
+      } else { // needs neither postID nor userID, so get the commentID
+        int commentID = Integer.parseInt(request.params(COMMENT_ID));
+        return gson.toJson(
+            new StructuredResponse("ok", null, db.selectComment(commentID)));
       }
     };
   }
