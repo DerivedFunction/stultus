@@ -228,6 +228,7 @@ public class App {
      */
     Spark.post(AUTH_FORMAT, authenticateToken(gson, db)); // "/authenticate"
 
+    Spark.post(ADD_COMMENT_FORMAT, postComment(gson, db)); // "/user/:userID/addComment/:postID"
     /*
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
@@ -381,7 +382,7 @@ public class App {
   }
 
   /**
-   * Creates the route to handle like changes
+   * Creates the route to handle voting
    * 
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
@@ -400,7 +401,7 @@ public class App {
   }
 
   /**
-   * Creates the route to handle like changes
+   * Creates the route to handle voting
    * 
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
@@ -419,7 +420,7 @@ public class App {
   }
 
   /**
-   * Creates the route to handle put requests
+   * Creates the route to handle post requests
    * 
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
@@ -442,7 +443,7 @@ public class App {
   }
 
   /**
-   * Creates the route to handle put requests with userID
+   * Creates the route to handle post requests with userID
    * 
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
@@ -459,6 +460,31 @@ public class App {
       String errorType = "error performing insertion";
       boolean errResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
+      return JSONResponse(gson, errorType, errResult, message, null);
+    };
+  }
+
+  /**
+   * Creates the route to handle post comment requests with userID
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.insertRow
+   */
+  private static Route postComment(final Gson gson, Database db) {
+    return (request, response) -> {
+      int postID = Integer.parseInt(request.params(POST_ID));
+      int userID = Integer.parseInt(request.params(USER_ID));
+      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+      extractResponse(response);
+
+      int commentsAdded = db.insertComment(req.mMessage, postID, userID);
+      String errorType = String.format("Error inserting comment to postID %d by userID: %d",
+          postID, userID);
+      boolean errResult = (commentsAdded <= 0);
+      String message = String.format("Succesfully inserted %d comment to postID %d by userID: %d",
+          commentsAdded, postID, userID);
       return JSONResponse(gson, errorType, errResult, message, null);
     };
   }
