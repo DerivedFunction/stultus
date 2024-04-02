@@ -37,7 +37,7 @@ public class CommentData {
      * @param mUserID  The userID of author of post
      * @param mPostID  The parent of the comment
      */
-    public CommentData(int mId, String mMessage, int mUserID, int mPostID) {
+    public CommentData(int mId, String mMessage, int mPostID, int mUserID) {
         this.mId = mId;
         this.mMessage = mMessage;
         this.mUserID = mUserID;
