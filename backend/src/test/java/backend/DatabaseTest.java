@@ -12,6 +12,11 @@ import junit.framework.TestSuite;
 public class DatabaseTest extends TestCase {
   static ArrayList<String> dbTable = dbTableElements();
 
+  /**
+   * A list of table names to test
+   * 
+   * @return Arraylist of table names
+   */
   private static ArrayList<String> dbTableElements() {
     ArrayList<String> ret = new ArrayList<>();
     ret.add("tblTest");
@@ -21,8 +26,17 @@ public class DatabaseTest extends TestCase {
     return ret;
   }
 
+  /**
+   * Our database to test
+   */
   static Database db = App.getDatabaseConnection(dbTable);
+  /**
+   * Number of elements to add
+   */
   static int num = App.getIntFromEnv("NUM_TESTS", 2);
+  /**
+   * A fixed userID for old tests
+   */
   static int USERID = 2;
 
   /**
