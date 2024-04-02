@@ -101,6 +101,7 @@ public class App {
     ret.add("tblData");
     ret.add("likeData");
     ret.add("userData");
+    ret.add("commentData");
     return ret;
   }
 
@@ -491,12 +492,12 @@ public class App {
         email = Oauth.getEmail(idToken);
         name = Oauth.getName(idToken);
         // Checks if user exists in Database
-        UserData user = db.getUserFull(db.findUser(email));
+        UserData user = db.getUserFull(db.findUserID(email));
         if (user == null) { // creating a new user account
           Log.info("new account detected creating new user");
           db.insertUser(name, email);
         }
-        userID = db.findUser(email);
+        userID = db.findUserID(email);
         if (TokenManager.getToken(userID) != null) {
           Log.info("User has already logged in. Deleting old credentials");
           TokenManager.removeToken(userID);
@@ -509,7 +510,7 @@ public class App {
       }
       String errorType = "Invalid or missing ID token: " + idToken;
       boolean errResult = !verified;
-      UserData user = db.getUserFull(db.findUser(email));
+      UserData user = db.getUserFull(db.findUserID(email));
       return JSONResponse(gson, errorType, errResult, idToken, user);
     };
   }

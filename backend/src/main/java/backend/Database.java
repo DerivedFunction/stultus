@@ -175,6 +175,7 @@ public class Database {
     String tableName = dbTable.get(0);
     String likeTable = dbTable.get(1);
     String userTable = dbTable.get(2);
+    String commentTable = dbTable.get(3);
     try {
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM " + tableName + " WHERE id=?");
@@ -492,7 +493,7 @@ public class Database {
    * @param email to find
    * @return id of user, 0 on nothing
    */
-  int findUser(String email) {
+  int findUserID(String email) {
     int res = 0;
     try {
       mFindUser.setString(1, email);
@@ -559,7 +560,7 @@ public class Database {
   int insertUser(String username, String email) {
     int count = 0;
     // User already existrs
-    if (findUser(email) > 0) {
+    if (findUserID(email) > 0) {
       return 0;
     }
     try {
