@@ -17,6 +17,7 @@ public class DatabaseTest extends TestCase {
     ret.add("tblTest");
     ret.add("likeTest");
     ret.add("userTest");
+    ret.add("commentTest");
     return ret;
   }
 
@@ -249,6 +250,49 @@ public class DatabaseTest extends TestCase {
     assertTrue(db.deleteVote(postID, userID) == 1);
     db.deleteRow(postID, userID);
     db.deleteUser(userID);
+  }
 
+  /**
+   * Generates a random comment
+   * 
+   * @param userID author
+   * @param postID post to comment
+   * @return CommentData
+   */
+  private static CommentData createComment(int userID, int postID) {
+    ArrayList<CommentData> comment = null;
+    db.insertComment(rngString(), postID, userID);
+    comment = db.selectAllComments(userID, postID);
+    return comment.get(0);
+  }
+
+  public static void testComments() {
+    UserData user = createUser();
+    UserData user2 = createUser();
+    ArrayList<CommentData> user1Comments = new ArrayList<>();
+    ArrayList<CommentData> user2Comments = new ArrayList<>();
+    ArrayList<CommentData> comments = new ArrayList<>();
+
+    db.insertRow(rngString(), rngString(), USERID);
+    ArrayList<PostData> post = db.selectAll();
+    int postID = post.get(0).mId;
+    int userID1 = user.mId;
+    int userID2 = user2.mId;
+    for (int i = 1; i <= num; i++) {
+      comments.add(createComment(userID1, postID));
+      comments.add(createComment(userID2, postID));
+      user1Comments = db.selectAllCommentByUserID(userID1);
+      user2Comments = db.selectAllCommentByUserID(userID2);
+      assertTrue(user1Comments.size() == i);
+      assertTrue(user2Comments.size() == i);
+      assertTrue(db.selectAllCommentByPost(postID).size() == i * 2);
+    }
+    for (int i = 0; i < num; i++) {
+      assertTrue(1 == db.deleteComment(user1Comments.get(i).mId, userID1));
+      assertTrue(1 == db.deleteComment(user2Comments.get(i).mId, userID2));
+    }
+    db.deleteRow(postID, USERID);
+    db.deleteUser(userID1);
+    db.deleteUser(userID2);
   }
 }
