@@ -663,7 +663,7 @@ public class Database {
    * @param message Comment message
    * @param postID  which post is commented
    * @param userID  author of comment
-   * @return
+   * @return 1 on success, 0 on failure
    */
   int insertComment(String message, int postID, int userID) {
     int count = 0;
@@ -684,7 +684,7 @@ public class Database {
    * @param message   Comment message
    * @param commentID Which comment to update
    * @param userID    Author of edited comment
-   * @return
+   * @return 1 on success, 0 on failure
    */
   int updateComment(String message, int commentID, int userID) {
     int count = 0;
@@ -704,7 +704,7 @@ public class Database {
    * 
    * @param commentID id of comment
    * @param userID    id of user
-   * @return
+   * @return 1 on success, 0 on failure
    */
   int deleteComment(int commentID, int userID) {
     int count = 0;
