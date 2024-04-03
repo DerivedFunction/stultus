@@ -561,8 +561,8 @@ public class App {
    */
   private static Route getCommentsForPost(final Gson gson, Database db, boolean needsUser, boolean needsPost) {
     return (req, res) -> {
-      int postID = needsPost ? 0 : Integer.parseInt(req.params(POST_ID));
-      int userID = needsUser ? 0 : Integer.parseInt(req.params(USER_ID));
+      int postID = needsPost ? Integer.parseInt(req.params(POST_ID)) : 0;
+      int userID = needsUser ? Integer.parseInt(req.params(USER_ID)) : 0;
 
       extractResponse(res);
       // Needs both of them
