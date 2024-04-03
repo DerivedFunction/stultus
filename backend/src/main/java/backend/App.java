@@ -174,7 +174,7 @@ public class App {
 
     // Set up route for serving main page
     Spark.get("/", (req, res) -> {
-      res.redirect("/.html");
+      res.redirect("/index.html");
       return "";
     });
 
