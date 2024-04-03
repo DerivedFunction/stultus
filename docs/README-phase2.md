@@ -270,17 +270,18 @@ May wish to add edge case testing (such as overlength messages or empty messages
 
 ### Current methods
 
-| Purpose                | Route                        | Verb   | Purpose                             | Structure                                                             |
-| ---------------------- | ---------------------------- | ------ | ----------------------------------- | --------------------------------------------------------------------- |
-| Show all messages      | `/messages`                  | GET    | Return post data to display         | JSON `{ArrayList<messages>}`                                          |
-| Show one post          | `/messages/id`               | GET    | Return single post data             | JSON `{title, message, numLikes, userID}`                             |
-| Create new Post        | `/user/userID/addMessage`    | POST   | Creates a post                      | Takes `{title, message, userID}`, all other fields handled by backend |
-| Edit content of a post | `/user/userID/editMessage`   | PUT    | Edits a post                        | Takes `{title, message, userID}` and backend handles updates          |
-| Delete a post          | `/user/userID/deleteMessage` | DELETE | Deletes a post                      | Returns `status`                                                      |
-| Upvote a post          | `/user/userID/upvote/id`     | PUT    | Vote on a post                      | Returns `1` on success                                                |
-| Downvote a post        | `/user/userID/downvote/id`   | PUT    | Vote on a post                      | Returns `1` on success                                                |
-| Show user profile      | `/user/userID`               | GET    | Retreive user info                  | JSON `{mId, mUsername, mEmail}`                                       |
-| Authenticate user      | `/authenticate`              | POST   | Get Oauth token, add user if needed | JSON `{status, {mId, mUsername, mEmail, mGender, mSO}}`               |
+| Purpose                | Route                         | Verb   | Purpose                             | Structure                                                     |
+| ---------------------- | ----------------------------- | ------ | ----------------------------------- | ------------------------------------------------------------- |
+| Show all messages      | `/messages`                   | GET    | Return post data to display         | JSON `{ArrayList<messages>}`                                  |
+| Show one post          | `/messages/:postID`           | GET    | Return single post data             | JSON `{title, message, numLikes, userID}`                     |
+| Create new Post        | `/user/addMessage`            | POST   | Creates a post                      | Takes `{title, message}`, all other fields handled by backend |
+| Edit content of a post | `/user/editMessage/:postID`   | PUT    | Edits a post                        | Takes `{title, message}` and backend handles updates          |
+| Delete a post          | `/user/deleteMessage/:postID` | DELETE | Deletes a post                      | Returns `1` on success                                        |
+| Upvote a post          | `/user/upvote/:postID`        | POST   | upVote on a post                    | Returns `1` on success                                        |
+| Downvote a post        | `/user/downvote/:postID`      | POST   | downVote on a post                  | Returns `1` on success                                        |
+| Show a comment         | `/comment/:commentID`         | GET    | Return a comment                    | Returns `{message, userID, postID}`                           |
+| Show user profile      | `/user/:userID`               | GET    | Retreive user info                  | JSON `{mId, mUsername, mEmail}`                               |
+| Authenticate user      | `/authenticate`               | POST   | Get Oauth token, add user if needed | returns `/.index.html` with `idtoken` cookie on success       |
 
 ### Phase 1 methods: Outdated but not removed yet
 
