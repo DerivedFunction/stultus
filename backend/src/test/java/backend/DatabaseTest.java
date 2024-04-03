@@ -201,10 +201,10 @@ public class DatabaseTest extends TestCase {
    */
   public static void testUpdateUser() {
     UserData test = createUser();
-    String email = test.mEmail;
-    String username = test.mUsername;
-    int gender = test.mGender;
-    String so = test.mSO;
+    String email = test.uEmail;
+    String username = test.uUsername;
+    int gender = test.uGender;
+    String so = test.uSO;
     int userID = db.findUserID(email);
     db.updateUser(userID, "a", gender + 1, "a");
     UserData updated = db.getUserFull(userID);
@@ -233,7 +233,7 @@ public class DatabaseTest extends TestCase {
    */
   public static void testVote() {
     UserData test = createUser();
-    int userID = test.mId;
+    int userID = test.uID;
     db.insertRow("test", "test", userID);
     PostData post = db.selectAll().get(0);
 
@@ -295,8 +295,8 @@ public class DatabaseTest extends TestCase {
     db.insertRow(rngString(), rngString(), USERID);
     ArrayList<PostData> post = db.selectAll();
     int postID = post.get(0).mId;
-    int userID1 = user.mId;
-    int userID2 = user2.mId;
+    int userID1 = user.uID;
+    int userID2 = user2.uID;
     // Each user will create a comment to that post
     for (int i = 1; i <= num; i++) {
       comments.add(createComment(userID1, postID));
@@ -310,8 +310,8 @@ public class DatabaseTest extends TestCase {
     }
     // Delete the comments
     for (int i = 0; i < num; i++) {
-      assertTrue(1 == db.deleteComment(user1Comments.get(i).mId, userID1));
-      assertTrue(1 == db.deleteComment(user2Comments.get(i).mId, userID2));
+      assertTrue(1 == db.deleteComment(user1Comments.get(i).cId, userID1));
+      assertTrue(1 == db.deleteComment(user2Comments.get(i).cId, userID2));
     }
     // Delete the specific post
     db.deleteRow(postID, USERID);

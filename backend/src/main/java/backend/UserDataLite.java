@@ -12,37 +12,37 @@ public class UserDataLite {
     /**
      * The ID of this row of the database
      */
-    int mId;
+    int uID;
 
     /**
      * The username of the user
      */
-    String mUsername;
+    String uUsername;
 
     /**
      * The email of the user
      */
-    String mEmail;
+    String uEmail;
 
     /**
      * A user constructor.
      * 
-     * @param mId       The id(userID)
-     * @param mUsername The username
-     * @param mEmail    The email
+     * @param uID       The id(userID)
+     * @param uUsername The username
+     * @param uEmail    The email
      */
-    public UserDataLite(int mId, String mUsername, String mEmail) {
-        this.mId = mId;
-        this.mUsername = mUsername;
-        this.mEmail = mEmail;
+    public UserDataLite(int uID, String uUsername, String uEmail) {
+        this.uID = uID;
+        this.uUsername = uUsername;
+        this.uEmail = uEmail;
     }
 
     @Override
     public boolean equals(Object other) {
         UserDataLite obj = (UserDataLite) other;
-        if (!this.mUsername.equals(obj.mUsername))
+        if (!this.uUsername.equals(obj.uUsername))
             return false;
-        if (!this.mEmail.equals(obj.mEmail))
+        if (!this.uEmail.equals(obj.uEmail))
             return false;
         return true;
     }
@@ -50,7 +50,7 @@ public class UserDataLite {
     @Override
     public String toString() {
         return String.format("mId: %d%nmUsername: %s%nmEmail: %s%n",
-                this.mId, this.mUsername.trim(),
-                this.mEmail.trim());
+                this.uID, this.uUsername.trim(),
+                this.uEmail.trim());
     }
 }

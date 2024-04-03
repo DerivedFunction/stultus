@@ -12,55 +12,55 @@ public class UserData extends UserDataLite {
     /**
      * The gender of the user
      */
-    int mGender;
+    int uGender;
 
     /**
      * The SO of the user
      */
-    String mSO;
+    String uSO;
 
     /**
      * A user constructor.
      * 
-     * @param mId       The id(userID)
-     * @param mUsername The username
-     * @param mEmail    The email
+     * @param cID       The id(userID)
+     * @param uUsername The username
+     * @param uEmail    The email
      */
-    public UserData(int mId, String mUsername, String mEmail) {
-        super(mId, mUsername, mEmail);
+    public UserData(int cID, String uUsername, String uEmail) {
+        super(cID, uUsername, uEmail);
     }
 
     /**
      * A user constructor
      * 
-     * @param mId       The id(userID)
-     * @param mUsername The username
-     * @param mEmail    The email
-     * @param mGender   The gender
-     * @param mSO       The SO
+     * @param uID       The id(userID)
+     * @param uUsername The username
+     * @param uEmail    The email
+     * @param uGender   The gender
+     * @param uSO       The SO
      */
-    public UserData(int mId, String mUsername, String mEmail, int mGender, String mSO) {
-        super(mId, mUsername, mEmail);
-        this.mGender = mGender;
-        this.mSO = mSO;
+    public UserData(int uID, String uUsername, String uEmail, int uGender, String uSO) {
+        super(uID, uUsername, uEmail);
+        this.uGender = uGender;
+        this.uSO = uSO;
     }
 
     @Override
     public boolean equals(Object other) {
         UserData obj = (UserData) other;
-        if (!this.mUsername.equals(obj.mUsername))
+        if (!this.uUsername.equals(obj.uUsername))
             return false;
-        if (!this.mEmail.equals(obj.mEmail))
+        if (!this.uEmail.equals(obj.uEmail))
             return false;
-        if (this.mGender != obj.mGender)
+        if (this.uGender != obj.uGender)
             return false;
-        if (!this.mSO.equals(obj.mSO))
+        if (!this.uSO.equals(obj.uSO))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return super.toString() + String.format("mGender: %d%nmSO: %s%n", this.mGender, this.mSO.trim());
+        return super.toString() + String.format("mGender: %d%nmSO: %s%n", this.uGender, this.uSO.trim());
     }
 }
