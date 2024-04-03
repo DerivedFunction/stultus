@@ -44,8 +44,8 @@ public class PostData {
      */
     public PostData(int id, String subject, String message, int likes) {
         mId = id;
-        mSubject = subject;
-        mMessage = message;
+        mSubject = subject.trim();
+        mMessage = message.trim();
         numLikes = likes;
         mUserID = 1;
     }
@@ -61,14 +61,16 @@ public class PostData {
      */
     public PostData(int id, String subject, String message, int likes, int userID) {
         mId = id;
-        mSubject = subject;
-        mMessage = message;
+        mSubject = subject.trim();
+        mMessage = message.trim();
         numLikes = likes;
         mUserID = userID;
     }
 
     @Override
     public boolean equals(Object other) {
+        if (other == null)
+            return false;
         PostData obj = (PostData) other;
         if (!this.mSubject.equals(obj.mSubject))
             return false;
@@ -82,7 +84,7 @@ public class PostData {
     @Override
     public String toString() {
         return String.format("Subject: %s%nMessage: %s%nuserID: %d%nmId: %d%n",
-                this.mSubject.trim(), this.mMessage.trim(),
+                this.mSubject, this.mMessage,
                 this.mUserID, this.mId);
     }
 }

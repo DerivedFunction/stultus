@@ -88,6 +88,10 @@ public class Database {
   private PreparedStatement mGetUserFull;
 
   /**
+   * A prepared statement to verify the identity information of a user
+   */
+  private PreparedStatement mGetUserIDFromSub;
+  /**
    * A prepared statement to get update user information
    */
   private PreparedStatement mUpdateUser;
@@ -235,16 +239,18 @@ public class Database {
               " WHERE post_id=? AND userID=?");
       db.mAddUser = db.mConnection.prepareStatement(
           "INSERT INTO " + userTable +
-              " (username,email) VALUES" +
-              " (?,?)");
+              " (username,email,sub) VALUES" +
+              " (?,?,?)");
       db.mFindUser = db.mConnection.prepareStatement(
           "SELECT id FROM " + userTable + " WHERE email=?");
       db.mGetUserSimple = db.mConnection.prepareStatement(
           "SELECT id, username, email FROM " + userTable + " WHERE id=?");
       db.mGetUserFull = db.mConnection.prepareStatement(
           "SELECT * FROM " + userTable + " WHERE id=?");
+      db.mGetUserIDFromSub = db.mConnection.prepareStatement(
+          "SELECT id FROM " + userTable + " WHERE sub=?");
       db.mUpdateUser = db.mConnection.prepareStatement(
-          "UPDATE " + userTable + " SET username=?, gender=?, so=? where id=?");
+          "UPDATE " + userTable + " SET username=?, gender=?, so=? WHERE id=? AND sub=?");
       db.mDeleteUser = db.mConnection.prepareStatement(
           "DELETE FROM " + userTable + " WHERE id=?");
       db.mSelectAllCommentsForPost = db.mConnection.prepareStatement(
@@ -307,12 +313,12 @@ public class Database {
    * @return The number of rows that were inserted
    */
   int insertRow(String subject, String message, int userid) {
-    int count = 0;
+    int count = -1;
     try {
       mInsertOne.setString(1, subject);
       mInsertOne.setString(2, message);
       mInsertOne.setInt(3, userid);
-      count += mInsertOne.executeUpdate();
+      count = mInsertOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -402,8 +408,8 @@ public class Database {
     if (data.mUserID != userID)
       return res;
     try {
-      mUpdateOne.setString(1, title);
-      mUpdateOne.setString(2, message);
+      mUpdateOne.setString(1, title.trim());
+      mUpdateOne.setString(2, message.trim());
       mUpdateOne.setInt(3, id);
       res = mUpdateOne.executeUpdate();
     } catch (SQLException e) {
@@ -539,8 +545,29 @@ public class Database {
   int findUserID(String email) {
     int res = 0;
     try {
-      mFindUser.setString(1, email);
+      mFindUser.setString(1, email.trim());
       ResultSet rs = mFindUser.executeQuery();
+      // Get the count
+      if (rs.next()) {
+        res = rs.getInt("id");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  /**
+   * find the userid based on email
+   * 
+   * @param sub to find
+   * @return id of user, 0 on nothing
+   */
+  int findUserIDfromSub(String sub) {
+    int res = 0;
+    try {
+      mGetUserIDFromSub.setString(1, sub.trim());
+      ResultSet rs = mGetUserIDFromSub.executeQuery();
       // Get the count
       if (rs.next()) {
         res = rs.getInt("id");
@@ -585,7 +612,7 @@ public class Database {
       if (rs.next()) {
         res = new UserData(rs.getInt("id"), rs.getString("username"),
             rs.getString("email"), rs.getInt("gender"),
-            rs.getString("so"));
+            rs.getString("so"), rs.getString("sub"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -598,18 +625,20 @@ public class Database {
    * 
    * @param username The username to add
    * @param email    The email to add
-   * @return 1 on success, 0 if fail or already exists
+   * @param sub      The sub to add
+   * @return 1 on success, -1 if fail or 0 already exists
    */
-  int insertUser(String username, String email) {
-    int count = 0;
-    // User already existrs
-    if (findUserID(email) > 0) {
+  int insertUser(String username, String email, String sub) {
+    int count = -1;
+    // User already exist
+    if (findUserID(email.trim()) > 0) {
       return 0;
     }
     try {
-      mAddUser.setString(1, username);
-      mAddUser.setString(2, email);
-      count += mAddUser.executeUpdate();
+      mAddUser.setString(1, username.trim());
+      mAddUser.setString(2, email.trim());
+      mAddUser.setString(3, sub);
+      count = mAddUser.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -620,20 +649,21 @@ public class Database {
    * Updates user profile
    * 
    * @param userID   The userID associated with user
+   * @param sub      The user's sub value to verify
    * @param username The new username
    * @param gender   The new gender
    * @param SO       The new SO
-   * @return 1 on sucess, 0 on fail
+   * @return 1 on success, -1 on fail
    */
-  int updateUser(int userID, String username, int gender, String SO) {
-    int count = 0;
-
+  int updateUser(int userID, String sub, String username, int gender, String SO) {
+    int count = -1;
     try {
-      mUpdateUser.setString(1, username);
+      mUpdateUser.setString(1, username.trim());
       mUpdateUser.setInt(2, gender);
-      mUpdateUser.setString(3, SO);
+      mUpdateUser.setString(3, SO.trim());
       mUpdateUser.setInt(4, userID);
-      count += mUpdateUser.executeUpdate();
+      mUpdateUser.setString(5, sub);
+      count = mUpdateUser.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -650,7 +680,7 @@ public class Database {
     int count = 0;
     try {
       mDeleteUser.setInt(1, userID);
-      count += mDeleteUser.executeUpdate();
+      count = mDeleteUser.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -663,15 +693,15 @@ public class Database {
    * @param message Comment message
    * @param postID  which post is commented
    * @param userID  author of comment
-   * @return 1 on success, 0 on failure
+   * @return 1 on success, -1 on failure, or 0 if none
    */
   int insertComment(String message, int postID, int userID) {
-    int count = 0;
+    int count = -1;
     try {
-      mInsertComment.setString(1, message);
+      mInsertComment.setString(1, message.trim());
       mInsertComment.setInt(2, postID);
       mInsertComment.setInt(3, userID);
-      count += mInsertComment.executeUpdate();
+      count = mInsertComment.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -684,15 +714,15 @@ public class Database {
    * @param message   Comment message
    * @param commentID Which comment to update
    * @param userID    Author of edited comment
-   * @return 1 on success, 0 on failure
+   * @return 1 on success, -1 on error, 0 if fail
    */
   int updateComment(String message, int commentID, int userID) {
-    int count = 0;
+    int count = -1;
     try {
-      mUpdateComment.setString(1, message);
+      mUpdateComment.setString(1, message.trim());
       mUpdateComment.setInt(2, commentID);
       mUpdateComment.setInt(3, userID);
-      count += mUpdateComment.executeUpdate();
+      count = mUpdateComment.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -704,14 +734,14 @@ public class Database {
    * 
    * @param commentID id of comment
    * @param userID    id of user
-   * @return 1 on success, 0 on failure
+   * @return 1 on success, -1 on error, 0 on failure
    */
   int deleteComment(int commentID, int userID) {
-    int count = 0;
+    int count = -1;
     try {
       mDeleteComment.setInt(1, commentID);
       mDeleteComment.setInt(2, userID);
-      count += mDeleteComment.executeUpdate();
+      count = mDeleteComment.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
