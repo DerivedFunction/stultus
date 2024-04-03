@@ -188,10 +188,11 @@ public class DatabaseTest extends TestCase {
   public static void testUser() {
     String email = rngString() + "@example.com";
     String username = "test account";
+    String sub = "sub" + rngString();
     // First time it works
-    assertEquals(db.insertUser(username, email), 1);
+    assertEquals(db.insertUser(username, email, sub), 1);
     // Second time it doesn't
-    assertEquals(db.insertUser(username, email), 0);
+    assertEquals(db.insertUser(username, email, sub), 0);
     // We can delete it
     assertEquals(db.deleteUser(db.findUserID(email)), 1);
   }
@@ -205,11 +206,12 @@ public class DatabaseTest extends TestCase {
     String username = test.uUsername;
     int gender = test.uGender;
     String so = test.uSO;
+    String sub = test.uSub;
     int userID = db.findUserID(email);
-    db.updateUser(userID, "a", gender + 1, "a");
+    db.updateUser(userID, sub, "a", gender + 1, "a");
     UserData updated = db.getUserFull(userID);
     assertFalse(test.equals(updated));
-    db.updateUser(userID, username, gender, so);
+    db.updateUser(userID, sub, username, gender, so);
     updated = db.getUserFull(userID);
     assertTrue(test.equals(updated));
     db.deleteUser(userID);
@@ -223,7 +225,8 @@ public class DatabaseTest extends TestCase {
   private static UserData createUser() {
     String email = rngString() + "@example.com";
     String username = "test account";
-    db.insertUser(username, email);
+    String sub = "sub" + rngString();
+    db.insertUser(username, email, sub);
     UserData test = db.getUserFull(db.findUserID(email));
     return test;
   }

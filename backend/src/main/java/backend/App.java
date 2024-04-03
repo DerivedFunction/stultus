@@ -60,7 +60,7 @@ public class App {
   /**
    * Parameters for adding a basic message with user ID in website
    */
-  private static final String ADD_FORMAT = String.format("/%s/addMessage", USER_FORMAT); // "/user/addMessage"
+  private static final String ADD_FORMAT = String.format("%s/addMessage", USER_FORMAT); // "/user/addMessage"
 
   /**
    * Parameters for editing a basic message with user ID in website
@@ -692,16 +692,18 @@ public class App {
       boolean verified = idToken != null && Oauth.verifyToken(idToken);
       String email = null;
       String name = null;
+      String sub = null;
       int userID = 0;
       if (verified) {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
         name = Oauth.getName(idToken);
+        sub = Oauth.getSub(idToken);
         // Checks if user exists in Database
         UserData user = db.getUserFull(db.findUserID(email));
         if (user == null) { // creating a new user account
           Log.info("new account detected creating new user");
-          db.insertUser(name, email);
+          db.insertUser(name, email, sub);
         }
         userID = db.findUserID(email);
         if (TokenManager.getToken(userID) != null) {
