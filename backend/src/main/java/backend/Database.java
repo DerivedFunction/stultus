@@ -88,6 +88,10 @@ public class Database {
   private PreparedStatement mGetUserFull;
 
   /**
+   * A prepared statement to verify the identity information of a user
+   */
+  private PreparedStatement mGetUserIDFromSub;
+  /**
    * A prepared statement to get update user information
    */
   private PreparedStatement mUpdateUser;
@@ -243,6 +247,8 @@ public class Database {
           "SELECT id, username, email FROM " + userTable + " WHERE id=?");
       db.mGetUserFull = db.mConnection.prepareStatement(
           "SELECT * FROM " + userTable + " WHERE id=?");
+      db.mGetUserIDFromSub = db.mConnection.prepareStatement(
+          "SELECT id FROM " + userTable + " WHERE sub=?");
       db.mUpdateUser = db.mConnection.prepareStatement(
           "UPDATE " + userTable + " SET username=?, gender=?, so=? WHERE id=? AND sub=?");
       db.mDeleteUser = db.mConnection.prepareStatement(
@@ -541,6 +547,27 @@ public class Database {
     try {
       mFindUser.setString(1, email.trim());
       ResultSet rs = mFindUser.executeQuery();
+      // Get the count
+      if (rs.next()) {
+        res = rs.getInt("id");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  /**
+   * find the userid based on email
+   * 
+   * @param sub to find
+   * @return id of user, 0 on nothing
+   */
+  int findUserIDfromSub(String sub) {
+    int res = 0;
+    try {
+      mGetUserIDFromSub.setString(1, sub.trim());
+      ResultSet rs = mGetUserIDFromSub.executeQuery();
       // Get the count
       if (rs.next()) {
         res = rs.getInt("id");
