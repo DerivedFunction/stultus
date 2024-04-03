@@ -68,8 +68,8 @@ public class Oauth {
      * @return unique value
      */
     public static String getSub(String idTokenString) {
-        PayLoad payload = getPayload(idTokenString);
-        return payload != null ? payload.get("sub") : null;
+        Payload payload = getPayload(idTokenString);
+        return payload != null ? payload.get("sub").toString() : null;
     }
 
     /**
