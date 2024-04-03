@@ -24,3 +24,6 @@ git checkout -b backend-dokku origin/backend-dokku
 
 # we are now ready to deploy to dokku with (-f if necessary):
 git push -f dokku backend-dokku
+
+# Go back to backend
+git checkout backend
