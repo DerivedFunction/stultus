@@ -51,32 +51,36 @@ public class App {
   /**
    * Parameters for basic message with user ID in website
    */
-  private static final String USER_FORMAT = String.format("/%s/:%s", "user", USER_ID); // "/user/:userID"
+  private static final String USER_FORMAT = "/user"; // "/user"
+  /**
+   * Parameters for basic message with user ID in website
+   */
+  private static final String USER_ID_FORMAT = String.format("%s/:%s", USER_FORMAT, USER_ID); // "/user/:userID"
 
   /**
    * Parameters for adding a basic message with user ID in website
    */
-  private static final String ADD_FORMAT = String.format("/%s/addMessage", USER_FORMAT); // "/user/:userID/addMessage"
+  private static final String ADD_FORMAT = String.format("/%s/addMessage", USER_FORMAT); // "/user/addMessage"
 
   /**
    * Parameters for editing a basic message with user ID in website
    */
-  private static final String EDIT_FORMAT = String.format("%s/editMessage/:%s", USER_FORMAT, POST_ID); // "/user/:userID/editMessage/:postID"
+  private static final String EDIT_FORMAT = String.format("%s/editMessage/:%s", USER_FORMAT, POST_ID); // "/user/editMessage/:postID"
 
   /**
    * Parameters for deleting a basic message with user ID in website
    */
-  private static final String DELETE_FORMAT = String.format("%s/deleteMessage/:%s", USER_FORMAT, POST_ID); // "/user/:userID/deleteMessage/:postID"
+  private static final String DELETE_FORMAT = String.format("%s/deleteMessage/:%s", USER_FORMAT, POST_ID); // "/user/deleteMessage/:postID"
 
   /**
    * Parameters for basic voting with user ID and post ID in website
    */
-  private static final String UPVOTE_FORMAT = String.format("%s/upvote/:%s", USER_FORMAT, POST_ID); // "/user/:userID/upvote/:postID"
+  private static final String UPVOTE_FORMAT = String.format("%s/upvote/:%s", USER_FORMAT, POST_ID); // "/user/upvote/:postID"
 
   /**
    * Parameters for basic voting with user ID and post ID in website
    */
-  private static final String DOWNVOTE_FORMAT = String.format("%s/downvote/:%s", USER_FORMAT, POST_ID); // "/user/:userID/downvote/:postID"
+  private static final String DOWNVOTE_FORMAT = String.format("%s/downvote/:%s", USER_FORMAT, POST_ID); // "/user/downvote/:postID"
 
   /**
    * Parameters for getting all comments for a specific post
@@ -96,7 +100,7 @@ public class App {
   /**
    * Parameters for adding, editing, deleting a comment
    */
-  private static final String COMMENT_FORMAT = String.format("%s/comment/:%s", USER_FORMAT, POST_ID); // "/user/:userID/comment/:postID"
+  private static final String COMMENT_FORMAT = String.format("%s/comment/:%s", USER_FORMAT, POST_ID); // "/user/comment/:postID"
 
   /**
    * Parameters for getting a single comment
@@ -194,7 +198,7 @@ public class App {
      * GET route that returns user information.
      * Converts StructuredResponses to JSON
      */
-    Spark.get(USER_FORMAT, getUser(gson, db)); // "/user/:userID"
+    Spark.get(USER_ID_FORMAT, getUser(gson, db)); // "/user/:userID"
 
     /**
      * GET route that returns all comments for specific post
@@ -221,31 +225,33 @@ public class App {
      * SimpleRequest object, extracting the title and msg,
      * and also the object.
      */
-    Spark.post(ADD_FORMAT, postIdea(gson, db)); // "/user/:userID/addMessage"
+    Spark.post(ADD_FORMAT, postIdea(gson, db)); // "/user/addMessage"
 
     /**
      * POST route that adds a new comment
      */
-    Spark.post(COMMENT_FORMAT, postComment(gson, db)); // "/user/:userID/comment/:postID"
+    Spark.post(COMMENT_FORMAT, postComment(gson, db)); // "/user/comment/:postID"
+
+    /*
+     * POST route for voting
+     */
+    Spark.post(UPVOTE_FORMAT, postUpVote(gson, db)); // "/user/upvote/:postID"
+
+    /*
+     * POST route for voting
+     */
+    Spark.post(DOWNVOTE_FORMAT, postDownVote(gson, db)); // "/user/downvote/:postID"
+
     /*
      * PUT route for updating a row in DataStore. Almost the same
      * as POST
      */
-    Spark.put(EDIT_FORMAT, putWithID(gson, db)); // "/user/:userID/editMessage/:postID"
-
-    /*
-     * PUT route for voting
-     */
-    Spark.put(UPVOTE_FORMAT, putUpVote(gson, db)); // "/user/:userID/upvote/:postID"
-    /*
-     * PUT route for voting
-     */
-    Spark.put(DOWNVOTE_FORMAT, putDownVote(gson, db)); // "/user/:userID/downvote/:postID"
+    Spark.put(EDIT_FORMAT, putWithID(gson, db)); // "/user/editMessage/:postID"
 
     /*
      * Delete route for removing a row from DataStore
      */
-    Spark.delete(DELETE_FORMAT, deleteWithID(gson, db)); // "/user/:userID/deleteMessage/:postID"
+    Spark.delete(DELETE_FORMAT, deleteWithID(gson, db)); // "/user/deleteMessage/:postID"
 
     /*
      * POST route that authenticates a token
@@ -316,10 +322,12 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
-      int userID = Integer.parseInt(req.params(USER_ID));
+      int userID = TokenManager.getUserID(idToken);
       extractResponse(res);
       int result = db.deleteRow(postID, userID);
       String errorType = "unable to delete row " + postID;
@@ -365,10 +373,12 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
-      int userID = Integer.parseInt(req.params(USER_ID));
+      int userID = TokenManager.getUserID(idToken);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       extractResponse(res);
       Integer result = db.updateOne(postID, sReq.mTitle, sReq.mMessage, userID);
@@ -382,7 +392,7 @@ public class App {
    * Creates the route to handle like changes
    * 
    * @deprecated As of Sprint 8, this method is deprecated in favor of
-   *             {@link #putUpVote(Gson, Database)}
+   *             {@link #postUpVote(Gson, Database)}
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
@@ -406,17 +416,19 @@ public class App {
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.togglelike
    */
-  private static Route putUpVote(final Gson gson, Database db) {
+  private static Route postUpVote(final Gson gson, Database db) {
     return (req, res) -> {
       // Retrieve the value of the "idToken" cookie
       String idToken = req.cookie("idToken");
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
-      int userID = Integer.parseInt(req.params(USER_ID));
+      int userID = TokenManager.getUserID(idToken);
       int result = db.toggleVote(postID, 1, userID);
       String errorType = "error updating vote: post id=" + postID + " vote=" + 1;
       boolean errResult = (result == -1);
@@ -432,17 +444,19 @@ public class App {
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.togglelike
    */
-  private static Route putDownVote(final Gson gson, Database db) {
+  private static Route postDownVote(final Gson gson, Database db) {
     return (req, res) -> {
       // Retrieve the value of the "idToken" cookie
       String idToken = req.cookie("idToken");
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
-      int userID = Integer.parseInt(req.params(USER_ID));
+      int userID = TokenManager.getUserID(idToken);
       int result = db.toggleVote(postID, -1, userID);
       String errorType = "error updating vote: post id=" + postID + " vote=" + -1;
       boolean errResult = (result == -1);
@@ -488,13 +502,15 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
-      int id = Integer.parseInt(req.params(USER_ID));
+      }
+      int userID = TokenManager.getUserID(idToken);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       extractResponse(res);
       // createEntry checks for null title/message (-1)
-      int rowsAdded = db.insertRow(sReq.mTitle, sReq.mMessage, id);
+      int rowsAdded = db.insertRow(sReq.mTitle, sReq.mMessage, userID);
       String errorType = "error performing insertion";
       boolean errResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
@@ -517,10 +533,12 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
-      int userID = Integer.parseInt(req.params(USER_ID));
+      int userID = TokenManager.getUserID(idToken);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       extractResponse(res);
 
@@ -549,10 +567,12 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       extractResponse(res);
-      return JSONResponse(gson, "Invalid or missing ID token", !verified, idToken, db.selectAll());
+      return JSONResponse(gson, "Invalid or missing ID token", !verified, null, db.selectAll());
     };
   }
 
@@ -571,8 +591,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
       extractResponse(res);
       PostData data = db.selectOne(postID);
@@ -598,8 +620,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int userID = Integer.parseInt(req.params(USER_ID));
       extractResponse(res);
       UserDataLite data = db.getUserSimple(userID);
@@ -628,8 +652,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = needsPost ? Integer.parseInt(req.params(POST_ID)) : 0;
       int userID = needsUser ? Integer.parseInt(req.params(USER_ID)) : 0;
 
