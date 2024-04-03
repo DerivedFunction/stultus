@@ -78,6 +78,8 @@ public class UserData extends UserDataLite {
             return false;
         if (!this.uSO.equals(obj.uSO))
             return false;
+        if (!this.uSub.equals(obj.uSub))
+            return false;
         return true;
     }
 
