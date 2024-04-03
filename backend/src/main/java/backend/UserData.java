@@ -20,6 +20,28 @@ public class UserData extends UserDataLite {
     String uSO;
 
     /**
+     * The sub value of the user
+     */
+    String uSub;
+
+    /**
+     * Full constructor for Google Account associated with user
+     * 
+     * @param cID       The userID in db
+     * @param uUsername The user's username
+     * @param uEmail    The user's Google account
+     * @param uGender   The user's gender
+     * @param uSO       The user's SO
+     * @param uSub      The user's sub value
+     */
+    public UserData(int cID, String uUsername, String uEmail, int uGender, String uSO, String uSub) {
+        super(cID, uUsername, uEmail);
+        this.uGender = uGender;
+        this.uSO = uSO.trim();
+        this.uSub = uSub;
+    }
+
+    /**
      * A user constructor.
      * 
      * @param cID       The id(userID)
@@ -42,7 +64,7 @@ public class UserData extends UserDataLite {
     public UserData(int uID, String uUsername, String uEmail, int uGender, String uSO) {
         super(uID, uUsername, uEmail);
         this.uGender = uGender;
-        this.uSO = uSO;
+        this.uSO = uSO.trim();
     }
 
     @Override
