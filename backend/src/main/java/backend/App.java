@@ -214,7 +214,7 @@ public class App {
     /**
      * GET route that returns a comments by commentID
      */
-    Spark.get(SINGLE_COMMENT_FORMAT, getCommentsForPost(gson, db, false, false));
+    Spark.get(SINGLE_COMMENT_FORMAT, getCommentsForPost(gson, db, false, false)); // "/comment/:commentID"
     /*
      * POST route that adds a new element to DataStore.
      * Reads JSON from body of request and turns it to a
