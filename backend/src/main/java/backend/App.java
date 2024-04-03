@@ -52,6 +52,10 @@ public class App {
    * Parameters for basic message with user ID in website
    */
   private static final String USER_FORMAT = "/user"; // "/user"
+  /**
+   * Parameters for basic message with user ID in website
+   */
+  private static final String USER_ID_FORMAT = String.format("%s/:%s", USER_FORMAT, USER_ID); // "/user/:userID"
 
   /**
    * Parameters for adding a basic message with user ID in website
@@ -194,7 +198,7 @@ public class App {
      * GET route that returns user information.
      * Converts StructuredResponses to JSON
      */
-    Spark.get(USER_FORMAT, getUser(gson, db)); // "/user/:userID"
+    Spark.get(USER_ID_FORMAT, getUser(gson, db)); // "/user/:userID"
 
     /**
      * GET route that returns all comments for specific post
@@ -318,8 +322,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
       int userID = TokenManager.getUserID(idToken);
       extractResponse(res);
@@ -367,8 +373,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
       int userID = TokenManager.getUserID(idToken);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
@@ -415,8 +423,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
       int userID = TokenManager.getUserID(idToken);
       int result = db.toggleVote(postID, 1, userID);
@@ -441,8 +451,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
       int userID = TokenManager.getUserID(idToken);
       int result = db.toggleVote(postID, -1, userID);
@@ -490,13 +502,15 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
-      int id = Integer.parseInt(req.params(USER_ID));
+      }
+      int userID = TokenManager.getUserID(idToken);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       extractResponse(res);
       // createEntry checks for null title/message (-1)
-      int rowsAdded = db.insertRow(sReq.mTitle, sReq.mMessage, id);
+      int rowsAdded = db.insertRow(sReq.mTitle, sReq.mMessage, userID);
       String errorType = "error performing insertion";
       boolean errResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
@@ -519,8 +533,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
       int userID = TokenManager.getUserID(idToken);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
@@ -551,10 +567,12 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       extractResponse(res);
-      return JSONResponse(gson, "Invalid or missing ID token", !verified, idToken, db.selectAll());
+      return JSONResponse(gson, "Invalid or missing ID token", !verified, null, db.selectAll());
     };
   }
 
@@ -573,8 +591,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = Integer.parseInt(req.params(POST_ID));
       extractResponse(res);
       PostData data = db.selectOne(postID);
@@ -600,8 +620,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int userID = Integer.parseInt(req.params(USER_ID));
       extractResponse(res);
       UserDataLite data = db.getUserSimple(userID);
@@ -630,8 +652,10 @@ public class App {
       // Verify the token
       boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
       // If it doesn't exist in TokenManager, return error
-      if (!verified)
+      if (!verified) {
+        res.status(401); // Unauthorized
         return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      }
       int postID = needsPost ? Integer.parseInt(req.params(POST_ID)) : 0;
       int userID = needsUser ? Integer.parseInt(req.params(USER_ID)) : 0;
 
