@@ -52,23 +52,10 @@ public class UserData extends UserDataLite {
         super(cID, uUsername, uEmail);
     }
 
-    /**
-     * A user constructor
-     * 
-     * @param uID       The id(userID)
-     * @param uUsername The username
-     * @param uEmail    The email
-     * @param uGender   The gender
-     * @param uSO       The SO
-     */
-    public UserData(int uID, String uUsername, String uEmail, int uGender, String uSO) {
-        super(uID, uUsername, uEmail);
-        this.uGender = uGender;
-        this.uSO = uSO.trim();
-    }
-
     @Override
     public boolean equals(Object other) {
+        if (other == null)
+            return false;
         UserData obj = (UserData) other;
         if (!this.uUsername.equals(obj.uUsername))
             return false;

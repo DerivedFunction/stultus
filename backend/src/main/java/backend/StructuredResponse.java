@@ -29,7 +29,7 @@ public class StructuredResponse {
    */
   public StructuredResponse(String status, String message, Object data) {
     mStatus = (status != null) ? status : "invalid";
-    mMessage = message.trim();
+    mMessage = (message != null) ? message.trim() : null;
     mData = data;
   }
 }
