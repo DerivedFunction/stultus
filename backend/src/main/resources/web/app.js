@@ -42,7 +42,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var $;
 /** Global variable to be referenced for newEntryForm
  * @type {Object.<string, string>}
- */
+*/
 var newEntryForm;
 /**
  * Backend server link to dokku
@@ -103,9 +103,9 @@ var NewEntryForm = /** @class */ (function () {
             return;
         }
         /**
-         * do a POST (create) and do onSubmitResponse
-         * @type {function}
-         */
+        * do a POST (create) and do onSubmitResponse
+        * @type {function}
+        */
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -171,7 +171,7 @@ var NewEntryForm = /** @class */ (function () {
 }());
 /** Global variable to be referenced for ElementList
  * @type {EditEntryForm}
- */
+*/
 var editEntryForm;
 /**
  * EditEntryForm contains all code for editing an entry
@@ -258,7 +258,7 @@ var EditEntryForm = /** @class */ (function () {
         }
         /** set up an AJAX PUT. When the server replies, the result will go to onSubmitResponse
          * @type {function}
-         */
+        */
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -328,7 +328,7 @@ var EditEntryForm = /** @class */ (function () {
 }());
 /** Global variable to be referenced for ElementList
  * @type {var}
- */
+*/
 var mainList;
 /**
  * ElementList provides a way to see the data stored in server
@@ -394,12 +394,7 @@ var ElementList = /** @class */ (function () {
                 var td_title = document.createElement("td");
                 var td_id = document.createElement("td");
                 var td_like = document.createElement("td");
-                td_title.innerHTML =
-                    '<div id = "postTitle">' +
-                        data.mData[i].mSubject +
-                        '</div><br><div id = "postBody">' +
-                        data.mData[i].mMessage +
-                        "</div>";
+                td_title.innerHTML = "<div id = \"postTitle\">" + data.mData[i].mSubject + "</div><br><div id = \"postBody\">" + data.mData[i].mMessage + "</div>";
                 td_id.innerHTML = data.mData[i].mId;
                 td_like.innerHTML = data.mData[i].numLikes;
                 tr.appendChild(td_like);
