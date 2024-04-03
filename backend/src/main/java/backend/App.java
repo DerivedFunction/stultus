@@ -311,6 +311,13 @@ public class App {
    */
   private static Route deleteWithID(final Gson gson, Database db) {
     return (req, res) -> {
+      // Retrieve the value of the "idToken" cookie
+      String idToken = req.cookie("idToken");
+      // Verify the token
+      boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified)
+        return JSONResponse(gson, "User Session Does not exist", true, null, null);
       int postID = Integer.parseInt(req.params(POST_ID));
       int userID = Integer.parseInt(req.params(USER_ID));
       extractResponse(res);
@@ -353,6 +360,13 @@ public class App {
    */
   private static Route putWithID(final Gson gson, Database db) {
     return (req, res) -> {
+      // Retrieve the value of the "idToken" cookie
+      String idToken = req.cookie("idToken");
+      // Verify the token
+      boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified)
+        return JSONResponse(gson, "User Session Does not exist", true, null, null);
       int postID = Integer.parseInt(req.params(POST_ID));
       int userID = Integer.parseInt(req.params(USER_ID));
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
@@ -394,6 +408,13 @@ public class App {
    */
   private static Route putUpVote(final Gson gson, Database db) {
     return (req, res) -> {
+      // Retrieve the value of the "idToken" cookie
+      String idToken = req.cookie("idToken");
+      // Verify the token
+      boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified)
+        return JSONResponse(gson, "User Session Does not exist", true, null, null);
       int postID = Integer.parseInt(req.params(POST_ID));
       int userID = Integer.parseInt(req.params(USER_ID));
       int result = db.toggleVote(postID, 1, userID);
@@ -413,6 +434,13 @@ public class App {
    */
   private static Route putDownVote(final Gson gson, Database db) {
     return (req, res) -> {
+      // Retrieve the value of the "idToken" cookie
+      String idToken = req.cookie("idToken");
+      // Verify the token
+      boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified)
+        return JSONResponse(gson, "User Session Does not exist", true, null, null);
       int postID = Integer.parseInt(req.params(POST_ID));
       int userID = Integer.parseInt(req.params(USER_ID));
       int result = db.toggleVote(postID, -1, userID);
@@ -455,6 +483,13 @@ public class App {
    */
   private static Route postIdea(final Gson gson, Database db) {
     return (req, res) -> {
+      // Retrieve the value of the "idToken" cookie
+      String idToken = req.cookie("idToken");
+      // Verify the token
+      boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified)
+        return JSONResponse(gson, "User Session Does not exist", true, null, null);
       int id = Integer.parseInt(req.params(USER_ID));
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       extractResponse(res);
@@ -476,13 +511,20 @@ public class App {
    *         for db.insertRow
    */
   private static Route postComment(final Gson gson, Database db) {
-    return (request, response) -> {
-      int postID = Integer.parseInt(request.params(POST_ID));
-      int userID = Integer.parseInt(request.params(USER_ID));
-      SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
-      extractResponse(response);
+    return (req, res) -> {
+      // Retrieve the value of the "idToken" cookie
+      String idToken = req.cookie("idToken");
+      // Verify the token
+      boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified)
+        return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      int postID = Integer.parseInt(req.params(POST_ID));
+      int userID = Integer.parseInt(req.params(USER_ID));
+      SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
+      extractResponse(res);
 
-      int commentsAdded = db.insertComment(req.mMessage, postID, userID);
+      int commentsAdded = db.insertComment(sReq.mMessage, postID, userID);
       String errorType = String.format("Error inserting comment to postID %d by userID: %d",
           postID, userID);
       boolean errResult = (commentsAdded <= 0);
@@ -501,10 +543,16 @@ public class App {
    *         db.selectAll()
    */
   private static Route getAll(final Gson gson, Database db) {
-    return (request, response) -> {
-      extractResponse(response);
-      return gson.toJson(
-          new StructuredResponse("ok", null, db.selectAll()));
+    return (req, res) -> {
+      // Retrieve the value of the "idToken" cookie
+      String idToken = req.cookie("idToken");
+      // Verify the token
+      boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified)
+        return JSONResponse(gson, "User Session Does not exist", true, null, null);
+      extractResponse(res);
+      return JSONResponse(gson, "Invalid or missing ID token", !verified, idToken, db.selectAll());
     };
   }
 
@@ -518,6 +566,13 @@ public class App {
    */
   private static Route getWithId(final Gson gson, Database db) {
     return (req, res) -> {
+      // Retrieve the value of the "idToken" cookie
+      String idToken = req.cookie("idToken");
+      // Verify the token
+      boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified)
+        return JSONResponse(gson, "User Session Does not exist", true, null, null);
       int postID = Integer.parseInt(req.params(POST_ID));
       extractResponse(res);
       PostData data = db.selectOne(postID);
@@ -538,6 +593,13 @@ public class App {
    */
   private static Route getUser(final Gson gson, Database db) {
     return (req, res) -> {
+      // Retrieve the value of the "idToken" cookie
+      String idToken = req.cookie("idToken");
+      // Verify the token
+      boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified)
+        return JSONResponse(gson, "User Session Does not exist", true, null, null);
       int userID = Integer.parseInt(req.params(USER_ID));
       extractResponse(res);
       UserDataLite data = db.getUserSimple(userID);
@@ -561,6 +623,13 @@ public class App {
    */
   private static Route getCommentsForPost(final Gson gson, Database db, boolean needsUser, boolean needsPost) {
     return (req, res) -> {
+      // Retrieve the value of the "idToken" cookie
+      String idToken = req.cookie("idToken");
+      // Verify the token
+      boolean verified = idToken != null && Oauth.verifyToken(idToken) && TokenManager.containsToken(idToken);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified)
+        return JSONResponse(gson, "User Session Does not exist", true, null, null);
       int postID = needsPost ? Integer.parseInt(req.params(POST_ID)) : 0;
       int userID = needsUser ? Integer.parseInt(req.params(USER_ID)) : 0;
 
@@ -615,6 +684,8 @@ public class App {
         }
         TokenManager.addToken(userID, idToken);
         Log.info("Added new token to TokenManager");
+        res.cookie("idToken", idToken);
+        res.redirect("./index.html");
       } else {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
@@ -640,17 +711,17 @@ public class App {
    * Returns JSON response on error or OK
    * 
    * @param gson      GSON to convert to JSON
-   * @param errorType Error Message
+   * @param errorMsg  Error Message
    * @param errResult Evaluation of result
    * @param message   mMessage for JSON on OK
    * @param data      mData for JSON on OK
    * @return JSON response
    */
-  private static Object JSONResponse(final Gson gson, String errorType, boolean errResult, String message,
+  private static Object JSONResponse(final Gson gson, String errorMsg, boolean errResult, String message,
       Object data) {
     if (errResult) {
       return gson.toJson(new StructuredResponse(
-          "error", errorType, data));
+          "error", errorMsg, data));
     } else {
       return gson.toJson(new StructuredResponse("ok", message, data));
     }
