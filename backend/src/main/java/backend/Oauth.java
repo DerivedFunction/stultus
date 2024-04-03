@@ -62,6 +62,17 @@ public class Oauth {
     }
 
     /**
+     * Gets the sub of the token
+     * 
+     * @param idTokenString The token to verify
+     * @return unique value
+     */
+    public static String getSub(String idTokenString) {
+        PayLoad payload = getPayload(idTokenString);
+        return payload != null ? payload.get("sub") : null;
+    }
+
+    /**
      * Gets the payload of the token
      * 
      * @param idTokenString The token
