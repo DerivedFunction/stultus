@@ -39,7 +39,7 @@ public class CommentData {
      */
     public CommentData(int cId, String cMessage, int cPostID, int cUserID) {
         this.cId = cId;
-        this.cMessage = cMessage;
+        this.cMessage = cMessage.trim();
         this.cUserID = cUserID;
         this.cPostID = cPostID;
     }
@@ -47,7 +47,7 @@ public class CommentData {
     @Override
     public String toString() {
         return String.format("PostID: %d%nMessage: %s%nuserID: %d%nmId: %d%n",
-                this.cPostID, this.cMessage.trim(),
+                this.cPostID, this.cMessage,
                 this.cUserID, this.cId);
     }
 

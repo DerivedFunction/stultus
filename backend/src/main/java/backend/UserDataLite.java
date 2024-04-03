@@ -33,8 +33,8 @@ public class UserDataLite {
      */
     public UserDataLite(int uID, String uUsername, String uEmail) {
         this.uID = uID;
-        this.uUsername = uUsername;
-        this.uEmail = uEmail;
+        this.uUsername = uUsername.trim();
+        this.uEmail = uEmail.trim();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class UserDataLite {
     @Override
     public String toString() {
         return String.format("mId: %d%nmUsername: %s%nmEmail: %s%n",
-                this.uID, this.uUsername.trim(),
-                this.uEmail.trim());
+                this.uID, this.uUsername,
+                this.uEmail);
     }
 }
