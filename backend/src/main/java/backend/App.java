@@ -27,7 +27,13 @@ public class App {
    */
   private static final int DEFAULT_PORT_SPARK = 4567;
 
+  /**
+   * idToken Cookie
+   */
   private static final String ID_TOKEN = "idToken";
+  /**
+   * sub value Cookie
+   */
   private static final String SUB_TOKEN = "sub";
   /**
    * Parameters for website context
@@ -698,6 +704,13 @@ public class App {
     };
   }
 
+  /**
+   * Verifies if the user is valid
+   * 
+   * @param db  The database to find the user
+   * @param req The request to grab cookies
+   * @return True if user is verified
+   */
   private static boolean getVerified(Database db, Request req) {
     // Retrieve the value of the ID_TOKEN cookie
     String idToken = req.cookie(ID_TOKEN);
