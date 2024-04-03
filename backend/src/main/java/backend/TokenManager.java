@@ -35,6 +35,16 @@ public class TokenManager {
     }
 
     /**
+     * Checks if the TokenManager contains the given token.
+     *
+     * @param token The token to check for.
+     * @return True if the token is found in the TokenManager, otherwise false.
+     */
+    public static boolean containsToken(String token) {
+        return hashMap.containsValue(token);
+    }
+
+    /**
      * Removes all tokens associated with the given user ID from the manager.
      *
      * @param userId The user ID for which to remove all tokens.
