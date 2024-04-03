@@ -12,53 +12,53 @@ public class CommentData {
     /**
      * The ID of this row of the database
      */
-    int mId;
+    int cId;
 
     /**
      * The message stored in this row
      */
-    String mMessage;
+    String cMessage;
 
     /**
      * The userID on the object
      */
-    int mUserID;
+    int cUserID;
 
     /**
      * The postID on the object
      */
-    int mPostID;
+    int cPostID;
 
     /**
      * Generates a contructor
      * 
-     * @param mId      The ID
-     * @param mMessage The message
-     * @param mUserID  The userID of author of post
-     * @param mPostID  The parent of the comment
+     * @param cId      The ID
+     * @param cMessage The message
+     * @param cUserID  The userID of author of post
+     * @param cPostID  The parent of the comment
      */
-    public CommentData(int mId, String mMessage, int mPostID, int mUserID) {
-        this.mId = mId;
-        this.mMessage = mMessage;
-        this.mUserID = mUserID;
-        this.mPostID = mPostID;
+    public CommentData(int cId, String cMessage, int cPostID, int cUserID) {
+        this.cId = cId;
+        this.cMessage = cMessage;
+        this.cUserID = cUserID;
+        this.cPostID = cPostID;
     }
 
     @Override
     public String toString() {
         return String.format("PostID: %d%nMessage: %s%nuserID: %d%nmId: %d%n",
-                this.mPostID, this.mMessage.trim(),
-                this.mUserID, this.mId);
+                this.cPostID, this.cMessage.trim(),
+                this.cUserID, this.cId);
     }
 
     @Override
     public boolean equals(Object other) {
         CommentData obj = (CommentData) other;
-        if (this.mPostID != obj.mPostID)
+        if (this.cPostID != obj.cPostID)
             return false;
-        if (!this.mMessage.equals(obj.mMessage))
+        if (!this.cMessage.equals(obj.cMessage))
             return false;
-        if (this.mUserID != obj.mUserID)
+        if (this.cUserID != obj.cUserID)
             return false;
         return true;
     }
