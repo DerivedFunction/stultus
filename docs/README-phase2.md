@@ -297,7 +297,7 @@ Manual or Automated Testing of prepared statments to post to all tables
 | Show current user profile | `/user`                        | GET    | Retreive user info                  | JSON `{uId, uUsername, uEmail, uGender, uSO, uSub}`             |
 | Edit current user profile | `/user`                        | PUT    | Edit user info                      | Takes `{uUsername, uGender, uSO}`, and backend handles updates  |
 | Authenticate user         | `/authenticate`                | POST   | Get Oauth token, add user if needed | returns `/.index.html` with `idtoken` cookie on success         |
-| Logs out a user           | `/logout`                      | DELETE | Clears cookies                      | return `200 OK` after removing cookies and session              |
+| Logs out a user           | `/logout`                      | DELETE | Clears cookies                      | return logout message after removing cookies and session        |
 
 ### Phase 1 methods: Outdated but not removed yet
 
