@@ -243,15 +243,26 @@ Manual or Automated Testing of prepared statments to post to all tables
 
 ### Backend
 
-- Test for insert and selectall database method
-- Test for delete (relies on insert)
-- Test for update
-- Test for toggling likes
-- Test that single row select and multi row select return the same rows
+#### `PostData`
 
-All tests test at least one random subject message pair
+- Tests for insertion of new post
+- Tests for selecting all post or a specific post
+- Tests for deletion a current post
+- Tests for updating a current post
+- Tests for toggling vote on a post
 
-May wish to add edge case testing (such as overlength messages or empty messages)
+#### `UserData`
+
+- Tests for adding a new user
+- Tests for selecting a specific user and verifying it
+- Tests for updating a user
+- Tests for deleting a user
+
+#### `Commentdata`
+
+- Tests for adding a new comment
+- Tests for selecting a specific comment by post or by user
+- Tests for deleting a comment
 
 ### Admin
 
@@ -270,18 +281,23 @@ May wish to add edge case testing (such as overlength messages or empty messages
 
 ### Current methods
 
-| Purpose                | Route                         | Verb   | Purpose                             | Structure                                                     |
-| ---------------------- | ----------------------------- | ------ | ----------------------------------- | ------------------------------------------------------------- |
-| Show all messages      | `/messages`                   | GET    | Return post data to display         | JSON `{ArrayList<messages>}`                                  |
-| Show one post          | `/messages/:postID`           | GET    | Return single post data             | JSON `{title, message, numLikes, userID}`                     |
-| Create new Post        | `/user/addMessage`            | POST   | Creates a post                      | Takes `{title, message}`, all other fields handled by backend |
-| Edit content of a post | `/user/editMessage/:postID`   | PUT    | Edits a post                        | Takes `{title, message}` and backend handles updates          |
-| Delete a post          | `/user/deleteMessage/:postID` | DELETE | Deletes a post                      | Returns `1` on success                                        |
-| Upvote a post          | `/user/upvote/:postID`        | POST   | upVote on a post                    | Returns `1` on success                                        |
-| Downvote a post        | `/user/downvote/:postID`      | POST   | downVote on a post                  | Returns `1` on success                                        |
-| Show a comment         | `/comment/:commentID`         | GET    | Return a comment                    | Returns `{message, userID, postID}`                           |
-| Show user profile      | `/user/:userID`               | GET    | Retreive user info                  | JSON `{mId, mUsername, mEmail}`                               |
-| Authenticate user      | `/authenticate`               | POST   | Get Oauth token, add user if needed | returns `/.index.html` with `idtoken` cookie on success       |
+| Purpose                   | Route                          | Verb   | Purpose                             | Structure                                                       |
+| ------------------------- | ------------------------------ | ------ | ----------------------------------- | --------------------------------------------------------------- |
+| Show all posts            | `/messages`                    | GET    | Return post data to display         | JSON `{ArrayList<messages>}`                                    |
+| Show one post             | `/messages/:postID`            | GET    | Return single post data             | JSON `{mTitle, mMessage, numLikes, userID}`                     |
+| Create new post           | `/user/addMessage`             | POST   | Creates a post                      | Takes `{mTitle, mMessage}`, all other fields handled by backend |
+| Edit content of a post    | `/user/editMessage/:postID`    | PUT    | Edits a post                        | Takes `{mTitle, mMessage}` and backend handles updates          |
+| Delete a post             | `/user/deleteMessage/:postID`  | DELETE | Deletes a post                      | Returns `1` on success                                          |
+| Upvote a post             | `/user/upvote/:postID`         | POST   | upVote on a post                    | Returns `1` on success                                          |
+| Downvote a post           | `/user/downvote/:postID`       | POST   | downVote on a post                  | Returns `1` on success                                          |
+| Add a comment             | `/user/comment/:postID`        | POST   | Add a comment to a post             | Takes `{mMessage}`, all other fields handled by backend         |
+| Edit a comment            | `/user/editComment/:commentID` | PUT    | Add a comment to a post             | Takes `{mMessage}`, and backend handles updates                 |
+| Show a comment            | `/comment/:commentID`          | GET    | Return a comment                    | JSON `{cId, cMessage, cUserID, cPostID}`                        |
+| Show user profile         | `/user/:userID`                | GET    | Retreive user info                  | JSON `{uId, uUsername, uEmail}`                                 |
+| Show current user profile | `/user`                        | GET    | Retreive user info                  | JSON `{uId, uUsername, uEmail, uGender, uSO, uSub}`             |
+| Edit current user profile | `/user`                        | PUT    | Edit user info                      | Takes `{uUsername, uGender, uSO}`, and backend handles updates  |
+| Authenticate user         | `/authenticate`                | POST   | Get Oauth token, add user if needed | returns `/.index.html` with `idtoken` cookie on success         |
+| Logs out a user           | `/logout`                      | DELETE | Clears cookies                      | return `200 OK` after removing cookies and session              |
 
 ### Phase 1 methods: Outdated but not removed yet
 
