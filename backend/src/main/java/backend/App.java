@@ -839,6 +839,7 @@ public class App {
         email = Oauth.getEmail(idToken);
         name = Oauth.getName(idToken);
         sub = Oauth.getSub(idToken);
+        Log.info(String.format("A user is attempting to login: %s", email));
         // Checks if user exists in Database
         UserData user = db.getUserFull(db.findUserID(email));
         if (user == null) { // creating a new user account
@@ -852,6 +853,7 @@ public class App {
         }
         TokenManager.addToken(userID, idToken);
         Log.info("Added new token to TokenManager");
+        Log.info("Adding new cookies to client");
         res.cookie(ID_TOKEN, idToken);
         res.cookie(SUB_TOKEN, sub);
         res.redirect("./index.html");
@@ -875,12 +877,14 @@ public class App {
    */
   private static Route logout(final Gson gson, Database db) {
     return (req, res) -> {
-      TokenManager.removeToken(db.findUserIDfromSub(SUB_TOKEN));
-      res.removeCookie(ID_TOKEN);
-      res.removeCookie(SUB_TOKEN);
+      int userID = db.findUserIDfromSub(req.cookie(SUB_TOKEN));
+      Log.info("A user is attempting to log out: " + db.getUserFull(userID).uEmail);
+      TokenManager.removeToken(userID);
+      res.cookie(ID_TOKEN, "", 0);
+      res.cookie(SUB_TOKEN, "", 0);
       // Return a response indicating successful logout
       res.status(200); // OK status code
-      return gson.toJson(new StructuredResponse("ok", "User logged out successfully", null));
+      return "User logout successful. You can now close this page";
     };
   }
 
