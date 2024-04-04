@@ -109,7 +109,7 @@ input,
 textarea,
 #addButton,
 #editButton,
-#dislikebtn {
+#dislikeButton {
     margin-left: 15px;
 }
 
@@ -133,8 +133,8 @@ textarea,
     text-align: center;
 }
 
-.dislikebtn {
-    background-color: #e57373; /* Red color */
+.dislikeButton {
+    background-color: #00FFFF; /* Red color */
     color: white;
     border: none;
     padding: 10px 20px;
@@ -143,6 +143,6 @@ textarea,
     margin-right: 10px; /* Adjust spacing */
 }
 
-.dislikebtn:hover {
-    background-color: #ff5252; /* Darker red on hover */
+.dislikeButton:hover {
+    background-color: #FFC0CB; /* Darker red on hover */
 }

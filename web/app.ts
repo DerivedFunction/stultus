@@ -154,6 +154,9 @@ class EditEntryForm {
     document.getElementById("editButton")?.addEventListener("click", (e) => {
       editEntryForm.submitForm();
     });
+    document.getElementById("dislikeButton")?.addEventListener("click", (e) => {
+      editEntryForm.submitForm();
+    });
   }
 
   /**
@@ -493,7 +496,7 @@ class ElementList {
     const id = (<HTMLElement>e.target).getAttribute("data-value");
 
     const doAjax = async () => {
-      await fetch(`${backendUrl}/user/upvote/:postID`, {
+      await fetch("".concat(backendUrl, "/user/upvote/").concat(id), {
         // Grab the element from "database"
         method: "PUT",
         headers: {
@@ -531,7 +534,7 @@ class ElementList {
     const id = (<HTMLElement>e.target).getAttribute("data-value");
   
     const doAjax = async () => {
-      await fetch(`${backendUrl}/user/downvote/:postID`, {
+      await fetch("".concat(backendUrl, "/user/downvote/").concat(id), {
         // HTTP PUT request for disliking a post
         method: "PUT",
         headers: {

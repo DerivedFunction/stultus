@@ -78,6 +78,7 @@ describe("Edit Tests", function () {
   let editElements: any;
   let showElements: any;
   let editCancel: any;
+  let dislikeButton: any;
 
   /**
   * Function to initialize values 
