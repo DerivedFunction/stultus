@@ -391,6 +391,14 @@ class ElementList {
         mainList.clickLike(e);
       });
     }
+    const all_dislikebtns = <HTMLCollectionOf<HTMLInputElement>>(
+      document.getElementsByClassName("dislikebtn")
+    );
+    for (let i = 0; i < all_dislikebtns.length; ++i) {
+      all_dislikebtns[i].addEventListener("click", (e) => {
+        mainList.clickDislike(e);
+      });
+    }
   }
 
   /**
@@ -427,6 +435,14 @@ class ElementList {
     td.appendChild(btn);
     fragment.appendChild(td);
 
+    td = document.createElement("td");
+    btn = document.createElement("button");
+    btn.classList.add("dislikebtn");
+    btn.setAttribute("data-value", id);
+    btn.innerHTML = "Dislike";
+    td.appendChild(btn);
+    fragment.appendChild(td);
+    
     return fragment;
   }
 
@@ -477,7 +493,7 @@ class ElementList {
     const id = (<HTMLElement>e.target).getAttribute("data-value");
 
     const doAjax = async () => {
-      await fetch(`${backendUrl}/${componentName}/${id}/like`, {
+      await fetch(`${backendUrl}/user/upvote/:postID`, {
         // Grab the element from "database"
         method: "PUT",
         headers: {
@@ -505,6 +521,46 @@ class ElementList {
         });
     };
     // post AJAX values to console
+    doAjax().then(console.log).catch(console.log);
+  }
+    /**
+   * Ajax function that sends HTTP function to update like count (by decrementing)
+   * @param e 
+   */
+  private clickDislike(e: Event) {
+    const id = (<HTMLElement>e.target).getAttribute("data-value");
+  
+    const doAjax = async () => {
+      await fetch(`${backendUrl}/user/downvote/:postID`, {
+        // HTTP PUT request for disliking a post
+        method: "PUT",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return Promise.resolve(response.json());
+          } else {
+            console.log(
+              `The server replied not ok: ${response.status}\n` +
+                response.statusText
+            );
+          }
+          return Promise.reject(response);
+        })
+        .then((data) => {
+          // Refresh the main message list to reflect the changes
+          mainList.refresh();
+          console.log(data);
+        })
+        .catch((error) => {
+          console.warn("Something went wrong. ", error);
+          console.log("Unspecified error");
+        });
+    };
+  
+    // Execute the AJAX request
     doAjax().then(console.log).catch(console.log);
   }
 
