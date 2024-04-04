@@ -19,10 +19,10 @@ other's ideas. All relavant information about new updates and releases are in [`
 
 ## Team Members
 
-- Project Manger: **Denny Li**, [del226@lehigh.edu](mailto:del226@lehigh.edu)
-- Admin: **Thomas Chakif**, [thc225@lehigh.edu](mailto:thc225@lehigh.edu)
-- Backend: **Robert Kilsdonk**, [rok326@lehigh.edu](mailto:rok326@lehigh.edu)
-- Front End: **Patrick Boles**, [pjb325@lehigh.edu](mailto:pjb325@lehigh.edu)
+- Project Manger: **Robert Kilsdonk**, [rok326@lehigh.edu](mailto:rok326@lehigh.edu)
+- Admin: **Patrick Boles**, [pjb325@lehigh.edu](mailto:pjb325@lehigh.edu)
+- Backend: **Denny Li**, [del226@lehigh.edu](mailto:del226@lehigh.edu)
+- Front End:  **Thomas Chakif**, [thc225@lehigh.edu](mailto:thc225@lehigh.edu)
 
 ### How to build and run on Dokku
 
