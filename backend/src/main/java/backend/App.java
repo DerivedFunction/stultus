@@ -16,6 +16,11 @@ import spark.Spark;
 public class App {
 
   /**
+   * Whether or not a user needs to be verified to do certain actions.
+   * Note: some methods will still need the cookies to perform certain actions
+   */
+  private static final boolean NEED_AUTH = Integer.parseInt(System.getenv("AUTH")) == 1 ? true : false;
+  /**
    * Default port to listen to database
    */
   private static final String DEFAULT_PORT_DB = "5432";
@@ -787,6 +792,10 @@ public class App {
    * @return True if user is verified
    */
   private static boolean getVerified(Database db, Request req) {
+    // Don't need authentication, then skip this phase
+    // (other phases might still need it though)
+    if (!NEED_AUTH)
+      return true;
     // Retrieve the value of the ID_TOKEN cookie
     String idToken = req.cookie(ID_TOKEN);
     String sub = req.cookie(SUB_TOKEN);
