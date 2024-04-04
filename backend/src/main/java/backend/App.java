@@ -128,9 +128,14 @@ public class App {
    */
   private static final String SINGLE_COMMENT_FORMAT = String.format("/comment/:%s", COMMENT_ID); // "/comment/:commentID"
   /**
-   * The redirect parameter
+   * The login parameter
    */
   private static final String AUTH_FORMAT = "/authenticate";
+
+  /**
+   * The logout parameter
+   */
+  private static final String LOGOUT_FORMAT = "/logout";
 
   /**
    * deprecated method: parameters for like in website
@@ -293,6 +298,10 @@ public class App {
      * POST route that authenticates a token
      */
     Spark.post(AUTH_FORMAT, authenticateToken(gson, db)); // "/authenticate"
+    /**
+     * DELETE route that signs a user out
+     */
+    Spark.delete(LOGOUT_FORMAT, logout(gson, db)); // "/logout"
 
     // Old methods
     /*
@@ -361,10 +370,9 @@ public class App {
 
       int userID = TokenManager.getUserID(req.cookie(ID_TOKEN));
       int postID = Integer.parseInt(req.params(POST_ID));
-      extractResponse(res);
       int result = db.deleteRow(postID, userID);
-      String errorType = "unable to delete row " + postID;
-      boolean errResult = (result == -1);
+      String errorType = String.format("unable to delete post %d by user %d", postID, userID);
+      boolean errResult = (result <= 0);
       return JSONResponse(gson, errorType, errResult, null, null, res);
     };
   }
@@ -383,7 +391,6 @@ public class App {
     return (req, res) -> {
       int postID = Integer.parseInt(req.params(POST_ID));
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
-      extractResponse(res);
       Integer result = db.updateOne(postID, sReq.mTitle, sReq.mMessage, 1);
       String errorType = "unable to update row " + postID;
       boolean errResult = (result < 1);
@@ -565,7 +572,6 @@ public class App {
   private static Route postIdea_old(final Gson gson, Database db) {
     return (req, res) -> {
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
-      extractResponse(res);
       // createEntry checks for null title/message (-1)
       int rowsAdded = db.insertRow(sReq.mTitle, sReq.mMessage, 1);
       String errorType = "error performing insertion";
@@ -728,8 +734,6 @@ public class App {
         res.status(401); // Unauthorized
         return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
       }
-      extractResponse(res);
-
       int userID = TokenManager.getUserID(req.cookie(ID_TOKEN));
       UserData data = db.getUserFull(userID);
       String errorType = "Cannot verify user";
@@ -863,13 +867,21 @@ public class App {
   }
 
   /**
-   * Response on success
+   * Logs out a user by clearing its cookies
    * 
-   * @param response 200 OK
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return 200 OK on logout
    */
-  private static void extractResponse(Response response) {
-    response.status(200);
-    response.type("application/json");
+  private static Route logout(final Gson gson, Database db) {
+    return (req, res) -> {
+      TokenManager.removeToken(db.findUserIDfromSub(SUB_TOKEN));
+      res.removeCookie(ID_TOKEN);
+      res.removeCookie(SUB_TOKEN);
+      // Return a response indicating successful logout
+      res.status(200); // OK status code
+      return gson.toJson(new StructuredResponse("ok", "User logged out successfully", null));
+    };
   }
 
   /**
