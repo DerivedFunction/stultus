@@ -170,6 +170,7 @@ public class App {
    * @param args does nothing
    */
   public static void main(String[] args) {
+    Log.info("Verification is set to " + NEED_AUTH);
     /**
      * gson allows conversion between JSON and objects. Must be final
      */
