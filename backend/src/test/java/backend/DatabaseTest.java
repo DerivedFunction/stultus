@@ -111,7 +111,7 @@ public class DatabaseTest extends TestCase {
       for (PostData su : sub) {
         if (row.equals(su)) {
           PostData select = db.selectOne(row.mId);
-          assertTrue(select.equals(row));
+          assertEquals(select, row);
           db.deleteRow(select.mId, USERID);
         }
       }
@@ -133,10 +133,10 @@ public class DatabaseTest extends TestCase {
           int likeStatus = row.numLikes;
           db.toggleLike(row.mId);
           PostData changed = db.selectOne(row.mId);
-          assertTrue(changed.numLikes == likeStatus + 1);
+          assertEquals(likeStatus + 1, changed.numLikes);
           db.toggleLike(row.mId);
           changed = db.selectOne(row.mId);
-          assertTrue(changed.numLikes == likeStatus - 1);
+          assertEquals(likeStatus - 1, changed.numLikes);
           db.deleteRow(row.mId, USERID);
         }
       }
@@ -155,7 +155,7 @@ public class DatabaseTest extends TestCase {
       String message = "Message" + rngString();
       sub.add(new PostData(i, subject, message, 0, USERID));
       if (isInsert)
-        assertTrue(db.insertRow(subject, message, USERID) == 1); // Assert and new element
+        assertEquals(1, db.insertRow(subject, message, USERID)); // Assert and new element
     }
     return sub;
   }
@@ -190,11 +190,11 @@ public class DatabaseTest extends TestCase {
     String username = "test account";
     String sub = "sub" + rngString();
     // First time it works
-    assertEquals(db.insertUser(username, email, sub), 1);
+    assertEquals(1, db.insertUser(username, email, sub));
     // Second time it doesn't
-    assertEquals(db.insertUser(username, email, sub), 0);
+    assertEquals(0, db.insertUser(username, email, sub));
     // We can delete it
-    assertEquals(db.deleteUser(db.findUserID(email)), 1);
+    assertEquals(1, db.deleteUser(db.findUserID(email)));
   }
 
   /**
@@ -207,14 +207,14 @@ public class DatabaseTest extends TestCase {
     int gender = test.uGender;
     String so = test.uSO;
     String sub = test.uSub;
-    assertTrue(db.findUserIDfromSub(sub) == test.uID);
+    assertEquals(db.findUserIDfromSub(sub), test.uID);
     int userID = db.findUserID(email);
     db.updateUser(userID, sub, "a", gender + 1, "a");
     UserData updated = db.getUserFull(userID);
     assertFalse(test.equals(updated));
     db.updateUser(userID, sub, username, gender, so);
     updated = db.getUserFull(userID);
-    assertTrue(test.equals(updated));
+    assertEquals(test, updated);
     db.deleteUser(userID);
   }
 
@@ -244,28 +244,28 @@ public class DatabaseTest extends TestCase {
     int postID = post.mId;
     int oldVotes = db.totalVotes(postID);
     // Upvote
-    assertTrue(db.toggleVote(postID, 1, userID) == 1);
-    assertTrue(db.totalVotes(postID) == oldVotes + 1);
+    assertEquals(1, db.toggleVote(postID, 1, userID));
+    assertEquals(oldVotes + 1, db.totalVotes(postID));
     // Upvote again to cancel
-    assertTrue(db.toggleVote(postID, 1, userID) == 1);
-    assertTrue(db.totalVotes(postID) == oldVotes);
+    assertEquals(1, db.toggleVote(postID, 1, userID));
+    assertEquals(oldVotes, db.totalVotes(postID));
 
     // Downvote
-    assertTrue(db.toggleVote(postID, -1, userID) == 1);
-    assertTrue(db.totalVotes(postID) == oldVotes - 1);
+    assertEquals(1, db.toggleVote(postID, -1, userID));
+    assertEquals(oldVotes - 1, db.totalVotes(postID));
     // Downvote again to cancel
-    assertTrue(db.toggleVote(postID, -1, userID) == 1);
-    assertTrue(db.totalVotes(postID) == oldVotes);
+    assertEquals(1, db.toggleVote(postID, -1, userID));
+    assertEquals(oldVotes, db.totalVotes(postID));
 
     // Upvote
-    assertTrue(db.toggleVote(postID, 1, userID) == 1);
-    assertTrue(db.totalVotes(postID) == oldVotes + 1);
+    assertEquals(1, db.toggleVote(postID, 1, userID));
+    assertEquals(oldVotes + 1, db.totalVotes(postID));
     // Downvote to undo the upvote
-    assertTrue(db.toggleVote(postID, -1, userID) == 1);
-    assertTrue(db.totalVotes(postID) == oldVotes - 1);
+    assertEquals(1, db.toggleVote(postID, -1, userID));
+    assertEquals(oldVotes - 1, db.totalVotes(postID));
 
     // Remove it from table
-    assertTrue(db.deleteVote(postID, userID) == 1);
+    assertEquals(1, db.deleteVote(postID, userID));
     db.deleteRow(postID, userID);
     db.deleteUser(userID);
   }
@@ -307,15 +307,15 @@ public class DatabaseTest extends TestCase {
       comments.add(createComment(userID2, postID));
       user1Comments = db.selectAllCommentByUserID(userID1);
       user2Comments = db.selectAllCommentByUserID(userID2);
-      assertTrue(db.selectAllComments(userID1, postID).size() == i);
-      assertTrue(db.selectAllComments(userID2, postID).size() == i);
-      assertTrue(user2Comments.size() == i);
-      assertTrue(db.selectAllCommentByPost(postID).size() == i * 2);
+      assertEquals(i, db.selectAllComments(userID1, postID).size());
+      assertEquals(i, db.selectAllComments(userID2, postID).size());
+      assertEquals(i, user2Comments.size());
+      assertEquals(i * 2, db.selectAllCommentByPost(postID).size());
     }
     // Delete the comments
     for (int i = 0; i < num; i++) {
-      assertTrue(1 == db.deleteComment(user1Comments.get(i).cId, userID1));
-      assertTrue(1 == db.deleteComment(user2Comments.get(i).cId, userID2));
+      assertEquals(1, db.deleteComment(user1Comments.get(i).cId, userID1));
+      assertEquals(1, db.deleteComment(user2Comments.get(i).cId, userID2));
     }
     // Delete the specific post
     db.deleteRow(postID, USERID);
