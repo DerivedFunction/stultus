@@ -61,6 +61,9 @@ git checkout -b backend-dokku origin/backend-dokku
 # we are now ready to deploy to dokku with (-f if necessary):
 git push -f dokku backend-dokku
 
+# go back to backend branch
+git checkout backend
+
 ```
 
 ### Dokku configurations
@@ -68,7 +71,10 @@ git push -f dokku backend-dokku
 - POSTGRES URL: <postgres://***:***@salt.db.elephantsql.com/***>
 - POSTGRES Port: 5432
 - PORT: 8998
-- NUM_TESTS: 5
+- NUM_TESTS: 3
+- CLIENT_ID: \*\*\*\*
+- CLIENT_SECRET: \*\*\*\*
+- AUTH: (1 = need verification, 0 = no verification)
 
 ### Useful Dokku commands
 
@@ -79,4 +85,4 @@ git push -f dokku backend-dokku
 - `ps: restart`: restart app
 - `logs`: view logs
 - `config:export`: view environment variables
-- `config:set ... $ARGS`: Set environment variables
+- `config:set ... VAR=ARGS`: Set environment variables

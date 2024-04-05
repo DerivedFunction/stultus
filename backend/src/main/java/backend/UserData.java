@@ -27,15 +27,15 @@ public class UserData extends UserDataLite {
     /**
      * Full constructor for Google Account associated with user
      * 
-     * @param cID       The userID in db
+     * @param uID       The userID in db
      * @param uUsername The user's username
      * @param uEmail    The user's Google account
      * @param uGender   The user's gender
      * @param uSO       The user's SO
      * @param uSub      The user's sub value
      */
-    public UserData(int cID, String uUsername, String uEmail, int uGender, String uSO, String uSub) {
-        super(cID, uUsername, uEmail);
+    public UserData(int uID, String uUsername, String uEmail, int uGender, String uSO, String uSub) {
+        super(uID, uUsername, uEmail);
         this.uGender = uGender;
         this.uSO = uSO.trim();
         this.uSub = uSub;
@@ -44,12 +44,12 @@ public class UserData extends UserDataLite {
     /**
      * A user constructor.
      * 
-     * @param cID       The id(userID)
+     * @param uID       The id(userID)
      * @param uUsername The username
      * @param uEmail    The email
      */
-    public UserData(int cID, String uUsername, String uEmail) {
-        super(cID, uUsername, uEmail);
+    public UserData(int uID, String uUsername, String uEmail) {
+        super(uID, uUsername, uEmail);
     }
 
     @Override
