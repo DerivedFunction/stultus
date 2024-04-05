@@ -111,7 +111,7 @@ public class App {
   /**
    * Parameters for getting all coments made a specific user
    */
-  private static final String GET_USER_COMMENTS_FORMAT = String.format("%s/comments", USER_FORMAT); // "/user/:userID/comments"
+  private static final String GET_USER_COMMENTS_FORMAT = String.format("%s/comments", USER_ID_FORMAT); // "/user/:userID/comments"
 
   /**
    * Parameters for adding a comment
@@ -282,7 +282,7 @@ public class App {
     /*
      * PUT route for updating a comment in database.
      */
-    Spark.put(EDIT_COMMENT_FORMAT, putComment(gson, db)); // "/user/editMessage/:postID"
+    Spark.put(EDIT_COMMENT_FORMAT, putComment(gson, db)); // "/user/editComment/:postID"
 
     /*
      * PUT route for updating a user in database.
@@ -810,12 +810,10 @@ public class App {
     int userID = TokenManager.getUserID(idToken);
     int userIDSub = db.findUserIDfromSub(sub);
     // Verify the token
-    boolean verified = (idToken != null)
-        && Oauth.verifyToken(idToken)
-        && TokenManager.containsToken(idToken)
-        && (userID == userIDSub);
     // If it doesn't exist in TokenManager, return error
-    return verified;
+    return (Oauth.verifyToken(idToken)
+        && TokenManager.containsToken(idToken)
+        && (userID == userIDSub));
   }
 
   /**
