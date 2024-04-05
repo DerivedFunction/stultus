@@ -68,9 +68,18 @@ public class UserData extends UserDataLite {
             return false;
         if (!this.uSO.equals(obj.uSO))
             return false;
-        if (!this.uSub.equals(obj.uSub))
-            return false;
-        return true;
+        return this.uSub.equals(obj.uSub);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17; // Initial value, typically a prime number
+        result = 31 * result + uUsername.hashCode();
+        result = 31 * result + uEmail.hashCode();
+        result = 31 * result + uGender;
+        result = 31 * result + uSO.hashCode();
+        result = 31 * result + uSub.hashCode();
+        return result;
     }
 
     @Override

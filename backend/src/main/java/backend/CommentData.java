@@ -45,13 +45,6 @@ public class CommentData {
     }
 
     @Override
-    public String toString() {
-        return String.format("PostID: %d%nMessage: %s%nuserID: %d%nmId: %d%n",
-                this.cPostID, this.cMessage,
-                this.cUserID, this.cId);
-    }
-
-    @Override
     public boolean equals(Object other) {
         if (this == other) {
             return true;
@@ -63,8 +56,23 @@ public class CommentData {
             return false;
         if (!this.cMessage.equals(obj.cMessage))
             return false;
-        if (this.cUserID != obj.cUserID)
-            return false;
-        return true;
+        return (this.cUserID == obj.cUserID);
     }
+
+    @Override
+    public int hashCode() {
+        int result = 17; // Initial value, typically a prime number
+        result = 31 * result + cPostID;
+        result = 31 * result + (cMessage != null ? cMessage.hashCode() : 0);
+        result = 31 * result + cUserID;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("PostID: %d%nMessage: %s%nuserID: %d%nmId: %d%n",
+                this.cPostID, this.cMessage,
+                this.cUserID, this.cId);
+    }
+
 }

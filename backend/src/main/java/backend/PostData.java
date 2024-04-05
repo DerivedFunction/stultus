@@ -79,9 +79,16 @@ public class PostData {
             return false;
         if (!this.mMessage.equals(obj.mMessage))
             return false;
-        if (this.mUserID != obj.mUserID)
-            return false;
-        return true;
+        return (this.mUserID == obj.mUserID);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17; // Initial value, typically a prime number
+        result = 31 * result + mSubject.hashCode();
+        result = 31 * result + mMessage.hashCode();
+        result = 31 * result + mUserID;
+        return result;
     }
 
     @Override

@@ -47,9 +47,15 @@ public class UserDataLite {
         UserDataLite obj = (UserDataLite) other;
         if (!this.uUsername.equals(obj.uUsername))
             return false;
-        if (!this.uEmail.equals(obj.uEmail))
-            return false;
-        return true;
+        return this.uEmail.equals(obj.uEmail);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17; // Initial value, typically a prime number
+        result = 31 * result + uUsername.hashCode();
+        result = 31 * result + uEmail.hashCode();
+        return result;
     }
 
     @Override
