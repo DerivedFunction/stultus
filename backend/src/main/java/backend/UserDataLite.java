@@ -39,7 +39,10 @@ public class UserDataLite {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null)
+        if (this == other) {
+            return true;
+        }
+        if (other == null || this.getClass() != other.getClass())
             return false;
         UserDataLite obj = (UserDataLite) other;
         if (!this.uUsername.equals(obj.uUsername))

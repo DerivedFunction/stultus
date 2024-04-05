@@ -54,7 +54,10 @@ public class UserData extends UserDataLite {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null)
+        if (this == other) {
+            return true;
+        }
+        if (other == null || this.getClass() != other.getClass())
             return false;
         UserData obj = (UserData) other;
         if (!this.uUsername.equals(obj.uUsername))

@@ -69,7 +69,10 @@ public class PostData {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null)
+        if (this == other) {
+            return true;
+        }
+        if (other == null || this.getClass() != other.getClass())
             return false;
         PostData obj = (PostData) other;
         if (!this.mSubject.equals(obj.mSubject))

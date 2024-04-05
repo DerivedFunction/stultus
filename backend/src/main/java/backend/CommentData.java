@@ -53,7 +53,10 @@ public class CommentData {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null)
+        if (this == other) {
+            return true;
+        }
+        if (other == null || this.getClass() != other.getClass())
             return false;
         CommentData obj = (CommentData) other;
         if (this.cPostID != obj.cPostID)
