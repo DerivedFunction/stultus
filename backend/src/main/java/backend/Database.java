@@ -235,7 +235,7 @@ public class Database {
       db.mFindUser = db.mConnection.prepareStatement(
           "SELECT id FROM " + userTable + " WHERE email=?");
       db.mGetUserSimple = db.mConnection.prepareStatement(
-          "SELECT id, username, email FROM " + userTable + " WHERE id=?");
+          "SELECT id, username, email, note FROM " + userTable + " WHERE id=?");
       db.mGetUserFull = db.mConnection.prepareStatement(
           "SELECT * FROM " + userTable + " WHERE id=?");
       db.mGetUserIDFromSub = db.mConnection.prepareStatement(
@@ -625,7 +625,7 @@ public class Database {
       mUpdateUser.setString(1, username.trim());
       mUpdateUser.setInt(2, gender);
       mUpdateUser.setString(3, SO.trim());
-      mUpdateUser.setString(4, note.trim());
+      mUpdateUser.setString(4, (note != null) ? note.trim() : "");
       mUpdateUser.setInt(5, userID);
       mUpdateUser.setString(6, sub);
       count = mUpdateUser.executeUpdate();
