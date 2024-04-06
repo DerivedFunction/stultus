@@ -87,6 +87,6 @@ public class UserData extends UserDataLite {
 
     @Override
     public String toString() {
-        return super.toString() + String.format("mGender: %d%nmSO: %s%n", this.uGender, this.uSO.trim());
+        return super.toString() + String.format("mGender: %d%nmSO: %s%n", this.uGender, this.uSO);
     }
 }
