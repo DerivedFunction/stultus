@@ -29,6 +29,46 @@ public class App {
     System.out.println("  [?] Help (this message)");
   }
 
+  static void userMenu() {
+    System.out.println("Main Menu");
+    System.out.println("  [T] Create tblData");
+    System.out.println("  [D] Drop tblData");
+    System.out.println("  [1] Query for a specific row");
+    System.out.println("  [*] Query for all rows");
+    System.out.println("  [-] Delete a row");
+    System.out.println("  [+] Insert a new row");
+    System.out.println("  [~] Update a row");
+    System.out.println("  [q] Quit Program");
+    System.out.println("  [?] Help (this message)");
+  }
+
+  static void cmntMenu() {
+    System.out.println("Main Menu");
+    System.out.println("  [T] Create tblData");
+    System.out.println("  [D] Drop tblData");
+    System.out.println("  [1] Query for a specific row");
+    System.out.println("  [*] Query for all rows");
+    System.out.println("  [-] Delete a row");
+    System.out.println("  [+] Insert a new row");
+    System.out.println("  [~] Update a row");
+    System.out.println("  [q] Quit Program");
+    System.out.println("  [?] Help (this message)");
+  }
+
+  static void likeMenu() {
+    System.out.println("Main Menu");
+    System.out.println("  [T] Create tblData");
+    System.out.println("  [D] Drop tblData");
+    System.out.println("  [1] Query for a specific row");
+    System.out.println("  [*] Query for all rows");
+    System.out.println("  [-] Delete a row");
+    System.out.println("  [+] Insert a new row");
+    System.out.println("  [~] Update a row");
+    System.out.println("  [q] Quit Program");
+    System.out.println("  [?] Help (this message)");
+  }
+
+
   /**
    * Method used to ask the user to enter a menu option; repeat until we get a valid
    * option.

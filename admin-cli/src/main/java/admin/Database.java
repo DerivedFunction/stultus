@@ -74,7 +74,7 @@ public class Database {
   /**
    * A Prepared Statement for updating one row from the Database
    */
-  private PreparedStatement uSelectUserbyID;
+  private PreparedStatement uSelectUserByEmail;
 
   /**
    * A Prepared Statement for creating the table from the Database
@@ -101,11 +101,6 @@ public class Database {
    * A Prepared Statement for deleting the table from the Database
    */
   private PreparedStatement cDropTable;
-
-  /**
-   * A Prepared Statement for deleting the table from the Database
-   */
-  private PreparedStatement SelectAllCommentsForAPost;
   /**
    * A Prepared Statement for deleting the table from the Database
    */
@@ -485,8 +480,8 @@ public class Database {
       // Standard CRUD User operations
       db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM usrData WHERE id=?");
       db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO usrData (username,email) VALUES (?,?)");
-      db.uSelectUser = db.mConnection.prepareStatement("SELECT id FROM usrData WHERE email=?");
-      db.uSelectUserbyID = db.mConnection.prepareStatement("SELECT id FROM usrData WHERE email=?");
+      db.uSelectUserByEmail = db.mConnection.prepareStatement("SELECT id FROM usrData WHERE email=?");
+      db.uSelectUser = db.mConnection.prepareStatement("SELECT FROM usrData WHERE id=?");
       db.uUpdateOne = db.mConnection.prepareStatement("UPDATE usrData SET username=?, gender=?, so=? where id=?");
 
 
@@ -498,11 +493,11 @@ public class Database {
       // Standard CRUD Comment operations
       db.cSelectAllCommentsForAPost = db.mConnection.prepareStatement("SELECT * FROM cmntData WHERE post_id=? ORDER BY ID DESC");
       db.cSelectAllCommentsForAUser = db.mConnection.prepareStatement("SELECT * FROM cmntData WHERE user_id=? ORDER BY ID DESC");
-      db.cSelectAllCommentsForAUserANDPost = db.mConnection.prepareStatement("SELECT * FROM cmntData WHERE post_id=? AND post_id=? ORDER BY ID DESC");
+      db.cSelectAllCommentsForAUserANDPost = db.mConnection.prepareStatement("SELECT * FROM cmntData WHERE post_id=? AND user_id=? ORDER BY ID DESC");
       db.cSelectComment = db.mConnection.prepareStatement("SELECT * cmntData WHERE id=?");
       db.cDeleteComment = db.mConnection.prepareStatement("DELETE cmntData WHERE id=? and user_id=?");
-      db.cUpdateComment = db.mConnection.prepareStatement("UPDATE cmntData SET comMessage=? WHERE id=? AND userid=?");
-      db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO cmntData (message, post_id, userid) VALUES (?,?,?)");
+      db.cUpdateComment = db.mConnection.prepareStatement("UPDATE cmntData SET comMessage=? WHERE id=? AND user_id=?");
+      db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO cmntData (message, post_id, user_id) VALUES (?,?,?)");
 
 
     } catch (SQLException e) {
@@ -535,6 +530,9 @@ public class Database {
     mConnection = null;
     return true;
   }
+
+
+  //MESSAGE METHODS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
    * Method that inserts a row into the database. These rows are the user-inputted
@@ -651,6 +649,392 @@ public class Database {
   void dropTable() {
     try {
       mDropTable.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  //USER METHODS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  ArrayList<UserRowData> selectAllUsers() {
+    ArrayList<UserRowData> res = new ArrayList<>();
+    try {
+      ResultSet rs = uSelectAll.executeQuery();
+      while (rs.next()) {
+        res.add(new UserRowData(rs.getInt("uId"), rs.getString("uName"),
+              rs.getString("uEmail"), rs.getInt("uGender"), rs.getString("uSO")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+   
+   /**
+   * Method that gets all the data for a specific row, by ID
+   *
+   * @param id The id being requested
+   * @return the data for the requested row, null otherwise
+   */
+  UserRowData SelectUser(int id) {
+    UserRowData res = null;
+    try {
+      uSelectUser.setInt(1, id);
+      ResultSet rs = uSelectUser.executeQuery();
+      if (rs.next()) {
+        res = new UserRowData(rs.getInt("uId"), rs.getString("uName"),
+            rs.getString("uEmail"), rs.getInt("uGender"), rs.getString("uSO"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+   /**
+   * Method that gets all the data for a specific row, by ID
+   *
+   * @param id The id being requested
+   * @return the data for the requested row, null otherwise
+   */
+  UserRowData SelectUserByEmail(String email) {
+    UserRowData res = null;
+    try {
+      uSelectUserByEmail.setString(1, email);
+      ResultSet rs = uSelectUserByEmail.executeQuery();
+      if (rs.next()) {
+        res = new UserRowData(rs.getInt("uId"), rs.getString("uName"),
+            rs.getString("uEmail"), rs.getInt("uGender"), rs.getString("uSO"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+   /**
+   * Method that inserts a row into the database. These rows are the user-inputted
+   * subject+message
+   *
+   * @param subject The subject for this new row
+   * @param message The message body for this new row
+   * @return The number of rows that were inserted
+   */
+  int insertUser(String username, String email) {
+    int count = 0;
+    try {
+      uInsertOne.setString(1, username);
+      uInsertOne.setString(2, email);
+      count += uInsertOne.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
+  }
+
+  /**
+   * Method that deletes a row by ID
+   * 
+   * @param id The id of the row to delete
+   * @return the number of rows deleted, -1 if error
+   */
+  int deleteRowUser(int id) {
+    int res = -1;
+    try {
+      uDeleteOne.setInt(1, id);
+      res = uDeleteOne.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  //private PreparedStatement uUpdateOne;
+  int updateOneUser(String username, int gender, String so, int id) {
+    int res = -1;
+    try {
+      uUpdateOne.setString(1, username);
+      uUpdateOne.setInt(2, gender);
+      uUpdateOne.setString(3, so);
+      uUpdateOne.setInt(4, id);
+      res = uUpdateOne.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  /**
+   * Method to create usrData. If it already exists, print error
+   */
+  void createUserTable() {
+    try {
+      uCreateTable.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Method to remove tblData from the database, print error if DNE
+   */
+  void dropUserTable() {
+    try {
+      uDropTable.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+  //COMMENT METHODS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /* 
+  public CommentRowData(int cid, String com, int mid, int uid) {
+    cId = cid;
+    comment = com;
+    mId = mid;
+    uId = uid;
+  }
+
+  /**
+   * Method that inserts a row into the database. These rows are the user-inputted
+   * subject+message
+   *
+   * @param subject The subject for this new row
+   * @param message The message body for this new row
+   * @return The number of rows that were inserted
+   */
+  int insertComment(String message, int post_id, int user_id) {
+    int count = 0;
+    try {
+      cInsertComment.setString(1, message);
+      cInsertComment.setInt(2, post_id);
+      cInsertComment.setInt(3, user_id);
+      count += cInsertComment.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return count;
+  }
+
+  /**
+   * Method that updates the message for a row in the database
+   *
+   * @param id      The id of the row to update
+   * @param message The new message contents
+   * @return the number of rows udpated, -1 on error
+   */
+  int updateComment(String comMessage, int id, int user_id) {
+    int res = -1;
+    try {
+      cUpdateComment.setString(1, comMessage);
+      cUpdateComment.setInt(2, id);
+      cUpdateComment.setInt(3, user_id);
+      res = mUpdateOne.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  /**
+   * Method that deletes a row by ID
+   * 
+   * @param id The id of the row to delete
+   * @return the number of rows deleted, -1 if error
+   */
+  int deleteComment(int id, int user_id) {
+    int res = -1;
+    try {
+      cDeleteComment.setInt(1, id);
+      cDeleteComment.setInt(2, user_id);
+      res = cDeleteComment.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  CommentRowData selectComment(int id) {
+    CommentRowData res = null;
+    try {
+      cSelectComment.setInt(1, id);
+      ResultSet rs = cSelectComment.executeQuery();
+      if (rs.next()) {
+        res =new CommentRowData(rs.getInt("cId"), rs.getString("comment"),
+          rs.getInt("mId"), rs.getInt("uId"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+
+  /**
+   * Method that queries the database for a list of all subjects and their IDs
+   * 
+   * @return All rows, as an ArrayList
+   */
+  ArrayList<CommentRowData> selectAllPostComments(int post_id) {
+    ArrayList<CommentRowData> res = new ArrayList<>();
+    try {
+      cSelectAllCommentsForAPost.setInt(1, post_id);
+      ResultSet rs = cSelectAllCommentsForAPost.executeQuery();
+      while (rs.next()) {
+        res.add(new CommentRowData(rs.getInt("cId"), rs.getString("comment"),
+            rs.getInt("mId"), rs.getInt("uId")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+  /**
+   * Method that queries the database for a list of all subjects and their IDs
+   * 
+   * @return All rows, as an ArrayList
+   */
+  ArrayList<CommentRowData> selectAllUserComments(int user_id) {
+    ArrayList<CommentRowData> res = new ArrayList<>();
+    try {
+      cSelectAllCommentsForAUser.setInt(1, user_id);
+      ResultSet rs = cSelectAllCommentsForAUser.executeQuery();
+      while (rs.next()) {
+        res.add(new CommentRowData(rs.getInt("cId"), rs.getString("comment"),
+            rs.getInt("mId"), rs.getInt("uId")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  /**
+   * Method that queries the database for a list of all subjects and their IDs
+   * 
+   * @return All rows, as an ArrayList
+   */
+  ArrayList<CommentRowData> selectAllUserCommentsOnPost(int user_id, int post_id) {
+    ArrayList<CommentRowData> res = new ArrayList<>();
+    try {
+      cSelectAllCommentsForAUserANDPost.setInt(1, post_id);
+      cSelectAllCommentsForAUserANDPost.setInt(2, user_id );
+      ResultSet rs = cSelectAllCommentsForAUserANDPost.executeQuery();
+      while (rs.next()) {
+        res.add(new CommentRowData(rs.getInt("cId"), rs.getString("comment"),
+            rs.getInt("mId"), rs.getInt("uId")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  /**
+   * Method to create tblData. If it already exists, print error
+   */
+  void createCmntTable() {
+    try {
+      cCreateTable.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Method to remove tblData from the database, print error if DNE
+   */
+  void dropCmntTable() {
+    try {
+      cDropTable.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+  //VOTING METHODS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  LikeRowData selectUserVote(int post_id, int user_id) {
+    LikeRowData res = null;
+    try {
+      lSelectVoteFromUser.setInt(1, post_id);
+      lSelectVoteFromUser.setInt(2, user_id);
+      ResultSet rs = lSelectVoteFromUser.executeQuery();
+      if (rs.next()) {
+        res = new LikeRowData(rs.getInt("lId"), rs.getInt("mId"),
+            rs.getInt("uId"), rs.getInt("lVote"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  /**
+   * Method that deletes a row by ID
+   * 
+   * @param id The id of the row to delete
+   * @return the number of rows deleted, -1 if error
+   */
+  int deleteVote(int post_id, int user_id) {
+    int res = -1;
+    try {
+      lDeleteVote.setInt(1, post_id);
+      lDeleteVote.setInt(2, user_id);
+      res = lDeleteVote.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  /**
+   * Method that queries the database for a list of all subjects and their IDs
+   * 
+   * @return All rows, as an ArrayList
+   */
+  ArrayList<LikeRowData> selectAllLikes() {
+    ArrayList<LikeRowData> res = new ArrayList<>();
+    try {
+      ResultSet rs = lSelectAllVotes.executeQuery();
+      while (rs.next()) {
+        res.add(new LikeRowData(rs.getInt("lId"), rs.getInt("mId"),
+            rs.getInt("uId"), rs.getInt("lVote")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  void createLikeTable() {
+    try {
+      lCreateTable.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Method to remove tblData from the database, print error if DNE
+   */
+  void dropLikeTable() {
+    try {
+      lDropTable.execute();
     } catch (SQLException e) {
       e.printStackTrace();
     }
