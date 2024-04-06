@@ -182,12 +182,13 @@ public class DatabaseTest extends TestCase {
     int gender = test.uGender;
     String so = test.uSO;
     String sub = test.uSub;
+    String note = test.uNote;
     assertEquals(db.findUserIDfromSub(sub), test.uID);
     int userID = db.findUserID(email);
-    db.updateUser(userID, sub, "a", gender + 1, "a");
+    db.updateUser(userID, sub, "a", gender + 1, "a", "Hello world");
     UserData updated = db.getUserFull(userID);
     assertFalse(test.equals(updated));
-    db.updateUser(userID, sub, username, gender, so);
+    db.updateUser(userID, sub, username, gender, so, note);
     updated = db.getUserFull(userID);
     assertEquals(test, updated);
     db.deleteUser(userID);
@@ -253,7 +254,7 @@ public class DatabaseTest extends TestCase {
    * @return CommentData
    */
   private static CommentData createComment(int userID, int postID) {
-    ArrayList<CommentData> comment = null;
+    ArrayList<CommentData> comment = new ArrayList<>();
     db.insertComment(rngString(), postID, userID);
     comment = db.selectAllComments(userID, postID);
     return comment.get(0);

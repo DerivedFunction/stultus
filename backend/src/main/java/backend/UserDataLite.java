@@ -25,16 +25,23 @@ public class UserDataLite {
     String uEmail;
 
     /**
+     * A note of the user
+     */
+    String uNote;
+
+    /**
      * A user constructor.
      * 
      * @param uID       The id(userID)
      * @param uUsername The username
      * @param uEmail    The email
+     * @param uNote     The note
      */
-    public UserDataLite(int uID, String uUsername, String uEmail) {
+    public UserDataLite(int uID, String uUsername, String uEmail, String uNote) {
         this.uID = uID;
         this.uUsername = uUsername.trim();
         this.uEmail = uEmail.trim();
+        this.uNote = uNote.trim();
     }
 
     @Override
@@ -46,6 +53,8 @@ public class UserDataLite {
             return false;
         UserDataLite obj = (UserDataLite) other;
         if (!this.uUsername.equals(obj.uUsername))
+            return false;
+        if (!this.uNote.equals(obj.uNote))
             return false;
         return this.uEmail.equals(obj.uEmail);
     }

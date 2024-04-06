@@ -33,9 +33,10 @@ public class UserData extends UserDataLite {
      * @param uGender   The user's gender
      * @param uSO       The user's SO
      * @param uSub      The user's sub value
+     * @param uNote     The user's note
      */
-    public UserData(int uID, String uUsername, String uEmail, int uGender, String uSO, String uSub) {
-        super(uID, uUsername, uEmail);
+    public UserData(int uID, String uUsername, String uEmail, int uGender, String uSO, String uSub, String uNote) {
+        super(uID, uUsername, uEmail, uNote);
         this.uGender = uGender;
         this.uSO = uSO.trim();
         this.uSub = uSub;
@@ -47,9 +48,10 @@ public class UserData extends UserDataLite {
      * @param uID       The id(userID)
      * @param uUsername The username
      * @param uEmail    The email
+     * @param uNote     The note
      */
-    public UserData(int uID, String uUsername, String uEmail) {
-        super(uID, uUsername, uEmail);
+    public UserData(int uID, String uUsername, String uEmail, String uNote) {
+        super(uID, uUsername, uEmail, uNote);
     }
 
     @Override
@@ -67,6 +69,8 @@ public class UserData extends UserDataLite {
         if (this.uGender != obj.uGender)
             return false;
         if (!this.uSO.equals(obj.uSO))
+            return false;
+        if (!this.uNote.equals(obj.uNote))
             return false;
         return this.uSub.equals(obj.uSub);
     }

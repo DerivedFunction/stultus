@@ -423,7 +423,7 @@ public class App {
       String sub = req.cookie(SUB_TOKEN);
       int userID = getUserIDfromCookie(req);
       UserData profile = gson.fromJson(req.body(), UserData.class);
-      Integer result = db.updateUser(userID, sub, profile.uUsername, profile.uGender, profile.uSO);
+      Integer result = db.updateUser(userID, sub, profile.uUsername, profile.uGender, profile.uSO, profile.uNote);
       return getJSONResponse(gson,
           String.format("unable to update user: %s", profile.toString()), (result < 1),
           String.format("user was updated: %s", db.getUserFull(userID)),

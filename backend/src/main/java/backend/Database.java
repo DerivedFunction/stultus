@@ -241,7 +241,7 @@ public class Database {
       db.mGetUserIDFromSub = db.mConnection.prepareStatement(
           "SELECT id FROM " + userTable + " WHERE sub=?");
       db.mUpdateUser = db.mConnection.prepareStatement(
-          "UPDATE " + userTable + " SET username=?, gender=?, so=? WHERE id=? AND sub=?");
+          "UPDATE " + userTable + " SET username=?, gender=?, so=?, note=? WHERE id=? AND sub=?");
       db.mDeleteUser = db.mConnection.prepareStatement(
           "DELETE FROM " + userTable + " WHERE id=?");
       db.mSelectAllCommentsForPost = db.mConnection.prepareStatement(
@@ -553,7 +553,7 @@ public class Database {
       mGetUserSimple.setInt(1, userID);
       ResultSet rs = mGetUserSimple.executeQuery();
       if (rs.next()) {
-        res = new UserDataLite(rs.getInt("id"), rs.getString("username"), rs.getString("email"));
+        res = new UserDataLite(rs.getInt("id"), rs.getString("username"), rs.getString("email"), rs.getString("note"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -575,7 +575,7 @@ public class Database {
       if (rs.next()) {
         res = new UserData(rs.getInt("id"), rs.getString("username"),
             rs.getString("email"), rs.getInt("gender"),
-            rs.getString("so"), rs.getString("sub"));
+            rs.getString("so"), rs.getString("sub"), rs.getString("note"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -616,16 +616,18 @@ public class Database {
    * @param username The new username
    * @param gender   The new gender
    * @param SO       The new SO
+   * @param note     the new note
    * @return 1 on success, -1 on fail
    */
-  int updateUser(int userID, String sub, String username, int gender, String SO) {
+  int updateUser(int userID, String sub, String username, int gender, String SO, String note) {
     int count = -1;
     try {
       mUpdateUser.setString(1, username.trim());
       mUpdateUser.setInt(2, gender);
       mUpdateUser.setString(3, SO.trim());
-      mUpdateUser.setInt(4, userID);
-      mUpdateUser.setString(5, sub);
+      mUpdateUser.setString(4, note.trim());
+      mUpdateUser.setInt(5, userID);
+      mUpdateUser.setString(6, sub);
       count = mUpdateUser.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
