@@ -45,15 +45,6 @@ public class Database {
   private PreparedStatement mUpdateOne;
 
   /**
-   * A prepared statement for adding a like to a message
-   */
-  private PreparedStatement mAddLike_deprecated;
-
-  /**
-   * A prepared statement for removing a like to a message
-   */
-  private PreparedStatement mRemoveLike_deprecated;
-  /**
    * A prepared statement for find if a user has already voted for a message
    */
   private PreparedStatement mfindVoteforUser;
@@ -267,11 +258,6 @@ public class Database {
           "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=?");
       db.mInsertComment = db.mConnection.prepareStatement(
           "INSERT INTO " + commentTable + " (message, post_id, userid) VALUES (?,?,?)");
-      // deprecated statements
-      db.mAddLike_deprecated = db.mConnection
-          .prepareStatement("UPDATE  " + tableName + " SET likes=likes+1 WHERE id=? AND likes=0");
-      db.mRemoveLike_deprecated = db.mConnection
-          .prepareStatement("UPDATE  " + tableName + " SET likes=likes-1 WHERE id=? AND likes=1");
 
     } catch (SQLException e) {
       Log.error("Error creating prepared statement");
@@ -337,7 +323,7 @@ public class Database {
       while (rs.next()) {
         int id = rs.getInt("id");
         res.add(new PostData(id, rs.getString("subject"),
-            rs.getString("message"), totalVotes(id) + rs.getInt("likes"), rs.getInt("userid")));
+            rs.getString("message"), totalVotes(id), rs.getInt("userid")));
       }
       rs.close();
       return res;
@@ -361,7 +347,7 @@ public class Database {
       if (rs.next()) {
         int postID = rs.getInt("id");
         res = new PostData(postID, rs.getString("subject"),
-            rs.getString("message"), totalVotes(postID) + rs.getInt("likes"), rs.getInt("userid"));
+            rs.getString("message"), totalVotes(postID), rs.getInt("userid"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
