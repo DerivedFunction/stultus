@@ -281,35 +281,26 @@ Manual or Automated Testing of prepared statments to post to all tables
 
 ### Current methods
 
-| Purpose                                    | Route                                | Verb   | Structure                                                         |
-| ------------------------------------------ | ------------------------------------ | ------ | ----------------------------------------------------------------- |
-| Show all posts                             | `/messages`                          | GET    | JSON `{ArrayList<messages>}`                                      |
-| Show one post                              | `/messages/:postID`                  | GET    | JSON `{mTitle, mMessage, numLikes, userID}`                       |
-| Create new post                            | `/user/addMessage`                   | POST   | Takes `{mTitle, mMessage}`, all other fields handled by backend   |
-| Edit content of a post                     | `/user/editMessage/:postID`          | PUT    | Takes `{mTitle, mMessage}` and backend handles updates            |
-| Delete a post                              | `/user/deleteMessage/:postID`        | DELETE | Returns `1` on success                                            |
-| Upvote a post                              | `/user/upvote/:postID`               | POST   | Returns `1` on success                                            |
-| Downvote a post                            | `/user/downvote/:postID`             | POST   | Returns `1` on success                                            |
-| Add a comment                              | `/user/comment/:postID`              | POST   | Takes `{mMessage}`, all other fields handled by backend           |
-| Edit a comment                             | `/user/editComment/:commentID`       | PUT    | Takes `{mMessage}`, and backend handles updates                   |
-| Show a comment                             | `/comment/:commentID`                | GET    | JSON `{cId, cMessage, cUserID, cPostID}`                          |
-| Show comments for specific post            | `/messages/:postID/comments`         | GET    | JSON `{ArrayList<comments>}`                                      |
-| Show comments for specific user for a post | `/messages/:postID/comments/:userID` | GET    | JSON `{ArrayList<comments>}`                                      |
-| Show comments for a user                   | `/user/:userID/comments`             | GET    | JSON `{ArrayList<comments>}`                                      |
-| Show user profile                          | `/user/:userID`                      | GET    | JSON `{uId, uUsername, uEmail}`                                   |
-| Show current user profile                  | `/user`                              | GET    | JSON `{uId, uUsername, uEmail, uGender, uSO, uSub}`               |
-| Edit current user profile                  | `/user`                              | PUT    | Takes `{uUsername, uGender, uSO}`, and backend handles updates    |
-| Authenticate user                          | `/authenticate`                      | POST   | returns `/.index.html` with `idtoken` and `sub` cookie on success |
-| Logs out a user                            | `/logout`                            | DELETE | returns "Logout success" and deletes cookies                      |
-
-### Phase 1 methods: Outdated but not removed yet
-
-| Purpose                  | Route               | Verb   | Purpose        | Structure                                                     |
-| ------------------------ | ------------------- | ------ | -------------- | ------------------------------------------------------------- |
-| Like a post (deprecated) | `/messages/id/like` | PUT    | Likes a post   | Returns new number of `numLikes`                              |
-| Create new Post          | `/messages`         | POST   | Creates a post | Takes `{title, message}`, all other fields handled by backend |
-| Edit content of a post   | `/messages/id`      | PUT    | Edits a post   | Takes `{title, message}` and backend handles updates          |
-| Delete a post            | `/messages/id`      | DELETE | Deletes a post | Returns `status`                                              |
+| Purpose                                    | Route                                | Verb   | Structure                                                             |
+| ------------------------------------------ | ------------------------------------ | ------ | --------------------------------------------------------------------- |
+| Show all posts                             | `/messages`                          | GET    | JSON `{ArrayList<messages>}`                                          |
+| Show one post                              | `/messages/:postID`                  | GET    | JSON `{mTitle, mMessage, numLikes, userID}`                           |
+| Create new post                            | `/user/addMessage`                   | POST   | Takes `{mTitle, mMessage}`, all other fields handled by backend       |
+| Edit content of a post                     | `/user/editMessage/:postID`          | PUT    | Takes `{mTitle, mMessage}` and backend handles updates                |
+| Delete a post                              | `/user/deleteMessage/:postID`        | DELETE | Returns `1` on success                                                |
+| Upvote a post                              | `/user/upvote/:postID`               | POST   | Returns `1` on success                                                |
+| Downvote a post                            | `/user/downvote/:postID`             | POST   | Returns `1` on success                                                |
+| Add a comment                              | `/user/comment/:postID`              | POST   | Takes `{mMessage}`, all other fields handled by backend               |
+| Edit a comment                             | `/user/editComment/:commentID`       | PUT    | Takes `{mMessage}`, and backend handles updates                       |
+| Show a comment                             | `/comment/:commentID`                | GET    | JSON `{cId, cMessage, cUserID, cPostID}`                              |
+| Show comments for specific post            | `/messages/:postID/comments`         | GET    | JSON `{ArrayList<comments>}`                                          |
+| Show comments for specific user for a post | `/messages/:postID/comments/:userID` | GET    | JSON `{ArrayList<comments>}`                                          |
+| Show comments for a user                   | `/user/:userID/comments`             | GET    | JSON `{ArrayList<comments>}`                                          |
+| Show user profile                          | `/user/:userID`                      | GET    | JSON `{uId, uUsername, uEmail, uNote}`                                |
+| Show current user profile                  | `/user`                              | GET    | JSON `{uId, uUsername, uEmail, uGender, uSO, uSub, uNote}`            |
+| Edit current user profile                  | `/user`                              | PUT    | Takes `{uUsername, uGender, uSO, uNote}`, and backend handles updates |
+| Authenticate user                          | `/authenticate`                      | POST   | returns `/.index.html` with `idtoken` and `sub` cookie on success     |
+| Logs out a user                            | `/logout`                            | DELETE | returns "Logout success" and deletes cookies                          |
 
 ## Documentation for Branches
 
