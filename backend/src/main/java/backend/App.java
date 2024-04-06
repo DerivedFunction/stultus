@@ -147,11 +147,6 @@ public class App {
   private static final String LOGOUT_FORMAT = "/logout";
 
   /**
-   * deprecated method: parameters for like in website
-   */
-  private static final String LIKE_PARAM = "like";
-
-  /**
    * the list of all SQL table names to use
    */
   private static ArrayList<String> dbElements = dbTableElements();
@@ -312,9 +307,7 @@ public class App {
      */
     Spark.delete(LOGOUT_FORMAT, logout(db)); // "/logout"
 
-
   }
-
 
   /**
    * Creates the route to delete ideas
@@ -463,8 +456,6 @@ public class App {
           String.format("comment %d was updated by user %d", commentID, userID), result, res);
     };
   }
-
-  
 
   /**
    * Creates the route to handle upvoting
