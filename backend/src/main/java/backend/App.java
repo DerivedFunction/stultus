@@ -312,73 +312,9 @@ public class App {
      */
     Spark.delete(LOGOUT_FORMAT, logout(db)); // "/logout"
 
-    // Old methods
-    /*
-     * POST route that adds a new element to database.
-     * Reads JSON from body of request and turns it to a
-     * SimpleRequest object, extracting the title and msg,
-     * and also the object.
-     * 
-     */
-    Spark.post(CONTEXT, postIdeaOld(gson, db)); // "/messages"
-
-    /*
-     * PUT route for updating a row in database.
-     */
-    Spark.put(POST_FORMAT, putWithIDOld(gson, db)); // "/messages/:postID"
-
-    /*
-     * PUT route for adding a like,
-     */
-    Spark.put(String.format("%s/%s", POST_FORMAT, LIKE_PARAM), putLike(gson, db)); // "/messages/:postID/like"
-
-    /*
-     * Delete route for removing a row from database
-     */
-    Spark.delete(POST_FORMAT, deleteWithIDOld(gson, db)); // "/messages/:postID"
 
   }
 
-  /**
-   * Creates the route to handle delete requests
-   * 
-   * @param gson Gson object that handles shared serialization
-   * @param db   Database object to execute the method of
-   * @deprecated In favor of deleting with userID verification
-   *             {@link #deleteIdea(Gson, Database)}
-   * @return Returns a spark Route object that handles the json response behavior
-   *         for db.deleteOne
-   */
-  private static Route deleteWithIDOld(final Gson gson, Database db) {
-    return (req, res) -> {
-      int postID = getPostID(req);
-      int result = db.deleteRow(postID, 1);
-      String errorType = "unable to delete row " + postID;
-      boolean errResult = (result == -1);
-      return getJSONResponse(gson, errorType, errResult, null, null, res);
-    };
-  }
-
-  /**
-   * Creates the route to handle content changes
-   * 
-   * @param gson Gson object that handles shared serialization
-   * @param db   Database object to execute the method of
-   * @deprecated In favor of editing with userID verification
-   *             {@link #putIdea(Gson, Database)}
-   * @return Returns a spark Route object that handles the json response behavior
-   *         for db.updatedOne
-   */
-  private static Route putWithIDOld(final Gson gson, Database db) {
-    return (req, res) -> {
-      int postID = getPostID(req);
-      SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
-      Integer result = db.updateOne(postID, sReq.mTitle, sReq.mMessage, 1);
-      String errorType = "unable to update row " + postID;
-      boolean errResult = (result < 1);
-      return getJSONResponse(gson, errorType, errResult, null, result, res);
-    };
-  }
 
   /**
    * Creates the route to delete ideas
@@ -528,25 +464,7 @@ public class App {
     };
   }
 
-  /**
-   * Creates the route to handle like changes
-   * 
-   * @deprecated As of Sprint 8, this method is deprecated in favor of
-   *             {@link #postUpVote(Gson, Database)}
-   * @param gson Gson object that handles shared serialization
-   * @param db   Database object to execute the method of
-   * @return Returns a spark Route object that handles the json response behavior
-   *         for db.togglelike()
-   */
-  private static Route putLike(final Gson gson, Database db) {
-    return (req, res) -> {
-      int postID = getPostID(req);
-      int result = db.toggleLike(postID);
-      String errorType = "error performing like";
-      boolean errResult = (result == -1);
-      return getJSONResponse(gson, errorType, errResult, null, null, res);
-    };
-  }
+  
 
   /**
    * Creates the route to handle upvoting
@@ -598,28 +516,6 @@ public class App {
       return getJSONResponse(gson,
           String.format("cannot downvote post %d by user %d", postID, userID), (result < 1),
           String.format("downvoted post %d by user %d", postID, userID), result, res);
-    };
-  }
-
-  /**
-   * Creates the route to handle post requests
-   * 
-   * @param gson Gson object that handles shared serialization
-   * @param db   Database object to execute the method of
-   * @deprecated In favor of adding a post with userID verification
-   *             {@link #postIdea(Gson, Database)}
-   * @return Returns a spark Route object that handles the json response behavior
-   *         for db.insertRow()
-   */
-  private static Route postIdeaOld(final Gson gson, Database db) {
-    return (req, res) -> {
-      SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
-      // createEntry checks for null title/message (-1)
-      int rowsAdded = db.insertRow(sReq.mTitle, sReq.mMessage, 1);
-      String errorType = "error performing insertion";
-      boolean errResult = (rowsAdded <= 0);
-      String message = "" + rowsAdded;
-      return getJSONResponse(gson, errorType, errResult, message, null, res);
     };
   }
 
