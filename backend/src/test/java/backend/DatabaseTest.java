@@ -37,7 +37,7 @@ public class DatabaseTest extends TestCase {
   /**
    * A fixed userID for old tests
    */
-  static int USERID = 2;
+  static final int USERID = 2;
 
   /**
    * Create the test case
