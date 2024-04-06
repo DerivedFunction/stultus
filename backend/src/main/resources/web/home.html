@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stultus</title>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="app.css" />
+    <script src="https://accounts.google.com/gsi/client" async></script>
+  </head>
+  <body>
+    <h1 id="brandName">Stultus</h1>
+    <div id="InvalidContent">Invalid Title/Message: Please Try Again</div>
+    <ul>
+      <li>
+        <button id="refreshFormButton" class="navbuttons navbutton">
+          Home
+        </button>
+      </li>
+      <li>
+        <button id="showFormButton" class="navbuttons navbutton">
+          New Post
+        </button>
+      </li>
+      <li>
+        <button id="showFormButton" class="navbuttons navbutton">
+          View Profile
+        </button>
+      </li>
+    </ul>
+    <div id="addElement">
+      <div id="scrollTitle">
+        <h3>Create A New Idea</h3>
+      </div>
+      <div style="height: 100"></div>
+      <div id="messageBox">
+        <div class="form-row">
+          <label id="Title">Title</label> <input type="text" id="newTitle" />
+        </div>
+        <label id="Message">Message</label>
+        <textarea id="newMessage"></textarea>
+        <button id="addButton">Add</button>
+        <button id="addCancel">Cancel</button>
+      </div>
+    </div>
+    <div id="editElement">
+      <div id="scrollTitle">
+        <h3>Edit Your Idea</h3>
+      </div>
+      <div id="messageBox">
+        <div style="height: 100"></div>
+        <div class="form-row">
+          <label> Title </label>
+          <input type="text" id="editTitle" />
+        </div>
+        <label>
+          Message
+          <textarea id="editMessage"></textarea>
+        </label>
+        <span id="editCreated"></span>
+        <input type="hidden" id="editId" />
+        <button id="editButton">Update</button>
+        <button id="editCancel">Cancel</button>
+      </div>
+    </div>
+    <div id="showElements">
+      <div id="scrollTitle">
+        <h3>Main Page</h3>
+      </div>
+      <div style="height: 100"></div>
+      <div id="messageList"></div>
+    </div>
+    <div id="profileForm">
+      <div id="scrollTitle">
+        <h3>Your User Profile</h3>
+      </div>
+      <div id="messageBox">
+        <div style="height: 100"></div>
+        <div class="form-row">
+          <label for="editUsername">Username</label>
+          <input type="text" id="editUsername" />
+        </div>
+        <div class="form-row">
+          <label for="editGender">Gender</label>
+          <select id="editGender">
+            <option value="0">Unknown/Other</option>
+            <option value="1">Male</option>
+            <option value="2">Female</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="editSO">Sexual Orientation</label>
+          <select id="editSO">
+            <option value="private">private</option>
+            <option value="straight">Straight</option>
+            <option value="lesbian">Lesbian</option>
+            <option value="gay">Gay</option>
+            <option value="bisexual">Bisexual</option>
+            <option value="transgender">Transgender</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="editNote">Note</label>
+          <textarea id="editNote"></textarea>
+        </div>
+        <div class="form-row">
+          <input type="hidden" id="userId" />
+          <button id="editUser">Update</button>
+          <button id="UserCancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div id="showComment">
+      <div id="scrollTitle">
+        <h3>Comment a Post</h3>
+      </div>
+      <div style="height: 100"></div>
+      <div id="selectMessage"></div>
+      <div id="commentList"></div>
+    </div>
+  </body>
+</html>
