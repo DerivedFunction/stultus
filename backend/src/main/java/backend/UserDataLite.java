@@ -67,8 +67,7 @@ public class UserDataLite {
 
     @Override
     public String toString() {
-        return String.format("mId: %d%nmUsername: %s%nmEmail: %s%n",
-                this.uID, this.uUsername,
-                this.uEmail);
+        return String.format("mId: %d%nmUsername: %s%nmEmail: %s%nNote: %s%n",
+                this.uID, this.uUsername, this.uEmail, this.uNote);
     }
 }
