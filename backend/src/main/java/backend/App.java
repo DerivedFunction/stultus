@@ -16,10 +16,15 @@ import spark.Spark;
 public class App {
 
   /**
+   * string to have response to use JSON
+   */
+  private static final String APPLICATION_JSON = "application/json";
+
+  /**
    * Whether or not a user needs to be verified to do certain actions.
    * Note: some methods will still need the cookies to perform certain actions
    */
-  private static final boolean NEED_AUTH = Integer.parseInt(System.getenv("AUTH")) == 1 ? true : false;
+  private static final boolean NEED_AUTH = Integer.parseInt(System.getenv("AUTH")) == 1;
   /**
    * Default port to listen to database
    */
@@ -34,10 +39,12 @@ public class App {
    * idToken Cookie
    */
   private static final String ID_TOKEN = "idToken";
+
   /**
    * sub value Cookie
    */
   private static final String SUB_TOKEN = "sub";
+
   /**
    * Parameters for website context
    */
@@ -67,6 +74,7 @@ public class App {
    * Parameters for basic message with user ID in website
    */
   private static final String USER_FORMAT = "/user"; // "/user"
+
   /**
    * Parameters for basic message with user ID in website
    */
@@ -127,6 +135,7 @@ public class App {
    * Parameters for getting a single comment
    */
   private static final String SINGLE_COMMENT_FORMAT = String.format("/comment/:%s", COMMENT_ID); // "/comment/:commentID"
+
   /**
    * The login parameter
    */
@@ -165,7 +174,7 @@ public class App {
    * Default constructor
    */
   public App() {
-
+    // Only one app at a time
   }
 
   /**
@@ -188,12 +197,12 @@ public class App {
     // Set the port on which to listen for requests from the environment
     Spark.port(getIntFromEnv("PORT", DEFAULT_PORT_SPARK));
     // Set up the location for serving static files
-    String static_location_override = System.getenv("STATIC_LOCATION");
-    if (static_location_override == null) {
+    String staticLocationOverride = System.getenv("STATIC_LOCATION");
+    if (staticLocationOverride == null) {
       Spark.staticFileLocation("/web");
     } else {
-      Log.info("New location: " + static_location_override);
-      Spark.staticFiles.externalLocation(static_location_override);
+      Log.info("New location: " + staticLocationOverride);
+      Spark.staticFiles.externalLocation(staticLocationOverride);
     }
     // if CORS enablesd, set backend to accept foriegn requests
     if ("True".equalsIgnoreCase(System.getenv("CORS_ENABLED"))) {
@@ -301,7 +310,7 @@ public class App {
     /**
      * DELETE route that signs a user out
      */
-    Spark.delete(LOGOUT_FORMAT, logout(gson, db)); // "/logout"
+    Spark.delete(LOGOUT_FORMAT, logout(db)); // "/logout"
 
     // Old methods
     /*
@@ -311,12 +320,12 @@ public class App {
      * and also the object.
      * 
      */
-    Spark.post(CONTEXT, postIdea_old(gson, db)); // "/messages"
+    Spark.post(CONTEXT, postIdeaOld(gson, db)); // "/messages"
 
     /*
      * PUT route for updating a row in database.
      */
-    Spark.put(POST_FORMAT, putWithID_old(gson, db)); // "/messages/:postID"
+    Spark.put(POST_FORMAT, putWithIDOld(gson, db)); // "/messages/:postID"
 
     /*
      * PUT route for adding a like,
@@ -326,7 +335,7 @@ public class App {
     /*
      * Delete route for removing a row from database
      */
-    Spark.delete(POST_FORMAT, deleteWithID_old(gson, db)); // "/messages/:postID"
+    Spark.delete(POST_FORMAT, deleteWithIDOld(gson, db)); // "/messages/:postID"
 
   }
 
@@ -340,40 +349,13 @@ public class App {
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.deleteOne
    */
-  private static Route deleteWithID_old(final Gson gson, Database db) {
+  private static Route deleteWithIDOld(final Gson gson, Database db) {
     return (req, res) -> {
-      int postID = Integer.parseInt(req.params(POST_ID));
+      int postID = getPostID(req);
       int result = db.deleteRow(postID, 1);
       String errorType = "unable to delete row " + postID;
       boolean errResult = (result == -1);
-      return JSONResponse(gson, errorType, errResult, null, null, res);
-    };
-  }
-
-  /**
-   * Creates the route to delete ideas
-   * 
-   * @param gson Gson object that handles shared serialization
-   * @param db   Database object to execute the method of
-   * @return Returns a spark Route object that handles the json response behavior
-   *         for db.deleteOne
-   */
-  private static Route deleteIdea(final Gson gson, Database db) {
-    return (req, res) -> {
-      boolean verified = getVerified(db, req);
-      // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
-      }
-
-      int userID = TokenManager.getUserID(req.cookie(ID_TOKEN));
-      int postID = Integer.parseInt(req.params(POST_ID));
-      int result = db.deleteRow(postID, userID);
-      String errorType = String.format("unable to delete post %d by user %d", postID, userID);
-      boolean errResult = (result <= 0);
-      return JSONResponse(gson, errorType, errResult, null, null, res);
+      return getJSONResponse(gson, errorType, errResult, null, null, res);
     };
   }
 
@@ -387,15 +369,83 @@ public class App {
    * @return Returns a spark Route object that handles the json response behavior
    *         for db.updatedOne
    */
-  private static Route putWithID_old(final Gson gson, Database db) {
+  private static Route putWithIDOld(final Gson gson, Database db) {
     return (req, res) -> {
-      int postID = Integer.parseInt(req.params(POST_ID));
+      int postID = getPostID(req);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       Integer result = db.updateOne(postID, sReq.mTitle, sReq.mMessage, 1);
       String errorType = "unable to update row " + postID;
       boolean errResult = (result < 1);
-      return JSONResponse(gson, errorType, errResult, null, result, res);
+      return getJSONResponse(gson, errorType, errResult, null, result, res);
     };
+  }
+
+  /**
+   * Creates the route to delete ideas
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @return Returns a spark Route object that handles the json response behavior
+   *         for db.deleteRow
+   */
+  private static Route deleteIdea(final Gson gson, Database db) {
+    return (req, res) -> {
+      boolean verified = getVerified(db, req);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified) {
+
+        return unAuthJSON(gson, res);
+      }
+      int userID = getUserIDfromCookie(req);
+      int postID = getPostID(req);
+      int result = db.deleteRow(postID, userID);
+      return getJSONResponse(gson,
+          String.format("unable to delete post %d by user %d", postID, userID), (result <= 0),
+          String.format("post %d was deleted by user %d", postID, userID), null, res);
+    };
+  }
+
+  /**
+   * Gets postID parameter from request
+   * 
+   * @param req Request
+   * @return postID
+   */
+  private static int getPostID(Request req) {
+    return Integer.parseInt(req.params(POST_ID));
+  }
+
+  /**
+   * Gets userID parameter from ID_TOKEN cookie
+   * 
+   * @param req Request
+   * @return userID
+   */
+  private static int getUserIDfromCookie(Request req) {
+    return TokenManager.getUserID(req.cookie(ID_TOKEN));
+  }
+
+  /**
+   * Gets commentID parameter from request
+   * 
+   * @param req Request
+   * @return commentID
+   */
+  private static int getCommentID(Request req) {
+    return Integer.parseInt(req.params(COMMENT_ID));
+  }
+
+  /**
+   * Return a JSON response stating unauthorized access
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param res  Response
+   * @return JSON response
+   */
+  private static String unAuthJSON(final Gson gson, Response res) {
+    res.type(APPLICATION_JSON);
+    res.status(401); // Unauthorized
+    return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
   }
 
   /**
@@ -404,25 +454,24 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
-   *         for db.updatedOne
+   *         for db.updatedOne()
    */
   private static Route putIdea(final Gson gson, Database db) {
     return (req, res) -> {
       boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
+        return unAuthJSON(gson, res);
       }
 
-      int userID = TokenManager.getUserID(req.cookie(ID_TOKEN));
-      int postID = Integer.parseInt(req.params(POST_ID));
+      int userID = getUserIDfromCookie(req);
+      int postID = getPostID(req);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       Integer result = db.updateOne(postID, sReq.mTitle, sReq.mMessage, userID);
-      String errorType = "unable to update row " + postID + " by user " + userID;
-      boolean errResult = (result < 1);
-      return JSONResponse(gson, errorType, errResult, null, result, res);
+      return getJSONResponse(gson,
+          String.format("unable to update post %d by user %d", postID, userID), (result < 1),
+          String.format("post %d was updated by user %d", postID, userID),
+          result, res);
     };
   }
 
@@ -432,25 +481,24 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
-   *         for db.updatedOne
+   *         for db.updateUser()
    */
   private static Route putUser(final Gson gson, Database db) {
     return (req, res) -> {
       boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
+
+        return unAuthJSON(gson, res);
       }
-      String idToken = req.cookie(ID_TOKEN);
       String sub = req.cookie(SUB_TOKEN);
-      int userID = TokenManager.getUserID(idToken);
+      int userID = getUserIDfromCookie(req);
       UserData profile = gson.fromJson(req.body(), UserData.class);
       Integer result = db.updateUser(userID, sub, profile.uUsername, profile.uGender, profile.uSO);
-      String errorType = String.format("unable to update user: %s", profile.toString());
-      boolean errResult = (result < 1);
-      return JSONResponse(gson, errorType, errResult, null, result, res);
+      return getJSONResponse(gson,
+          String.format("unable to update user: %s", profile.toString()), (result < 1),
+          String.format("user was updated: %s", db.getUserFull(userID)),
+          result, res);
     };
   }
 
@@ -460,25 +508,23 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
-   *         for db.updatedOne
+   *         for db.updateComment()
    */
   private static Route putComment(final Gson gson, Database db) {
     return (req, res) -> {
       boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
-      }
 
-      int userID = TokenManager.getUserID(req.cookie(ID_TOKEN));
-      int commentID = Integer.parseInt(req.params(COMMENT_ID));
+        return unAuthJSON(gson, res);
+      }
+      int userID = getUserIDfromCookie(req);
+      int commentID = getCommentID(req);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       Integer result = db.updateComment(sReq.mMessage, commentID, userID);
-      String errorType = "unable to update comment " + commentID + " by user " + userID;
-      boolean errResult = (result < 1);
-      return JSONResponse(gson, errorType, errResult, null, result, res);
+      return getJSONResponse(gson,
+          String.format("unable to update comment %d by user %d", commentID, userID), (result < 1),
+          String.format("comment %d was updated by user %d", commentID, userID), result, res);
     };
   }
 
@@ -490,15 +536,15 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
-   *         for db.togglelike
+   *         for db.togglelike()
    */
   private static Route putLike(final Gson gson, Database db) {
     return (req, res) -> {
-      int postID = Integer.parseInt(req.params(POST_ID));
+      int postID = getPostID(req);
       int result = db.toggleLike(postID);
       String errorType = "error performing like";
       boolean errResult = (result == -1);
-      return JSONResponse(gson, errorType, errResult, null, null, res);
+      return getJSONResponse(gson, errorType, errResult, null, null, res);
     };
   }
 
@@ -508,7 +554,7 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
-   *         for db.togglelike
+   *         for db.toggleVote()
    */
   private static Route postUpVote(final Gson gson, Database db) {
     return (req, res) -> {
@@ -517,17 +563,15 @@ public class App {
       boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
-      }
 
-      int userID = TokenManager.getUserID(req.cookie(ID_TOKEN));
-      int postID = Integer.parseInt(req.params(POST_ID));
+        return unAuthJSON(gson, res);
+      }
+      int userID = getUserIDfromCookie(req);
+      int postID = getPostID(req);
       int result = db.toggleVote(postID, 1, userID);
-      String errorType = "error  upvote: post id=" + postID + " by user " + userID;
-      boolean errResult = (result == -1);
-      return JSONResponse(gson, errorType, errResult, null, null, res);
+      return getJSONResponse(gson,
+          String.format("cannot upvote post %d by user %d", postID, userID), (result < 1),
+          String.format("upvoted post %d by user %d", postID, userID), result, res);
     };
   }
 
@@ -537,7 +581,7 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
-   *         for db.togglelike
+   *         for db.toggleVote()
    */
   private static Route postDownVote(final Gson gson, Database db) {
     return (req, res) -> {
@@ -545,17 +589,15 @@ public class App {
       boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
-      }
 
-      int userID = TokenManager.getUserID(req.cookie(ID_TOKEN));
-      int postID = Integer.parseInt(req.params(POST_ID));
+        return unAuthJSON(gson, res);
+      }
+      int userID = getUserIDfromCookie(req);
+      int postID = getPostID(req);
       int result = db.toggleVote(postID, -1, userID);
-      String errorType = "error downvote: post id=" + postID + " by user " + userID;
-      boolean errResult = (result == -1);
-      return JSONResponse(gson, errorType, errResult, null, null, res);
+      return getJSONResponse(gson,
+          String.format("cannot downvote post %d by user %d", postID, userID), (result < 1),
+          String.format("downvoted post %d by user %d", postID, userID), result, res);
     };
   }
 
@@ -567,9 +609,9 @@ public class App {
    * @deprecated In favor of adding a post with userID verification
    *             {@link #postIdea(Gson, Database)}
    * @return Returns a spark Route object that handles the json response behavior
-   *         for db.insertRow
+   *         for db.insertRow()
    */
-  private static Route postIdea_old(final Gson gson, Database db) {
+  private static Route postIdeaOld(final Gson gson, Database db) {
     return (req, res) -> {
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       // createEntry checks for null title/message (-1)
@@ -577,7 +619,7 @@ public class App {
       String errorType = "error performing insertion";
       boolean errResult = (rowsAdded <= 0);
       String message = "" + rowsAdded;
-      return JSONResponse(gson, errorType, errResult, message, null, res);
+      return getJSONResponse(gson, errorType, errResult, message, null, res);
     };
   }
 
@@ -587,7 +629,7 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
-   *         for db.insertRow
+   *         for db.insertRow()
    */
   private static Route postIdea(final Gson gson, Database db) {
     return (req, res) -> {
@@ -595,19 +637,16 @@ public class App {
       boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
-      }
 
-      int userID = TokenManager.getUserID(req.cookie(ID_TOKEN));
+        return unAuthJSON(gson, res);
+      }
+      int userID = getUserIDfromCookie(req);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       // createEntry checks for null title/message (-1)
       int rowsAdded = db.insertRow(sReq.mTitle, sReq.mMessage, userID);
-      String errorType = "error performing insertion";
-      boolean errResult = (rowsAdded <= 0);
-      String message = "" + rowsAdded;
-      return JSONResponse(gson, errorType, errResult, message, null, res);
+      return getJSONResponse(gson,
+          String.format("error adding a post by user %d", userID), (rowsAdded < 1),
+          String.format("user %d added %d post", userID, rowsAdded), rowsAdded, res);
     };
   }
 
@@ -617,7 +656,7 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json response behavior
-   *         for db.insertRow
+   *         for db.insertComment()
    */
   private static Route postComment(final Gson gson, Database db) {
     return (req, res) -> {
@@ -625,21 +664,17 @@ public class App {
       boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
-      }
 
-      int userID = TokenManager.getUserID(req.cookie(ID_TOKEN));
-      int postID = Integer.parseInt(req.params(POST_ID));
+        return unAuthJSON(gson, res);
+      }
+      int userID = getUserIDfromCookie(req);
+      int postID = getPostID(req);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       int commentsAdded = db.insertComment(sReq.mMessage, postID, userID);
-      String errorType = String.format("Error inserting comment to postID %d by userID: %d",
-          postID, userID);
-      boolean errResult = (commentsAdded <= 0);
-      String message = String.format("Succesfully inserted %d comment to postID %d by userID: %d",
-          commentsAdded, postID, userID);
-      return JSONResponse(gson, errorType, errResult, message, null, res);
+      return getJSONResponse(gson,
+          String.format("error adding comment to post %d by user %d", postID, userID), (commentsAdded < 1),
+          String.format("added %d comment to post %d by user %d", commentsAdded, postID, userID),
+          commentsAdded, res);
     };
   }
 
@@ -656,11 +691,11 @@ public class App {
       boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
+
+        return unAuthJSON(gson, res);
       }
-      return JSONResponse(gson, "Invalid or missing ID token", !verified, null, db.selectAll(), res);
+      return getJSONResponse(gson, "Invalid or missing ID token", !verified,
+          "Successfully retreived all messages", db.selectAll(), res);
     };
   }
 
@@ -677,16 +712,14 @@ public class App {
       boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
+
+        return unAuthJSON(gson, res);
       }
-      int postID = Integer.parseInt(req.params(POST_ID));
+      int postID = getPostID(req);
       PostData data = db.selectOne(postID);
-      String errorType = postID + " not found";
-      boolean errResult = (data == null);
-      String message = null;
-      return JSONResponse(gson, errorType, errResult, message, data, res);
+      return getJSONResponse(gson,
+          String.format("post %d not found", postID), (data == null),
+          String.format("post %d found", postID), data, res);
     };
   }
 
@@ -696,7 +729,7 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json behavior for
-   *         db.selectOne()
+   *         db.getUserSimple()
    */
   private static Route getUser(final Gson gson, Database db) {
     return (req, res) -> {
@@ -704,16 +737,15 @@ public class App {
       boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
+
+        return unAuthJSON(gson, res);
       }
       int userID = Integer.parseInt(req.params(USER_ID));
       UserDataLite data = db.getUserSimple(userID);
-      String errorType = userID + " not found";
-      boolean errResult = (data == null);
-      String message = null;
-      return JSONResponse(gson, errorType, errResult, message, data, res);
+
+      return getJSONResponse(gson,
+          String.format("user %d not found", userID), (data == null),
+          String.format("user %d found", userID), data, res);
     };
   }
 
@@ -723,7 +755,7 @@ public class App {
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
    * @return Returns a spark Route object that handles the json behavior for
-   *         db.selectOne()
+   *         db.getUserFull()
    */
   private static Route getUserFull(final Gson gson, Database db) {
     return (req, res) -> {
@@ -732,12 +764,11 @@ public class App {
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
         res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
+        return unAuthJSON(gson, res);
       }
-      int userID = TokenManager.getUserID(req.cookie(ID_TOKEN));
+      int userID = getUserIDfromCookie(req);
       UserData data = db.getUserFull(userID);
-      String errorType = "Cannot verify user";
-      return JSONResponse(gson, errorType, !verified, null, data, res);
+      return getJSONResponse(gson, "Cannot verify user identity", !verified, "Verified user found", data, res);
     };
   }
 
@@ -756,37 +787,93 @@ public class App {
     return (req, res) -> {
       boolean verified = getVerified(db, req);
       if (!verified) {
-        res.type("application/json");
-        res.status(401); // Unauthorized
-        return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
+
+        return unAuthJSON(gson, res);
       }
-      int postID = needsPost ? Integer.parseInt(req.params(POST_ID)) : 0;
+      int postID = needsPost ? getPostID(req) : 0;
       int userId = needsUser ? Integer.parseInt(req.params(USER_ID)) : 0;
-      res.type("application/json");
+      res.type(APPLICATION_JSON);
       res.status(200);
       // Needs both of them
       if (needsUser && needsPost) {
-        return gson.toJson(
-            new StructuredResponse("ok", null, db.selectAllComments(userId, postID)));
+        return getCommentUserPost(gson, db, postID, userId);
       } else if (needsPost && !needsUser) { // Only needs postID
-        return gson.toJson(
-            new StructuredResponse("ok", null, db.selectAllCommentByPost(postID)));
+        return getCommentPost(gson, db, postID);
       } else if (!needsPost && needsUser) { // Only needs userID
-        return gson.toJson(
-            new StructuredResponse("ok", null, db.selectAllCommentByUserID(userId)));
+        return getCommentUser(gson, db, userId);
       } else { // needs neither postID nor userID, so get the commentID
-        try {
-          int commentID = Integer.parseInt(req.params(COMMENT_ID));
-          return gson.toJson(new StructuredResponse(
-              "ok", null, db.selectComment(commentID)));
-        } catch (NumberFormatException e) {
-          res.type("application/json");
-          res.status(403);
-          return gson.toJson(new StructuredResponse(
-              "error", "invalid parameters", null));
-        }
+        return getCommentbyID(gson, db, req, res);
       }
     };
+  }
+
+  /**
+   * Calls to get comment by commentID
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @param db   Database object to execute the method of
+   * @param req  The request
+   * @param res  The response
+   * @return returns one comment by commentID
+   */
+  private static Object getCommentbyID(final Gson gson, Database db, Request req, Response res) {
+    try {
+      int commentID = getCommentID(req);
+      return gson.toJson(new StructuredResponse("ok",
+          String.format("Found comment %d", commentID),
+          db.selectComment(commentID)));
+    } catch (NumberFormatException e) {
+      res.type(APPLICATION_JSON);
+      res.status(403);
+      return gson.toJson(new StructuredResponse(
+          "error", "invalid parameters", null));
+    }
+  }
+
+  /**
+   * Calls to get comment by userID
+   * 
+   * @param gson   Gson object that handles shared serialization
+   * @param db     Database object to execute the method of
+   * @param userId the user's userID
+   * @return all comemnts by user
+   */
+  private static String getCommentUser(final Gson gson, Database db, int userId) {
+    return gson.toJson(
+        new StructuredResponse("ok",
+            String.format("Found comments for user %d", userId),
+            db.selectAllCommentByUserID(userId)));
+  }
+
+  /**
+   * Calls to get comment by postID
+   * 
+   * @param gson   Gson object that handles shared serialization
+   * @param db     Database object to execute the method of
+   * @param postID the post's postID
+   * @return all comemnts for post
+   */
+  private static String getCommentPost(final Gson gson, Database db, int postID) {
+    return gson.toJson(
+        new StructuredResponse("ok",
+            String.format("Found comments for post %d", postID),
+            db.selectAllCommentByPost(postID)));
+  }
+
+  /**
+   * Calls to get comment by user for post
+   * 
+   * @param gson   Gson object that handles shared serialization
+   * @param db     Database object to execute the method of
+   * @param postID the post's postID
+   * @param userID the user's userID
+   * @return all comemnts by user for that post
+   */
+  private static String getCommentUserPost(final Gson gson, Database db, int postID, int userID) {
+    return gson.toJson(
+        new StructuredResponse("ok",
+            String.format("Found user %d's comments for post %d", userID, postID),
+            db.selectAllComments(userID, postID)));
   }
 
   /**
@@ -817,7 +904,7 @@ public class App {
   }
 
   /**
-   * Authenticates Token via `Oauth.java`
+   * Authenticates Token via Oauth.java
    * 
    * @param gson Gson object that handles shared serialization
    * @param db   Database object to execute the method of
@@ -859,21 +946,21 @@ public class App {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
       }
-      String errorType = "Invalid or missing ID token: " + idToken;
-      boolean errResult = !verified;
       UserData user = db.getUserFull(db.findUserID(email));
-      return JSONResponse(gson, errorType, errResult, idToken, user, res);
+      return getJSONResponse(gson,
+          String.format("Invalid or missing ID token: %s", idToken), !verified,
+          String.format("ID token authenticated: %s", idToken), user, res);
     };
   }
 
   /**
    * Logs out a user by clearing its cookies
    * 
-   * @param gson Gson object that handles shared serialization
-   * @param db   Database object to execute the method of
+   * @param db Database object to execute the method of
+   * 
    * @return 200 OK on logout
    */
-  private static Route logout(final Gson gson, Database db) {
+  private static Route logout(Database db) {
     return (req, res) -> {
       int userID = db.findUserIDfromSub(req.cookie(SUB_TOKEN));
       Log.info("A user is attempting to log out: " + db.getUserFull(userID).uEmail);
@@ -897,14 +984,16 @@ public class App {
    * @param response  for setting response status
    * @return JSON response
    */
-  private static Object JSONResponse(final Gson gson, String errorMsg, boolean errResult, String message,
+  private static Object getJSONResponse(final Gson gson, String errorMsg, boolean errResult, String message,
       Object data, Response response) {
-    response.type("application/json");
+    response.type(APPLICATION_JSON);
     if (errResult) {
+      Log.info(errorMsg);
       response.status(403);
       return gson.toJson(new StructuredResponse(
           "error", errorMsg, data));
     } else {
+      Log.info(message);
       response.status(200);
       return gson.toJson(new StructuredResponse("ok", message, data));
     }
