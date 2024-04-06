@@ -40,6 +40,7 @@ public class UserData extends UserDataLite {
         this.uGender = uGender;
         this.uSO = uSO.trim();
         this.uSub = uSub;
+        this.uNote = (uNote != null) ? uNote.trim() : null;
     }
 
     /**
@@ -69,8 +70,6 @@ public class UserData extends UserDataLite {
         if (this.uGender != obj.uGender)
             return false;
         if (!this.uSO.equals(obj.uSO))
-            return false;
-        if (!this.uNote.equals(obj.uNote))
             return false;
         return this.uSub.equals(obj.uSub);
     }

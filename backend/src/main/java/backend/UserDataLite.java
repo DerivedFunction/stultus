@@ -41,7 +41,7 @@ public class UserDataLite {
         this.uID = uID;
         this.uUsername = uUsername.trim();
         this.uEmail = uEmail.trim();
-        this.uNote = uNote.trim();
+        this.uNote = (uNote != null) ? uNote.trim() : null;
     }
 
     @Override
@@ -53,8 +53,6 @@ public class UserDataLite {
             return false;
         UserDataLite obj = (UserDataLite) other;
         if (!this.uUsername.equals(obj.uUsername))
-            return false;
-        if (!this.uNote.equals(obj.uNote))
             return false;
         return this.uEmail.equals(obj.uEmail);
     }
