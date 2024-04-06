@@ -15,6 +15,10 @@ import spark.Spark;
  */
 public class App {
 
+  private static final String LOGIN_HTML = "/login.html";
+
+  private static final String HOME_HTML = "/home.html";
+
   /**
    * string to have response to use JSON
    */
@@ -209,7 +213,12 @@ public class App {
 
     // Set up route for serving main page
     Spark.get("/", (req, res) -> {
-      res.redirect("/index.html");
+      boolean verified = getVerified(db, req);
+      // If it doesn't exist in TokenManager, return error
+      if (!verified) {
+        res.redirect(LOGIN_HTML);
+      }
+      res.redirect(HOME_HTML);
       return "";
     });
 
@@ -374,6 +383,7 @@ public class App {
   private static String unAuthJSON(final Gson gson, Response res) {
     res.type(APPLICATION_JSON);
     res.status(401); // Unauthorized
+    res.redirect(LOGIN_HTML); // redirect to login
     return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
   }
 
@@ -828,7 +838,7 @@ public class App {
         Log.info("Adding new cookies to client");
         res.cookie(ID_TOKEN, idToken);
         res.cookie(SUB_TOKEN, sub);
-        res.redirect("./index.html");
+        res.redirect("./home.html");
       } else {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
