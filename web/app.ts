@@ -302,10 +302,25 @@ var mainList: ElementList;
  * @type {class name}
  */
 class ElementList {
-  /**
-   * Refresh updates the messageList
-   * @
-   */
+  private async submitComment(postId: string, comment: string) {
+    await fetch(`${backendUrl}/user/comments/${postId}`, {
+      method: "POST",
+      body: JSON.stringify({
+        postId: postId,
+        comment: comment,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Comment submitted", data);
+    })
+    .catch(error => console.error("Error submitting comment:", error));
+  }
+
+
   refresh() {
     const doAjax = async () => {
       await fetch(`${backendUrl}/${componentName}`, {
@@ -355,15 +370,35 @@ class ElementList {
         let td_title = document.createElement("td");
         let td_id = document.createElement("td");
         let td_like = document.createElement("td");
+        let td_dislike = document.createElement("td");
         td_title.innerHTML = "<div id = \"postTitle\">" + data.mData[i].mSubject +"</div><br><div id = \"postBody\">"+ data.mData[i].mMessage +"</div>";
 
         td_id.innerHTML = data.mData[i].mId;
         td_like.innerHTML = data.mData[i].numLikes;
-        tr.appendChild(td_like);
-        tr.appendChild(td_title);
-        tr.appendChild(this.buttons(data.mData[i].mId));
-        table.appendChild(tr);
+        td_dislike.innerHTML = data.mData[i].numLikes;
 
+        let dislikeButton = document.createElement("button");
+        dislikeButton.textContent = "Dislike";
+        dislikeButton.className = "dislikebtn"; 
+
+        td_dislike.appendChild(dislikeButton);
+        tr.appendChild(td_like);
+        tr.appendChild(td_dislike);
+        tr.appendChild(this.buttons(data.mData[i].mId));
+
+        // Add a comment form for each post
+        let commentForm = document.createElement("form");
+        commentForm.innerHTML = `
+          <input type="text" name="comment" placeholder="Write a comment..." />
+          <button type="submit">Comment</button>
+        `;
+        commentForm.onsubmit = (e) => {
+          e.preventDefault();
+          this.submitComment(data.mData[i].mId, commentForm.comment.value);
+        };
+        tr.appendChild(commentForm);
+
+        table.appendChild(tr);
       }
       fragment.appendChild(table);
       elem_messageList.appendChild(fragment);
@@ -496,7 +531,7 @@ class ElementList {
     const id = (<HTMLElement>e.target).getAttribute("data-value");
 
     const doAjax = async () => {
-      await fetch("".concat(backendUrl, "/user/upvote/").concat(id), {
+      await fetch(`${backendUrl}/user/upvote/${id}`, {
         // Grab the element from "database"
         method: "PUT",
         headers: {
@@ -534,7 +569,7 @@ class ElementList {
     const id = (<HTMLElement>e.target).getAttribute("data-value");
   
     const doAjax = async () => {
-      await fetch("".concat(backendUrl, "/user/downvote/").concat(id), {
+      await fetch(`${backendUrl}/user/downvote/${id}`, {
         // HTTP PUT request for disliking a post
         method: "PUT",
         headers: {
@@ -657,4 +692,5 @@ function InvalidContentMsg() {
     contentError.style.display = "none";
   }, 2000);
 }
+
 
