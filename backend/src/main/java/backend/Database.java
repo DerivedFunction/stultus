@@ -419,29 +419,6 @@ public class Database {
   }
 
   /**
-   * Add a like to a row in the database
-   * 
-   * @deprecated As of sprint 8, this feature has been deprecated in favor of
-   *             {@link #toggleVote(int, int, int)}
-   * @param id The id of the row to add the like
-   * @return the number of rows updated
-   */
-  int toggleLike(int id) {
-    int res = -1;
-    try {
-      mAddLike_deprecated.setInt(1, id);
-      res = mAddLike_deprecated.executeUpdate();
-      if (res == 0) {
-        mRemoveLike_deprecated.setInt(1, id);
-        res = mRemoveLike_deprecated.executeUpdate();
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return res;
-  }
-
-  /**
    * Checks to see if user upvotes or downvotes a post.
    * If it already exists in the LikeData, then it will remove it
    * 

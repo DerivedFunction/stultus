@@ -119,31 +119,6 @@ public class DatabaseTest extends TestCase {
   }
 
   /**
-   * Tests for toggling likes with backend logic (coupled with inserts and
-   * selects)
-   */
-  public static void testLikes() {
-    ArrayList<PostData> sub = addElementstoDB(false);
-    ;
-    // Check if database contains all elements we just added
-    ArrayList<PostData> res = db.selectAll();
-    for (PostData row : res) {
-      for (PostData su : sub) {
-        if (row.equals(su)) {
-          int likeStatus = row.numLikes;
-          db.toggleLike(row.mId);
-          PostData changed = db.selectOne(row.mId);
-          assertEquals(likeStatus + 1, changed.numLikes);
-          db.toggleLike(row.mId);
-          changed = db.selectOne(row.mId);
-          assertEquals(likeStatus - 1, changed.numLikes);
-          db.deleteRow(row.mId, USERID);
-        }
-      }
-    }
-  }
-
-  /**
    * Adds element to the DB arrayList for checking
    * 
    * @param sub the ArrayList to add elements
