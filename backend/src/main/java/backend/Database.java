@@ -627,7 +627,7 @@ public class Database {
       mUpdateUser.setString(3, SO.trim());
       mUpdateUser.setString(4, (note != null) ? note.trim() : "");
       mUpdateUser.setInt(5, userID);
-      mUpdateUser.setString(6, sub);
+      mUpdateUser.setString(6, sub.trim());
       count = mUpdateUser.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();

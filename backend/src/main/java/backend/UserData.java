@@ -39,7 +39,7 @@ public class UserData extends UserDataLite {
         super(uID, uUsername, uEmail, uNote);
         this.uGender = uGender;
         this.uSO = uSO.trim();
-        this.uSub = uSub;
+        this.uSub = uSub.trim();
         this.uNote = (uNote != null) ? uNote.trim() : null;
     }
 
