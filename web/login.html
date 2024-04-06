@@ -28,7 +28,20 @@
         data-shape="rectangular"
         data-logo_alignment="left">
     </div>
-
+    <div class="email-login">
+        <h2>Login with Email</h2>
+        <form id="emailLoginForm" action="https://team-stultus.dokku.cse.lehigh.edu/authenticate" method="POST">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
     <script>
         function onSignIn(googleUser){
 

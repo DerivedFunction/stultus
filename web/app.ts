@@ -21,6 +21,13 @@ const backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024s
  */
 const componentName = "messages";
 
+interface UserProfile {
+  username: string;
+  email: string;
+  sexualIdentity: string;
+  genderOrientation: string;
+  note: string;
+}
 /**
  * NewEntryForm has all the code for the form for adding an entry
  * @type {class NewEntryForm}
@@ -129,6 +136,23 @@ class NewEntryForm {
       // others
       console.log("Unspecified error");
     }
+  }
+  updateUserProfile(data: UserProfile) {
+    const userId = "user_id"; //needs to be updated
+    fetch(`${backendUrl}/user/profile/${userId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Profile updated:", data);
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error);
+      });
   }
 }
 
@@ -289,6 +313,23 @@ class EditEntryForm {
     else {
       console.log("Unspecified error");
     }
+  }
+  updateUserProfile(data: UserProfile) {
+    const userId = "user_id"; //needs to be updated
+    fetch(`${backendUrl}/user/profile/${userId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Profile updated:", data);
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error);
+      });
   }
 }
 
@@ -651,6 +692,31 @@ class ElementList {
 document.addEventListener(
   "DOMContentLoaded",
   () => {
+
+// Run configuration code when the web page loads
+document.addEventListener("DOMContentLoaded", () => {
+  // Existing code...
+
+  // Handle profile update form submission
+  const profileForm = document.getElementById("profileForm");
+  if (profileForm) {
+    profileForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(profileForm as HTMLFormElement);
+      const userProfile: UserProfile = {
+        username: formData.get("username") as string,
+        email: formData.get("email") as string,
+        sexualIdentity: formData.get("sexualIdentity") as string,
+        genderOrientation: formData.get("genderOrientation") as string,
+        note: formData.get("note") as string,
+      };
+      newEntryForm.updateUserProfile(userProfile);
+      editEntryForm.updateUserProfile(userProfile);
+    });
+  }
+
+  // Existing code...
+});
     // set up initial UI state
     (<HTMLElement>document.getElementById("editElement")).style.display =
       "none";
@@ -670,14 +736,18 @@ document.addEventListener(
       .getElementById("refreshFormButton")
       ?.addEventListener("click", (e) => {
         mainList.refresh();
+        
       });
+      
     // Create the object that controls the "New Entry" form
     newEntryForm = new NewEntryForm();
     editEntryForm = new EditEntryForm();
     mainList = new ElementList();
     mainList.refresh();
     console.log("DOMContentLoaded");
+    
   },
+  
   false
 );
 

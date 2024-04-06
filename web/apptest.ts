@@ -328,6 +328,10 @@ describe("Like Button Tests", function () {
     let lbtn = <HTMLButtonElement>lbtns[0];
     lbtn.click();
 
+    let dbtns = document.getElementsByClassName("dislikebtn");
+    let dbtn = <HTMLButtonElement>dbtns[0];
+    dbtn.click();
+
     //check if everything works
     setTimeout(function () {
       // The like value should be different after a short delay

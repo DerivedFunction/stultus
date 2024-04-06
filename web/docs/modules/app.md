@@ -34,7 +34,7 @@ setting $ to any
 
 #### Defined in
 
-[app.ts:5](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-5)
+[app.ts:5](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-5)
 
 ___
 
@@ -46,7 +46,7 @@ Backend server link to dokku
 
 #### Defined in
 
-[app.ts:16](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-16)
+[app.ts:16](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-16)
 
 ___
 
@@ -58,7 +58,7 @@ Component name to fetch resources
 
 #### Defined in
 
-[app.ts:22](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-22)
+[app.ts:22](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-22)
 
 ___
 
@@ -70,7 +70,7 @@ Global variable to be referenced for ElementList
 
 #### Defined in
 
-[app.ts:138](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-138)
+[app.ts:138](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-138)
 
 ___
 
@@ -82,7 +82,7 @@ Global variable to be referenced for ElementList
 
 #### Defined in
 
-[app.ts:298](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-298)
+[app.ts:298](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-298)
 
 ___
 
@@ -94,7 +94,7 @@ Global variable to be referenced for newEntryForm
 
 #### Defined in
 
-[app.ts:10](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-10)
+[app.ts:10](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-10)
 
 ## Functions
 
@@ -110,4 +110,4 @@ Unhide error message from HTML index for a moment
 
 #### Defined in
 
-[app.ts:653](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-653)
+[app.ts:688](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-688)

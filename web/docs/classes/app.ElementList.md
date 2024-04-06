@@ -20,6 +20,7 @@ ElementList provides a way to see the data stored in server
 - [clickEdit](app.ElementList.md#clickedit)
 - [clickLike](app.ElementList.md#clicklike)
 - [refresh](app.ElementList.md#refresh)
+- [submitComment](app.ElementList.md#submitcomment)
 - [update](app.ElementList.md#update)
 
 ## Constructors
@@ -54,7 +55,7 @@ a new button
 
 #### Defined in
 
-[app.ts:412](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-412)
+[app.ts:447](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-447)
 
 ___
 
@@ -76,7 +77,7 @@ Delete the item off the table
 
 #### Defined in
 
-[app.ts:456](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-456)
+[app.ts:491](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-491)
 
 ___
 
@@ -98,7 +99,7 @@ Ajax function that sends HTTP function to update like count (by decrementing)
 
 #### Defined in
 
-[app.ts:533](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-533)
+[app.ts:568](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-568)
 
 ___
 
@@ -120,7 +121,7 @@ clickEdit is the code we run in response to a click of a delete button
 
 #### Defined in
 
-[app.ts:574](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-574)
+[app.ts:609](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-609)
 
 ___
 
@@ -142,7 +143,7 @@ Ajax function that sends HTTP function to update like count
 
 #### Defined in
 
-[app.ts:495](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-495)
+[app.ts:530](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-530)
 
 ___
 
@@ -150,16 +151,34 @@ ___
 
 ▸ **refresh**(): `void`
 
-Refresh updates the messageList
-@
-
 #### Returns
 
 `void`
 
 #### Defined in
 
-[app.ts:309](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-309)
+[app.ts:324](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-324)
+
+___
+
+### submitComment
+
+▸ **submitComment**(`postId`, `comment`): `Promise`\<`void`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `postId` | `string` |
+| `comment` | `string` |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Defined in
+
+[app.ts:305](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-305)
 
 ___
 
@@ -181,4 +200,4 @@ Update the data
 
 #### Defined in
 
-[app.ts:344](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-344)
+[app.ts:359](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-359)

@@ -34,7 +34,7 @@ when clicked
 
 #### Defined in
 
-[app.ts:150](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-150)
+[app.ts:150](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-150)
 
 ## Methods
 
@@ -50,7 +50,7 @@ Clear the form's input fields
 
 #### Defined in
 
-[app.ts:197](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-197)
+[app.ts:197](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-197)
 
 ___
 
@@ -73,7 +73,7 @@ when clicked
 
 #### Defined in
 
-[app.ts:167](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-167)
+[app.ts:167](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-167)
 
 ___
 
@@ -96,7 +96,7 @@ result.
 
 #### Defined in
 
-[app.ts:277](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-277)
+[app.ts:277](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-277)
 
 ___
 
@@ -112,4 +112,4 @@ Check if the input fields are both valid, and if so, do an AJAX call.
 
 #### Defined in
 
-[app.ts:214](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f28616e/web/app.ts#lines-214)
+[app.ts:214](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-214)
