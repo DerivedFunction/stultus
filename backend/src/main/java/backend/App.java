@@ -383,7 +383,6 @@ public class App {
   private static String unAuthJSON(final Gson gson, Response res) {
     res.type(APPLICATION_JSON);
     res.status(401); // Unauthorized
-    res.redirect(LOGIN_HTML); // redirect to login
     return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
   }
 
