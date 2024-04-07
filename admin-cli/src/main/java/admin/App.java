@@ -47,8 +47,8 @@ public class App {
     System.out.println("User Menu");
     System.out.println("  [T] Create usrData"); 
     System.out.println("  [D] Drop usrData"); 
-    System.out.println("  [e] Query a User By Email"); 
-    System.out.println("  [i] Query a User By ID"); 
+    System.out.println("  [1] Query a User By Email"); 
+    System.out.println("  [2] Query a User By ID"); 
     System.out.println("  [*] Query for all users");
     System.out.println("  [-] Delete a user");
     System.out.println("  [+] Insert a new user");
@@ -93,7 +93,7 @@ public class App {
    */
   static char prompt(BufferedReader in) {
     // valid actions
-    String actions = "TD1*-+~q?IUCL";
+    String actions = "TD1234*-+~q?IUCL";
     // We repeat until a valid char is selected
     while (true) {
       System.out.print("[" + actions + "] :> ");
@@ -382,12 +382,79 @@ public class App {
               break;
           }
         case '1':
+          String email = getString(in, "Enter User's Email");
+          Database.UserRowData res = db.SelectUserByEmail(email);
+          if (res != null) {
+            System.out.println(" [" + res.uId + "] " + res.uName);
+            System.out.println(" Message Id: " + res.uEmail);
+            System.out.println(" User Gender: " + res.uGender);
+            System.out.println(" User SO: " + res.uSO);
+          }
+          break;  
         case '2':
-        case '*':
+          int uid = getInt(in, "Enter User's Id");
+            if (uid == -1)
+              continue;
+            Database.UserRowData resid = db.SelectUser(uid);
+            if (resid != null) {
+              System.out.println(" [" + resid.uId + "] " + resid.uName);
+              System.out.println(" Message ID: " + resid.uEmail);
+              System.out.println(" User Gender: " + resid.uGender);
+              System.out.println(" User SO: " + resid.uSO);
+            }
+          break;
+        case '*':{
+          ArrayList<Database.UserRowData> resall = db.selectAllUsers();
+          if (resall == null)
+            continue;
+          System.out.println(" All Current Users");
+          System.out.println(" -------------------------");
+          String printfmt = " [%3s] |  %-25s | %-30s | | %-15s | [%3s]%n";
+          System.out.printf(printfmt, "Id", "Username", "Email", "SO", "Gender");
+          System.out.println("--------------------------------------------------------------------------------------------------");
+          for (Database.UserRowData rd : resall) {
+            String name = rd.uName.length() > 25 ? rd.uName.substring(0, 25) : rd.uName;
+            String subemail = rd.uEmail.length() > 30 ? rd.uEmail.substring(0, 30) : rd.uEmail;
+            String SO = rd.uSO.length() > 15 ? rd.uSO.substring(0,15) : rd.uSO; 
+            System.out.printf(printfmt, rd.uId, name, subemail, SO, rd.uGender);
+          }
+            break;
+        }
         case '-':
+          int delid = getInt(in, "Enter User ID");
+          if (delid == -1)
+            continue;
+          int resdel = db.deleteRowUser(delid);
+          if (resdel == -1)
+            continue;
+          System.out.println(" " + resdel + " user deleted");
+          break;
         case '+':
+          String insuser = getString(in, "Enter Username");
+          String inemail = getString(in, "Enter SO");
+          if(insuser.length() > 50){
+            System.out.println("Username length too long (must not exceed 50 characters)");
+            break;
+          }
+          if(inemail.length() > 50){
+            System.out.println("Email length too long (must not exceed 50 characters)");
+            break;
+          }
+          int resins = db.insertUser(insuser, inemail);
+          System.out.println(resins + " rows added");
+          break;
         case '~':
-        
+          String upuser = getString(in, "Enter Username");
+          int upgender = getInt(in, "Enter Gender (INT)");
+          String upso = getString(in, "Enter SO");
+          int upuid = getInt(in, "Enter ID");
+          if(upgender == -1 || upuid == -1)
+            continue;
+          int upres = db.updateOneUser(upuser, upgender, upso, upuid);
+          if (upres == -1)
+            continue;
+          System.out.println(" " + upres + " users updated");
+          break;
       }
     }
   }
@@ -433,12 +500,41 @@ public class App {
               break;
           }
         case '1':
+          int pid = getInt(in, "Enter Post ID");
+          int uid = getInt(in, "Enter the User ID");
+          if (pid == -1 || uid == -1)
+            continue;
+          Database.LikeRowData res = db.selectUserVote(pid, uid);
+          if (res != null) {
+            System.out.println(" [" + res.lId + "] " + res.lVote);
+            System.out.println(" Message Id: " + res.mId);
+            System.out.println(" User ID: " + res.uId);
+          }
+          break;  
+        case '*':{
+          ArrayList<Database.LikeRowData> resall = db.selectAllLikes();
+          if (resall == null)
+            continue;
+          System.out.println(" Current Database Contents");
+          System.out.println(" -------------------------");
+          String printfmt = " [%3s] |  %-30s | %-40s | [%3s]%n";
+          System.out.printf(printfmt, "Like Id", "Message Id", "User Id", "Vote Val");
+          System.out.println("--------------------------------------------------------------------------------------------------");
+          for (Database.LikeRowData rd : resall) {
+            System.out.printf(printfmt, rd.lId, rd.mId, rd.uId, rd.lVote);
+          }
+            break;
+        }
+        case '-':
+          int pId = getInt(in, "Enter Post ID");
+          int uId = getInt(in, "Enter the User ID");
+          if (pId == -1 || uId == -1)
+            continue;
+          int resdel = db.deleteVote(pId, uId);
+          if (resdel == -1)
+            continue;
+          System.out.println(" " + resdel + " like deleted");
           break;
-        case '*':
-          break;
-        case '~':
-          break;
-
       }
     }
   }
