@@ -837,7 +837,7 @@ public class App {
         Log.info("Adding new cookies to client");
         res.cookie(ID_TOKEN, idToken);
         res.cookie(SUB_TOKEN, sub);
-        res.redirect("./home.html");
+        res.redirect(HOME_HTML);
       } else {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
