@@ -224,7 +224,7 @@ public class App {
           cmntMenu();
           break;
         case 'T':
-          db.createLikeTable();
+          db.createCmntTable();
           break;
         case 'D':
           Scanner scan = new Scanner(System.in);
@@ -232,7 +232,7 @@ public class App {
           System.out.println("Are you sure you want to drop the table? \n Enter Y for Yes, anything else for No");
           input = scan.nextLine();
           if(input.equals("Y")){
-            db.dropLikeTable();
+            db.dropCmntTable();
             break;
           } else{
               System.out.println("Not dropping table.");
@@ -367,7 +367,7 @@ public class App {
           cont = false;
           break;
         case 'T':
-          db.createLikeTable();
+          db.createUserTable();
           break;
         case 'D':
           Scanner scan = new Scanner(System.in);
@@ -375,7 +375,7 @@ public class App {
           System.out.println("Are you sure you want to drop the table? \n Enter Y for Yes, anything else for No");
           input = scan.nextLine();
           if(input.equals("Y")){
-            db.dropLikeTable();
+            db.dropUserTable();
             break;
           } else{
               System.out.println("Not dropping table.");
@@ -431,7 +431,7 @@ public class App {
           break;
         case '+':
           String insuser = getString(in, "Enter Username");
-          String inemail = getString(in, "Enter SO");
+          String inemail = getString(in, "Enter Email");
           if(insuser.length() > 50){
             System.out.println("Username length too long (must not exceed 50 characters)");
             break;

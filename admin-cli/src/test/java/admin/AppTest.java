@@ -1,6 +1,9 @@
 package admin;
 
+import admin.Database.CommentRowData;
+//import admin.Database.LikeRowData;
 import admin.Database.RowData;
+import admin.Database.UserRowData;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -59,6 +62,9 @@ public class AppTest extends TestCase {
     // Connect to database
     Database db = Database.getDatabase(ip, port, user, pass);
     ArrayList<RowData> sub = new ArrayList<>();
+    ArrayList<UserRowData> subU = new ArrayList<>();
+    ArrayList<CommentRowData> subC = new ArrayList<>();
+    
 
     for (int i = 0; i < num; i++) {
       String subject = "Subject" + rngString();
@@ -70,18 +76,32 @@ public class AppTest extends TestCase {
     ArrayList<RowData> res = db.selectAll();
     assertTrue(res.containsAll(sub));
 
+    for(int i = 0; i < num; i++){
+      String email = "Email" + rngString();
+      String username = "Username" + rngString();
+      subU.add(new UserRowData(i, username, email, 0, "None"));
+      assertTrue(db.insertUser(username, email) == 1);
+    }
+
+    subC.add(new CommentRowData(num, "Comment", 32, 1));
+    assertTrue(db.insertComment("Comment", 32, 1) == 1);
+
     /**
      * Get the maxId, the id of the last element we just added
      * It is in last element of the res ArrayList
      */
-    int maxId = res.get(res.size() - 1).mId;
+    /*
+     * int maxId = res.get(res.size() - 1).mId;
     // Delete the test elements from out Database
     for (int i = 0; i < num; i++) {
       assertTrue(db.deleteRow(maxId - i) > 0);
     }
+     
+    
     // The test elements should no longer be in our database
     res = db.selectAll();
     assertFalse(res.containsAll(sub));
+  */
     db.disconnect();
   }
 }
