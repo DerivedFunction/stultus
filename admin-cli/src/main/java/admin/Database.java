@@ -451,7 +451,7 @@ public class Database {
                                                         + "post_id INT,"
                                                         + "user_id INT,"
                                                         + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
-                                                        + "FOREIGN KEY (userid) REFERENCES userData(id)");
+                                                        + "FOREIGN KEY (user_id) REFERENCES userData(id)");
       //Create Like Table
       db.lCreateTable = db.mConnection.prepareStatement("CREATE TABLE likeData ("
                                                         + "id SERIAL PRIMARY KEY,"
@@ -459,7 +459,7 @@ public class Database {
                                                         + "vote INT,"
                                                         + "user_id INT,"
                                                         + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
-                                                        + "FOREIGN KEY (userid) REFERENCES userData(id)");
+                                                        + "FOREIGN KEY (user_id) REFERENCES userData(id)");
 
       //Drop All Tables
       db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
@@ -480,15 +480,15 @@ public class Database {
       // Standard CRUD User operations
       db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM usrData WHERE id=?");
       db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO usrData (username,email) VALUES (?,?)");
-      db.uSelectUserByEmail = db.mConnection.prepareStatement("SELECT id FROM usrData WHERE email=?");
+      db.uSelectUserByEmail = db.mConnection.prepareStatement("SELECT FROM usrData WHERE email=?");
       db.uSelectUser = db.mConnection.prepareStatement("SELECT FROM usrData WHERE id=?");
       db.uUpdateOne = db.mConnection.prepareStatement("UPDATE usrData SET username=?, gender=?, so=? where id=?");
 
 
       // Standard CRUD Voting operations
-      db.lSelectVoteFromUser = db.mConnection.prepareStatement("SELECT vote FROM likeData WHERE post_id=? AND userID=?");
+      db.lSelectVoteFromUser = db.mConnection.prepareStatement("SELECT vote FROM likeData WHERE post_id=? AND user_id=?");
       db.lSelectAllVotes = db.mConnection.prepareStatement("SELECT * FROM likeData");
-      db.lDeleteVote = db.mConnection.prepareStatement("DELETE FROM likeData WHERE post_id=? AND usrID=?");
+      db.lDeleteVote = db.mConnection.prepareStatement("DELETE FROM likeData WHERE post_id=? AND user_id=?");
       
       // Standard CRUD Comment operations
       db.cSelectAllCommentsForAPost = db.mConnection.prepareStatement("SELECT * FROM cmntData WHERE post_id=? ORDER BY ID DESC");
