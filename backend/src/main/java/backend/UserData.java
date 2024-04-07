@@ -33,12 +33,14 @@ public class UserData extends UserDataLite {
      * @param uGender   The user's gender
      * @param uSO       The user's SO
      * @param uSub      The user's sub value
+     * @param uNote     The user's note
      */
-    public UserData(int uID, String uUsername, String uEmail, int uGender, String uSO, String uSub) {
-        super(uID, uUsername, uEmail);
+    public UserData(int uID, String uUsername, String uEmail, int uGender, String uSO, String uSub, String uNote) {
+        super(uID, uUsername, uEmail, uNote);
         this.uGender = uGender;
         this.uSO = uSO.trim();
-        this.uSub = uSub;
+        this.uSub = uSub.trim();
+        this.uNote = (uNote != null) ? uNote.trim() : null;
     }
 
     /**
@@ -47,9 +49,10 @@ public class UserData extends UserDataLite {
      * @param uID       The id(userID)
      * @param uUsername The username
      * @param uEmail    The email
+     * @param uNote     The note
      */
-    public UserData(int uID, String uUsername, String uEmail) {
-        super(uID, uUsername, uEmail);
+    public UserData(int uID, String uUsername, String uEmail, String uNote) {
+        super(uID, uUsername, uEmail, uNote);
     }
 
     @Override
@@ -84,6 +87,6 @@ public class UserData extends UserDataLite {
 
     @Override
     public String toString() {
-        return super.toString() + String.format("mGender: %d%nmSO: %s%n", this.uGender, this.uSO.trim());
+        return super.toString() + String.format("mGender: %d%nmSO: %s%n", this.uGender, this.uSO);
     }
 }

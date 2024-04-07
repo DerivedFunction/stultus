@@ -37,7 +37,7 @@ public class DatabaseTest extends TestCase {
   /**
    * A fixed userID for old tests
    */
-  static int USERID = 2;
+  static final int USERID = 2;
 
   /**
    * Create the test case
@@ -119,31 +119,6 @@ public class DatabaseTest extends TestCase {
   }
 
   /**
-   * Tests for toggling likes with backend logic (coupled with inserts and
-   * selects)
-   */
-  public static void testLikes() {
-    ArrayList<PostData> sub = addElementstoDB(false);
-    ;
-    // Check if database contains all elements we just added
-    ArrayList<PostData> res = db.selectAll();
-    for (PostData row : res) {
-      for (PostData su : sub) {
-        if (row.equals(su)) {
-          int likeStatus = row.numLikes;
-          db.toggleLike(row.mId);
-          PostData changed = db.selectOne(row.mId);
-          assertEquals(likeStatus + 1, changed.numLikes);
-          db.toggleLike(row.mId);
-          changed = db.selectOne(row.mId);
-          assertEquals(likeStatus - 1, changed.numLikes);
-          db.deleteRow(row.mId, USERID);
-        }
-      }
-    }
-  }
-
-  /**
    * Adds element to the DB arrayList for checking
    * 
    * @param sub the ArrayList to add elements
@@ -207,12 +182,13 @@ public class DatabaseTest extends TestCase {
     int gender = test.uGender;
     String so = test.uSO;
     String sub = test.uSub;
+    String note = test.uNote;
     assertEquals(db.findUserIDfromSub(sub), test.uID);
     int userID = db.findUserID(email);
-    db.updateUser(userID, sub, "a", gender + 1, "a");
+    db.updateUser(userID, sub, "a", gender + 1, "a", "Hello world");
     UserData updated = db.getUserFull(userID);
     assertFalse(test.equals(updated));
-    db.updateUser(userID, sub, username, gender, so);
+    db.updateUser(userID, sub, username, gender, so, note);
     updated = db.getUserFull(userID);
     assertEquals(test, updated);
     db.deleteUser(userID);
@@ -278,7 +254,7 @@ public class DatabaseTest extends TestCase {
    * @return CommentData
    */
   private static CommentData createComment(int userID, int postID) {
-    ArrayList<CommentData> comment = null;
+    ArrayList<CommentData> comment = new ArrayList<>();
     db.insertComment(rngString(), postID, userID);
     comment = db.selectAllComments(userID, postID);
     return comment.get(0);

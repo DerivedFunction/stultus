@@ -45,15 +45,6 @@ public class Database {
   private PreparedStatement mUpdateOne;
 
   /**
-   * A prepared statement for adding a like to a message
-   */
-  private PreparedStatement mAddLike_deprecated;
-
-  /**
-   * A prepared statement for removing a like to a message
-   */
-  private PreparedStatement mRemoveLike_deprecated;
-  /**
    * A prepared statement for find if a user has already voted for a message
    */
   private PreparedStatement mfindVoteforUser;
@@ -244,13 +235,13 @@ public class Database {
       db.mFindUser = db.mConnection.prepareStatement(
           "SELECT id FROM " + userTable + " WHERE email=?");
       db.mGetUserSimple = db.mConnection.prepareStatement(
-          "SELECT id, username, email FROM " + userTable + " WHERE id=?");
+          "SELECT id, username, email, note FROM " + userTable + " WHERE id=?");
       db.mGetUserFull = db.mConnection.prepareStatement(
           "SELECT * FROM " + userTable + " WHERE id=?");
       db.mGetUserIDFromSub = db.mConnection.prepareStatement(
           "SELECT id FROM " + userTable + " WHERE sub=?");
       db.mUpdateUser = db.mConnection.prepareStatement(
-          "UPDATE " + userTable + " SET username=?, gender=?, so=? WHERE id=? AND sub=?");
+          "UPDATE " + userTable + " SET username=?, gender=?, so=?, note=? WHERE id=? AND sub=?");
       db.mDeleteUser = db.mConnection.prepareStatement(
           "DELETE FROM " + userTable + " WHERE id=?");
       db.mSelectAllCommentsForPost = db.mConnection.prepareStatement(
@@ -267,11 +258,6 @@ public class Database {
           "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=?");
       db.mInsertComment = db.mConnection.prepareStatement(
           "INSERT INTO " + commentTable + " (message, post_id, userid) VALUES (?,?,?)");
-      // deprecated statements
-      db.mAddLike_deprecated = db.mConnection
-          .prepareStatement("UPDATE  " + tableName + " SET likes=likes+1 WHERE id=? AND likes=0");
-      db.mRemoveLike_deprecated = db.mConnection
-          .prepareStatement("UPDATE  " + tableName + " SET likes=likes-1 WHERE id=? AND likes=1");
 
     } catch (SQLException e) {
       Log.error("Error creating prepared statement");
@@ -337,7 +323,7 @@ public class Database {
       while (rs.next()) {
         int id = rs.getInt("id");
         res.add(new PostData(id, rs.getString("subject"),
-            rs.getString("message"), totalVotes(id) + rs.getInt("likes"), rs.getInt("userid")));
+            rs.getString("message"), totalVotes(id), rs.getInt("userid")));
       }
       rs.close();
       return res;
@@ -361,7 +347,7 @@ public class Database {
       if (rs.next()) {
         int postID = rs.getInt("id");
         res = new PostData(postID, rs.getString("subject"),
-            rs.getString("message"), totalVotes(postID) + rs.getInt("likes"), rs.getInt("userid"));
+            rs.getString("message"), totalVotes(postID), rs.getInt("userid"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -412,29 +398,6 @@ public class Database {
       mUpdateOne.setString(2, message.trim());
       mUpdateOne.setInt(3, id);
       res = mUpdateOne.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return res;
-  }
-
-  /**
-   * Add a like to a row in the database
-   * 
-   * @deprecated As of sprint 8, this feature has been deprecated in favor of
-   *             {@link #toggleVote(int, int, int)}
-   * @param id The id of the row to add the like
-   * @return the number of rows updated
-   */
-  int toggleLike(int id) {
-    int res = -1;
-    try {
-      mAddLike_deprecated.setInt(1, id);
-      res = mAddLike_deprecated.executeUpdate();
-      if (res == 0) {
-        mRemoveLike_deprecated.setInt(1, id);
-        res = mRemoveLike_deprecated.executeUpdate();
-      }
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -590,7 +553,7 @@ public class Database {
       mGetUserSimple.setInt(1, userID);
       ResultSet rs = mGetUserSimple.executeQuery();
       if (rs.next()) {
-        res = new UserDataLite(rs.getInt("id"), rs.getString("username"), rs.getString("email"));
+        res = new UserDataLite(rs.getInt("id"), rs.getString("username"), rs.getString("email"), rs.getString("note"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -612,7 +575,7 @@ public class Database {
       if (rs.next()) {
         res = new UserData(rs.getInt("id"), rs.getString("username"),
             rs.getString("email"), rs.getInt("gender"),
-            rs.getString("so"), rs.getString("sub"));
+            rs.getString("so"), rs.getString("sub"), rs.getString("note"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -653,16 +616,18 @@ public class Database {
    * @param username The new username
    * @param gender   The new gender
    * @param SO       The new SO
+   * @param note     the new note
    * @return 1 on success, -1 on fail
    */
-  int updateUser(int userID, String sub, String username, int gender, String SO) {
+  int updateUser(int userID, String sub, String username, int gender, String SO, String note) {
     int count = -1;
     try {
       mUpdateUser.setString(1, username.trim());
       mUpdateUser.setInt(2, gender);
       mUpdateUser.setString(3, SO.trim());
-      mUpdateUser.setInt(4, userID);
-      mUpdateUser.setString(5, sub);
+      mUpdateUser.setString(4, (note != null) ? note.trim() : "");
+      mUpdateUser.setInt(5, userID);
+      mUpdateUser.setString(6, sub.trim());
       count = mUpdateUser.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();

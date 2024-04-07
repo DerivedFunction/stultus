@@ -1,94 +1,140 @@
 body {
-    font-family: 'Lobster';
-    margin: 0;
-    background-color: #212121;
-    color: white
+  font-family: "Lobster";
+  margin: 0;
+  background-color: #212121;
+  color: white;
 }
 
 /* Change the header of the display */
 h3 {
-    color: white;
-    font-size: 50pt;
-    font-weight: bold;
-    text-align: left;
-    margin-top: 1px;
+  color: white;
+  font-size: 50pt;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1px;
 }
 
-
-/* "Add Message" appears on top right above header */
-#showFormButton {
-    margin-top: -110px;
-    position: absolute;
-    background-color: #ffab40;
-    border: white;
-    size: 30px;
-    right: 15px;
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333; /* Dark background for the navigation bar */
 }
 
-
-#scrollTitle{
-    background-color: #009688;
-    width: 100%;
-    height: 75;
+li {
+  float: left;
 }
 
-#postTitle{
-    font-size: large;
-    font-weight: bold;
-    font-family: 'Madimi One';
+li a {
+  display: block;
+  color: #ffffff; /* White text for the navigation links */
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
 }
 
-#Title{
-    font-family: 'Madimi One';
-    font-size: larger;
+.navbuttons {
+  background-color: #333; /* Dark gray background */
+  border: none;
+  border-radius: 0;
+  padding: 10px 20px; /* Reduced padding */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px; /* Reduced font size */
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
 }
 
-#Message{
-    font-family: 'Madimi One';
-    font-size: medium;
+.navbutton {
+  color: #ffffff; /* Black text for buttons */
+  padding: 8px 16px; /* Reduced padding */
 }
 
-#postBody{
-    font-size: medium;
-    font-weight: lighter;
-    font-family: 'Madimi One';
+.navbutton:hover {
+  background-color: #000; /* Green hover background */
+  color: #ffffff; /* White hover text */
+}
+
+#scrollTitle {
+  background-color: #04aa6d; /* Green background for scroll title */
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+}
+
+#scrollTitle h3 {
+  margin: 0;
+  font-size: 24px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #999999; /* Light gray border */
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#messageBox {
+  border: 1px solid #999999; /* Light gray border */
+  border-radius: 10px;
+  padding: 20px;
+}
+
+#Message {
+  font-family: "Madimi One";
+  font-size: medium;
+}
+
+#postBody {
+  font-size: medium;
+  font-weight: lighter;
+  font-family: "Madimi One";
 }
 
 /* Add some space before displaying the table of data */
 #messageList {
-    margin-left: 15px;
+  margin-left: 15px;
 }
 
 /* Make the table wide */
 table {
-    width: 100%;
+  width: 100%;
 }
 
 /* alternate color of table rows */
 tr:nth-child(even) {
-    background: #303030;
-    border-color: #ffab40;
-    border-width: 3px;
+  background: #303030;
+  border-color: #ffab40;
+  border-width: 3px;
 }
-
 
 tr:nth-child(odd) {
-    background: #303030;
-    border-color: #ffab40;
-    border-width: 3px;
+  background: #303030;
+  border-color: #ffab40;
+  border-width: 3px;
 }
-
 
 /* make table row height a bit taller */
 tr {
-    height: 150px;
+  height: 150px;
 }
 
 /* make the "title" column of the table wide */
 td:nth-child(2) {
-    width: 75%;
+  width: 75%;
 }
-
 
 /* make the form elements wide,
 * and make the Edit entry stack vertical
@@ -97,38 +143,99 @@ td:nth-child(2) {
 input,
 label,
 textarea {
-    display: block;
-    width: 200px;
-    margin-bottom: 10px;
+  display: block;
+  width: 200px;
+  margin-bottom: 10px;
+}
+tr:hover {
+  background-color: #ffff99;
+}
+#postTitle {
+  font-weight: bold;
+  color: #333;
 }
 
-
-/* put some left space before form elements */
-label,
-input,
-textarea,
-#addButton,
-#editButton {
-    margin-left: 15px;
+#postBody {
+  color: #666;
 }
 
-/* custom formatting for the span where we put the creation date */
-#editCreated {
-    display: block;
-    margin-bottom: 5px;
-    margin-left: 15px;
+/* Button styling */
+
+button {
+  background-color: #04aa6d; /* Green background for buttons */
+  color: #ffffff; /* White text for buttons */
+  padding: 10px 12px;
+  margin: 10px;
+  border: none;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-#InvalidContent{
-    display: none;
-    font-family: 'Sumana';
-    color: white;
-    font-style: italic;
-    font-weight: bolder;
+.editbtn {
+  background-color: #04aa6d; /* Green for Edit button */
+  color: #fff;
 }
 
-#likeCol{
-    color: red;
-    text-align: center;
+.delbtn {
+  background-color: #ff4d4d; /* Red for Delete button */
+  color: #fff;
 }
 
+.likebtn {
+  background-color: #337ab7; /* Blue for Like button */
+  color: #fff;
+}
+
+/* Button hover styling */
+.editbtn:hover {
+  background-color: #038c5a; /* Darker green hover background */
+}
+
+.delbtn:hover {
+  background-color: #e60000; /* Darker red hover background */
+}
+
+.likebtn:hover {
+  background-color: #005580; /* Darker blue hover background */
+}
+
+.form-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.form-row label {
+  margin-right: 10px;
+}
+
+select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Styles for dropdown arrow */
+select:after {
+  content: "\25BC"; /* Unicode character for down arrow */
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #555;
+}
+
+/* Styles for dropdown menu options */
+select option {
+  background-color: #fff;
+  color: #555;
+}
