@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stultus</title>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="app.css" />
+    <script src="https://accounts.google.com/gsi/client" async></script>
+  </head>
+  <body>
+    <h1 id="brandName">Stultus</h1>
+    <div id="InvalidContent">Invalid Title/Message: Please Try Again</div>
+    <ul>
+      <li>
+        <button id="refreshFormButton" class="navbuttons navbutton">
+          Home
+        </button>
+      </li>
+      <li>
+        <button id="showFormButton" class="navbuttons navbutton">
+          New Post
+        </button>
+      </li>
+      <li>
+        <div
+          id="g_id_onload"
+          data-client_id="732167497663-u42guu2ktqercj2ic4ippp4nkfkobjfu.apps.googleusercontent.com"
+          data-login_uri="https://team-stultus.dokku.cse.lehigh.edu/authenticate"
+        ></div>
+        <div
+          class="g_id_signin"
+          data-type="standard"
+          data-size="large"
+          data-theme="outline"
+          data-text="sign_in_with"
+          data-shape="rectangular"
+          data-logo_alignment="left"
+        ></div>
+
+        <script>
+          function handleCredentialResponse(response) {
+            const responsePayload = decodeJwtResponse(response.credential);
+            console.log("ID: " + responsePayload.sub);
+            console.log("Full Name: " + responsePayload.name);
+            console.log("Given Name: " + responsePayload.given_name);
+            console.log("Family Name: " + responsePayload.family_name);
+            console.log("Image URL: " + responsePayload.picture);
+            console.log("Email: " + responsePayload.email);
+          }
+
+          //Decode JWT
+          function decodeJwtResponse(data) {
+            var tokens = data.split(".");
+            return JSON.parse(atob(tokens[1]));
+          }
+        </script>
+      </li>
+    </ul>
+    <div id="addElement">
+      <div id="scrollTitle">
+        <h3>Create A New Idea</h3>
+      </div>
+      <div style="height: 100"></div>
+      <div id="messageBox">
+        <label id="Title">Title</label>
+        <input type="text" id="newTitle" />
+        <label id="Message">Message</label>
+        <textarea id="newMessage"></textarea>
+        <button id="addButton">Add</button>
+        <button id="addCancel">Cancel</button>
+      </div>
+    </div>
+    <div id="editElement">
+      <div id="scrollTitle">
+        <h3>Edit Your Idea</h3>
+      </div>
+      <div id="messageBox">
+        <div style="height: 100"></div>
+        <label>Title</label>
+        <input type="text" id="editTitle" />
+        <label>Message</label>
+        <textarea id="editMessage"></textarea>
+        <span id="editCreated"></span>
+        <input type="hidden" id="editId" />
+        <button id="editButton">Update</button>
+        <button id="editCancel">Cancel</button>
+      </div>
+    </div>
+    <div id="showElements">
+      <div id="scrollTitle">
+        <h3>Main Page</h3>
+      </div>
+      <div style="height: 100"></div>
+      <div id="messageList"></div>
+    </div>
+  </body>
+</html>
