@@ -33,7 +33,7 @@ Executes after all the tests are complete that resets the system
 
 #### Defined in
 
-[apptest.ts:36](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-36)
+[apptest.ts:36](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-36)
 
 ___
 
@@ -45,7 +45,7 @@ Waiting after executing each test
 
 #### Defined in
 
-[apptest.ts:42](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-42)
+[apptest.ts:42](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-42)
 
 ___
 
@@ -57,7 +57,7 @@ Initializes values
 
 #### Defined in
 
-[apptest.ts:30](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-30)
+[apptest.ts:30](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-30)
 
 ___
 
@@ -69,7 +69,7 @@ Allows backend to sync
 
 #### Defined in
 
-[apptest.ts:24](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-24)
+[apptest.ts:24](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-24)
 
 ___
 
@@ -81,7 +81,7 @@ Delay of one second to be used to make the tests viewable
 
 #### Defined in
 
-[apptest.ts:49](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-49)
+[apptest.ts:49](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-49)
 
 ___
 
@@ -93,7 +93,7 @@ Global vars
 
 #### Defined in
 
-[apptest.ts:6](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-6)
+[apptest.ts:6](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-6)
 
 ___
 
@@ -105,7 +105,7 @@ Global vars
 
 #### Defined in
 
-[apptest.ts:18](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-18)
+[apptest.ts:18](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-18)
 
 ___
 
@@ -117,7 +117,7 @@ Testis Functionality
 
 #### Defined in
 
-[apptest.ts:12](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-12)
+[apptest.ts:12](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-12)
 
 ___
 
@@ -129,7 +129,7 @@ Backup for original message element
 
 #### Defined in
 
-[apptest.ts:60](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-60)
+[apptest.ts:60](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-60)
 
 ___
 
@@ -141,7 +141,7 @@ Backup for original title element
 
 #### Defined in
 
-[apptest.ts:55](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-55)
+[apptest.ts:55](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-55)
 
 ## Functions
 
@@ -158,7 +158,7 @@ CLICK EDIT BUTTON AND WAIT FOR BACKEND
 
 #### Defined in
 
-[apptest.ts:402](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-402)
+[apptest.ts:407](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-407)
 
 ___
 
@@ -175,7 +175,7 @@ GET THE ORIGINAL MESSAGE AND TITLE STRING
 
 #### Defined in
 
-[apptest.ts:379](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-379)
+[apptest.ts:384](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-384)
 
 ___
 
@@ -198,4 +198,4 @@ PAUSE PROGRAM FOR 1 SECOND TO BE VIEWED BY USER/TESTER
 
 #### Defined in
 
-[apptest.ts:391](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/apptest.ts#lines-391)
+[apptest.ts:396](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/apptest.ts#lines-396)

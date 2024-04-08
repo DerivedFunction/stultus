@@ -78,6 +78,7 @@ describe("Edit Tests", function () {
   let editElements: any;
   let showElements: any;
   let editCancel: any;
+  let dislikeButton: any;
 
   /**
   * Function to initialize values 
@@ -326,6 +327,10 @@ describe("Like Button Tests", function () {
     let lbtns = document.getElementsByClassName("likebtn");
     let lbtn = <HTMLButtonElement>lbtns[0];
     lbtn.click();
+
+    let dbtns = document.getElementsByClassName("dislikebtn");
+    let dbtn = <HTMLButtonElement>dbtns[0];
+    dbtn.click();
 
     //check if everything works
     setTimeout(function () {

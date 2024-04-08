@@ -13,7 +13,7 @@ var newEntryForm: NewEntryForm;
  * Backend server link to dokku
  * @type {string}
  */
-const backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
+const backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu"; //https://team-stultus.dokku.cse.lehigh.edu
 
 /**
  * Component name to fetch resources
@@ -21,6 +21,13 @@ const backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024s
  */
 const componentName = "messages";
 
+interface UserProfile {
+  username: string;
+  email: string;
+  sexualIdentity: string;
+  genderOrientation: string;
+  note: string;
+}
 /**
  * NewEntryForm has all the code for the form for adding an entry
  * @type {class NewEntryForm}
@@ -130,6 +137,23 @@ class NewEntryForm {
       console.log("Unspecified error");
     }
   }
+  updateUserProfile(data: UserProfile) {
+    const userId = "user_id"; //needs to be updated
+    fetch(`${backendUrl}/user/profile/${userId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Profile updated:", data);
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error);
+      });
+  }
 }
 
 /** Global variable to be referenced for ElementList 
@@ -152,6 +176,9 @@ class EditEntryForm {
       editEntryForm.clearForm();
     });
     document.getElementById("editButton")?.addEventListener("click", (e) => {
+      editEntryForm.submitForm();
+    });
+    document.getElementById("dislikeButton")?.addEventListener("click", (e) => {
       editEntryForm.submitForm();
     });
   }
@@ -287,6 +314,23 @@ class EditEntryForm {
       console.log("Unspecified error");
     }
   }
+  updateUserProfile(data: UserProfile) {
+    const userId = "user_id"; //needs to be updated
+    fetch(`${backendUrl}/user/profile/${userId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Profile updated:", data);
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error);
+      });
+  }
 }
 
 /** Global variable to be referenced for ElementList 
@@ -299,10 +343,25 @@ var mainList: ElementList;
  * @type {class name}
  */
 class ElementList {
-  /**
-   * Refresh updates the messageList
-   * @
-   */
+  private async submitComment(postId: string, comment: string) {
+    await fetch(`${backendUrl}/user/comments/${postId}`, {
+      method: "POST",
+      body: JSON.stringify({
+        postId: postId,
+        comment: comment,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Comment submitted", data);
+    })
+    .catch(error => console.error("Error submitting comment:", error));
+  }
+
+
   refresh() {
     const doAjax = async () => {
       await fetch(`${backendUrl}/${componentName}`, {
@@ -352,15 +411,35 @@ class ElementList {
         let td_title = document.createElement("td");
         let td_id = document.createElement("td");
         let td_like = document.createElement("td");
+        let td_dislike = document.createElement("td");
         td_title.innerHTML = "<div id = \"postTitle\">" + data.mData[i].mSubject +"</div><br><div id = \"postBody\">"+ data.mData[i].mMessage +"</div>";
 
         td_id.innerHTML = data.mData[i].mId;
         td_like.innerHTML = data.mData[i].numLikes;
-        tr.appendChild(td_like);
-        tr.appendChild(td_title);
-        tr.appendChild(this.buttons(data.mData[i].mId));
-        table.appendChild(tr);
+        td_dislike.innerHTML = data.mData[i].numLikes;
 
+        let dislikeButton = document.createElement("button");
+        dislikeButton.textContent = "Dislike";
+        dislikeButton.className = "dislikebtn"; 
+
+        td_dislike.appendChild(dislikeButton);
+        tr.appendChild(td_like);
+        tr.appendChild(td_dislike);
+        tr.appendChild(this.buttons(data.mData[i].mId));
+
+        // Add a comment form for each post
+        let commentForm = document.createElement("form");
+        commentForm.innerHTML = `
+          <input type="text" name="comment" placeholder="Write a comment..." />
+          <button type="submit">Comment</button>
+        `;
+        commentForm.onsubmit = (e) => {
+          e.preventDefault();
+          this.submitComment(data.mData[i].mId, commentForm.comment.value);
+        };
+        tr.appendChild(commentForm);
+
+        table.appendChild(tr);
       }
       fragment.appendChild(table);
       elem_messageList.appendChild(fragment);
@@ -389,6 +468,14 @@ class ElementList {
     for (let i = 0; i < all_likebtns.length; ++i) {
       all_likebtns[i].addEventListener("click", (e) => {
         mainList.clickLike(e);
+      });
+    }
+    const all_dislikebtns = <HTMLCollectionOf<HTMLInputElement>>(
+      document.getElementsByClassName("dislikebtn")
+    );
+    for (let i = 0; i < all_dislikebtns.length; ++i) {
+      all_dislikebtns[i].addEventListener("click", (e) => {
+        mainList.clickDislike(e);
       });
     }
   }
@@ -427,6 +514,14 @@ class ElementList {
     td.appendChild(btn);
     fragment.appendChild(td);
 
+    td = document.createElement("td");
+    btn = document.createElement("button");
+    btn.classList.add("dislikebtn");
+    btn.setAttribute("data-value", id);
+    btn.innerHTML = "Dislike";
+    td.appendChild(btn);
+    fragment.appendChild(td);
+    
     return fragment;
   }
 
@@ -477,7 +572,7 @@ class ElementList {
     const id = (<HTMLElement>e.target).getAttribute("data-value");
 
     const doAjax = async () => {
-      await fetch(`${backendUrl}/${componentName}/${id}/like`, {
+      await fetch(`${backendUrl}/user/upvote/${id}`, {
         // Grab the element from "database"
         method: "PUT",
         headers: {
@@ -505,6 +600,46 @@ class ElementList {
         });
     };
     // post AJAX values to console
+    doAjax().then(console.log).catch(console.log);
+  }
+    /**
+   * Ajax function that sends HTTP function to update like count (by decrementing)
+   * @param e 
+   */
+  private clickDislike(e: Event) {
+    const id = (<HTMLElement>e.target).getAttribute("data-value");
+  
+    const doAjax = async () => {
+      await fetch(`${backendUrl}/user/downvote/${id}`, {
+        // HTTP PUT request for disliking a post
+        method: "PUT",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return Promise.resolve(response.json());
+          } else {
+            console.log(
+              `The server replied not ok: ${response.status}\n` +
+                response.statusText
+            );
+          }
+          return Promise.reject(response);
+        })
+        .then((data) => {
+          // Refresh the main message list to reflect the changes
+          mainList.refresh();
+          console.log(data);
+        })
+        .catch((error) => {
+          console.warn("Something went wrong. ", error);
+          console.log("Unspecified error");
+        });
+    };
+  
+    // Execute the AJAX request
     doAjax().then(console.log).catch(console.log);
   }
 
@@ -557,6 +692,31 @@ class ElementList {
 document.addEventListener(
   "DOMContentLoaded",
   () => {
+
+// Run configuration code when the web page loads
+document.addEventListener("DOMContentLoaded", () => {
+  // Existing code...
+
+  // Handle profile update form submission
+  const profileForm = document.getElementById("profileForm");
+  if (profileForm) {
+    profileForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(profileForm as HTMLFormElement);
+      const userProfile: UserProfile = {
+        username: formData.get("username") as string,
+        email: formData.get("email") as string,
+        sexualIdentity: formData.get("sexualIdentity") as string,
+        genderOrientation: formData.get("genderOrientation") as string,
+        note: formData.get("note") as string,
+      };
+      newEntryForm.updateUserProfile(userProfile);
+      editEntryForm.updateUserProfile(userProfile);
+    });
+  }
+
+  // Existing code...
+});
     // set up initial UI state
     (<HTMLElement>document.getElementById("editElement")).style.display =
       "none";
@@ -576,14 +736,18 @@ document.addEventListener(
       .getElementById("refreshFormButton")
       ?.addEventListener("click", (e) => {
         mainList.refresh();
+        
       });
+      
     // Create the object that controls the "New Entry" form
     newEntryForm = new NewEntryForm();
     editEntryForm = new EditEntryForm();
     mainList = new ElementList();
     mainList.refresh();
     console.log("DOMContentLoaded");
+    
   },
+  
   false
 );
 
@@ -598,4 +762,5 @@ function InvalidContentMsg() {
     contentError.style.display = "none";
   }, 2000);
 }
+
 

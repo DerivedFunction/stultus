@@ -40,6 +40,7 @@
         <input type="hidden" id="editId" />
         <button id="editButton">Update</button>
         <button id="editCancel">Cancel</button>
+        <button id="dislikebtn">Delete</button>
     </div>
     <div id="showElements">
         <div id="scrollTitle">
@@ -48,41 +49,11 @@
         </div>
         <div style="height: 100;"></div>
         <!--<button id="refreshFormButton">Refresh</button> -->
-        <div id="messageList"></div>
+        <div id="messageList">
+        </div>
     </div>
     <div id="InvalidContent">
         Invalid Title/Message: Please Try Again
     </div>
-    <div id="g_id_onload"
-        data-client_id="732167497663-u42guu2ktqercj2ic4ippp4nkfkobjfu.apps.googleusercontent.com"
-        data-login_uri="https://team-stultus.dokku.cse.lehigh.edu/authenticate">
-    </div>
-    <div class="g_id_signin"
-        data-type="standard"
-        data-size="large"
-        data-theme="outline"
-        data-text="sign_in_with"
-        data-shape="rectangular"
-        data-logo_alignment="left">
-    </div>
-
-    <script>
-        function handleCredentialResponse(response){
-
-            const responsePayload = decodeJwtResponse(response.credential);
-                console.log("ID: " + responsePayload.sub);
-                console.log("Full Name: " + responsePayload.name);
-                console.log("Given Name: " + responsePayload.given_name);
-                console.log("Family Name: " + responsePayload.family_name);
-                console.log("Image URL: " + responsePayload.picture);
-                console.log("Email: " + responsePayload.email);
-        }
-
-        //Decode JWT
-        function decodeJwtResponse(data){
-            var tokens = data.split(".");
-            return JSON.parse(atob(tokens[1]));
-        }
-    </script>
 </body>
 </html>

@@ -25,9 +25,12 @@ npm update
 
 # step 3: copy static html, css, and JavaScript files
 echo "Copying static html, css, and js files"
-cp index_simple.html $TARGETFOLDER/index.html
+cp index_simple.html $TARGETFOLDER/home.html
 cp -r src $TARGETFOLDER/src
 cp app.css $TARGETFOLDER
+cp login.html $TARGETFOLDER
+cp styles.css $TARGETFOLDER
+
 
 
 # step 4: compile TypeScript files

@@ -17,6 +17,7 @@ NewEntryForm has all the code for the form for adding an entry
 - [clearForm](app.NewEntryForm.md#clearform)
 - [onSubmitResponse](app.NewEntryForm.md#onsubmitresponse)
 - [submitForm](app.NewEntryForm.md#submitform)
+- [updateUserProfile](app.NewEntryForm.md#updateuserprofile)
 
 ## Constructors
 
@@ -32,7 +33,7 @@ Intialize the object  setting buttons to do actions when clicked
 
 #### Defined in
 
-[app.ts:34](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-34)
+[app.ts:41](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-41)
 
 ## Methods
 
@@ -48,7 +49,7 @@ Clear the input fields
 
 #### Defined in
 
-[app.ts:47](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-47)
+[app.ts:54](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-54)
 
 ___
 
@@ -70,7 +71,7 @@ Runs when AJAX call in submitForm() returns a result
 
 #### Defined in
 
-[app.ts:121](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-121)
+[app.ts:128](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-128)
 
 ___
 
@@ -86,4 +87,24 @@ Check if input is valid before submitting with AJAX call
 
 #### Defined in
 
-[app.ts:62](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-62)
+[app.ts:69](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-69)
+
+___
+
+### updateUserProfile
+
+▸ **updateUserProfile**(`data`): `void`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `data` | [`UserProfile`](../interfaces/app.UserProfile.md) |
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[app.ts:140](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-140)

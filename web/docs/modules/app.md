@@ -10,6 +10,10 @@
 - [ElementList](../classes/app.ElementList.md)
 - [NewEntryForm](../classes/app.NewEntryForm.md)
 
+### Interfaces
+
+- [UserProfile](../interfaces/app.UserProfile.md)
+
 ### Variables
 
 - [$](app.md#$)
@@ -34,19 +38,19 @@ setting $ to any
 
 #### Defined in
 
-[app.ts:5](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-5)
+[app.ts:5](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-5)
 
 ___
 
 ### backendUrl
 
-• `Const` **backendUrl**: ``"https://team-stultus.dokku.cse.lehigh.edu"``
+• `Const` **backendUrl**: ``"localhost:8998"``
 
 Backend server link to dokku
 
 #### Defined in
 
-[app.ts:16](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-16)
+[app.ts:16](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-16)
 
 ___
 
@@ -58,7 +62,7 @@ Component name to fetch resources
 
 #### Defined in
 
-[app.ts:22](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-22)
+[app.ts:22](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-22)
 
 ___
 
@@ -70,7 +74,7 @@ Global variable to be referenced for ElementList
 
 #### Defined in
 
-[app.ts:138](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-138)
+[app.ts:162](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-162)
 
 ___
 
@@ -82,7 +86,7 @@ Global variable to be referenced for ElementList
 
 #### Defined in
 
-[app.ts:295](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-295)
+[app.ts:339](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-339)
 
 ___
 
@@ -94,7 +98,7 @@ Global variable to be referenced for newEntryForm
 
 #### Defined in
 
-[app.ts:10](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-10)
+[app.ts:10](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-10)
 
 ## Functions
 
@@ -110,4 +114,4 @@ Unhide error message from HTML index for a moment
 
 #### Defined in
 
-[app.ts:594](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-594)
+[app.ts:758](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-758)

@@ -18,6 +18,7 @@ EditEntryForm contains all code for editing an entry
 - [init](app.EditEntryForm.md#init)
 - [onSubmitResponse](app.EditEntryForm.md#onsubmitresponse)
 - [submitForm](app.EditEntryForm.md#submitform)
+- [updateUserProfile](app.EditEntryForm.md#updateuserprofile)
 
 ## Constructors
 
@@ -34,7 +35,7 @@ when clicked
 
 #### Defined in
 
-[app.ts:150](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-150)
+[app.ts:174](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-174)
 
 ## Methods
 
@@ -50,7 +51,7 @@ Clear the form's input fields
 
 #### Defined in
 
-[app.ts:194](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-194)
+[app.ts:221](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-221)
 
 ___
 
@@ -73,7 +74,7 @@ when clicked
 
 #### Defined in
 
-[app.ts:164](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-164)
+[app.ts:191](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-191)
 
 ___
 
@@ -96,7 +97,7 @@ result.
 
 #### Defined in
 
-[app.ts:274](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-274)
+[app.ts:301](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-301)
 
 ___
 
@@ -112,4 +113,24 @@ Check if the input fields are both valid, and if so, do an AJAX call.
 
 #### Defined in
 
-[app.ts:211](https://bitbucket.org/sml3/cse216_sp24_team_21/src/504518a/web/app.ts#lines-211)
+[app.ts:238](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-238)
+
+___
+
+### updateUserProfile
+
+▸ **updateUserProfile**(`data`): `void`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `data` | [`UserProfile`](../interfaces/app.UserProfile.md) |
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[app.ts:317](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-317)
