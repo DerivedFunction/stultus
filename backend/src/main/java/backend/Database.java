@@ -14,6 +14,20 @@ import java.util.ArrayList;
  */
 public class Database {
   /**
+   * Constant column name for message
+   */
+  private static final String MESSAGE = "message";
+  /**
+   * Constant column name for userid
+   */
+  private static final String USERID = "userid";
+
+  /**
+   * Constant column name for post_id
+   */
+  private static final String POST_ID = "post_id";
+
+  /**
    * The connection to the database. When there is no connection, it
    * should be null. Otherwise, there is a valid open connection
    */
@@ -130,20 +144,20 @@ public class Database {
   /**
    * Get a fully-configured connection to the database
    * 
-   * @param db_url       The url to the database
-   * @param port_default port to use if absent in db_url
-   * @param dbTable      ArrayList of all SQL tables to use
+   * @param dbUrl       The url to the database
+   * @param portDefault port to use if absent in db_url
+   * @param dbTable     ArrayList of all SQL tables to use
    * 
    * @return A Database object, or null if we cannot connect properly
    */
-  static Database getDatabase(String db_url, String port_default, ArrayList<String> dbTable) {
+  static Database getDatabase(String dbUrl, String portDefault, ArrayList<String> dbTable) {
     try {
-      URI dbUri = new URI(db_url);
+      URI dbUri = new URI(dbUrl);
       String username = dbUri.getUserInfo().split(":")[0];
       String password = dbUri.getUserInfo().split(":")[1];
       String host = dbUri.getHost();
       String path = dbUri.getPath();
-      String port = dbUri.getPort() == -1 ? port_default : Integer.toString(dbUri.getPort());
+      String port = dbUri.getPort() == -1 ? portDefault : Integer.toString(dbUri.getPort());
 
       return getDatabase(host, port, path, username, password, dbTable);
     } catch (URISyntaxException s) {
@@ -204,7 +218,7 @@ public class Database {
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM " + tableName + " WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO  " + tableName + "  VALUES (default, ?, ?,default,?)");
+          "INSERT INTO  " + tableName + "  VALUES (default,?,?,?)");
       db.mSelectAll = db.mConnection.prepareStatement(
           "SELECT * FROM  " + tableName + "  ORDER BY id DESC");
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from  " + tableName + "  WHERE id=?");
@@ -323,13 +337,13 @@ public class Database {
       while (rs.next()) {
         int id = rs.getInt("id");
         res.add(new PostData(id, rs.getString("subject"),
-            rs.getString("message"), totalVotes(id), rs.getInt("userid")));
+            rs.getString(MESSAGE), totalVotes(id), rs.getInt(USERID)));
       }
       rs.close();
       return res;
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      return new ArrayList<>();
     }
   }
 
@@ -347,7 +361,7 @@ public class Database {
       if (rs.next()) {
         int postID = rs.getInt("id");
         res = new PostData(postID, rs.getString("subject"),
-            rs.getString("message"), totalVotes(postID), rs.getInt("userid"));
+            rs.getString(MESSAGE), totalVotes(postID), rs.getInt(USERID));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -611,20 +625,20 @@ public class Database {
   /**
    * Updates user profile
    * 
-   * @param userID   The userID associated with user
-   * @param sub      The user's sub value to verify
-   * @param username The new username
-   * @param gender   The new gender
-   * @param SO       The new SO
-   * @param note     the new note
+   * @param userID       The userID associated with user
+   * @param sub          The user's sub value to verify
+   * @param username     The new username
+   * @param gender       The new gender
+   * @param sOrientation The new SO
+   * @param note         the new note
    * @return 1 on success, -1 on fail
    */
-  int updateUser(int userID, String sub, String username, int gender, String SO, String note) {
+  int updateUser(int userID, String sub, String username, int gender, String sOrientation, String note) {
     int count = -1;
     try {
       mUpdateUser.setString(1, username.trim());
       mUpdateUser.setInt(2, gender);
-      mUpdateUser.setString(3, SO.trim());
+      mUpdateUser.setString(3, sOrientation.trim());
       mUpdateUser.setString(4, (note != null) ? note.trim() : "");
       mUpdateUser.setInt(5, userID);
       mUpdateUser.setString(6, sub.trim());
@@ -725,8 +739,8 @@ public class Database {
       mSelectOneComment.setInt(1, commentID);
       ResultSet rs = mSelectOneComment.executeQuery();
       if (rs.next()) {
-        res = new CommentData(rs.getInt("id"), rs.getString("message"),
-            rs.getInt("post_id"), rs.getInt("userid"));
+        res = new CommentData(rs.getInt("id"), rs.getString(MESSAGE),
+            rs.getInt(POST_ID), rs.getInt(USERID));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -746,14 +760,14 @@ public class Database {
       mSelectAllCommentsForPost.setInt(1, postID);
       ResultSet rs = mSelectAllCommentsForPost.executeQuery();
       while (rs.next()) {
-        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
-            rs.getInt("post_id"), rs.getInt("userid")));
+        res.add(new CommentData(rs.getInt("id"), rs.getString(MESSAGE),
+            rs.getInt(POST_ID), rs.getInt(USERID)));
       }
       rs.close();
       return res;
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      return new ArrayList<>();
     }
   }
 
@@ -769,14 +783,14 @@ public class Database {
       mSelectAllCommentsByUser.setInt(1, userID);
       ResultSet rs = mSelectAllCommentsByUser.executeQuery();
       while (rs.next()) {
-        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
-            rs.getInt("post_id"), rs.getInt("userid")));
+        res.add(new CommentData(rs.getInt("id"), rs.getString(MESSAGE),
+            rs.getInt(POST_ID), rs.getInt(USERID)));
       }
       rs.close();
       return res;
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      return new ArrayList<>();
     }
   }
 
@@ -795,14 +809,14 @@ public class Database {
       mSelectAllCommentsByUserAndPost.setInt(2, postID);
       ResultSet rs = mSelectAllCommentsByUserAndPost.executeQuery();
       while (rs.next()) {
-        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
-            rs.getInt("post_id"), rs.getInt("userid")));
+        res.add(new CommentData(rs.getInt("id"), rs.getString(MESSAGE),
+            rs.getInt(POST_ID), rs.getInt(USERID)));
       }
       rs.close();
       return res;
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      return new ArrayList<>();
     }
   }
 }
