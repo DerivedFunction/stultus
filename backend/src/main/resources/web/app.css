@@ -1,210 +1,148 @@
-/* General styling */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0; /* Light gray background */
-  margin: 0;
-  padding: 0;
+    font-family: 'Lobster';
+    margin: 0;
+    background-color: #212121;
+    color: white
 }
 
-#brandName {
-  background-color: #1a1a1a; /* Dark gray background */
-  font-weight: bold;
-  font-size: 40px;
-  color: #ffffff; /* White text */
-  display: block;
-  text-align: center;
-  width: 100%;
-  margin: 0;
+/* Change the header of the display */
+h3 {
+    color: white;
+    font-size: 50pt;
+    font-weight: bold;
+    text-align: left;
+    margin-top: 1px;
 }
 
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333; /* Dark background for the navigation bar */
+
+/* "Add Message" appears on top right above header */
+#showFormButton {
+    margin-top: -110px;
+    position: absolute;
+    background-color: #ffab40;
+    border: white;
+    size: 30px;
+    right: 15px;
 }
 
-li {
-  float: left;
+
+#scrollTitle{
+    background-color: #009688;
+    width: 100%;
+    height: 75;
 }
 
-li a {
-  display: block;
-  color: #ffffff; /* White text for the navigation links */
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
+#postTitle{
+    font-size: large;
+    font-weight: bold;
+    font-family: 'Madimi One';
 }
 
-.navbuttons {
-  background-color: #1a1a1a; /* Dark gray background */
-  border: none;
-  color: #999999; /* Light gray text */
-  padding: 10px 20px; /* Reduced padding */
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px; /* Reduced font size */
-  margin: 4px 2px;
-  transition-duration: 0.4s;
-  cursor: pointer;
+#Title{
+    font-family: 'Madimi One';
+    font-size: larger;
 }
 
-.navbutton {
-  background-color: #ffffff; /* White background for buttons */
-  color: #000000; /* Black text for buttons */
-  border: 2px solid #04aa6d; /* Green border */
-  padding: 8px 16px; /* Reduced padding */
+#Message{
+    font-family: 'Madimi One';
+    font-size: medium;
 }
 
-.navbutton:hover {
-  background-color: #04aa6d; /* Green hover background */
-  color: #ffffff; /* White hover text */
+#postBody{
+    font-size: medium;
+    font-weight: lighter;
+    font-family: 'Madimi One';
 }
 
-#scrollTitle {
-  background-color: #04aa6d; /* Green background for scroll title */
-  color: white;
-  text-align: center;
-  padding: 10px 0;
+/* Add some space before displaying the table of data */
+#messageList {
+    margin-left: 15px;
 }
 
-#scrollTitle h3 {
-  margin: 0;
-  font-size: 24px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-input[type="text"],
-textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #999999; /* Light gray border */
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-#messageBox {
-  border: 1px solid #999999; /* Light gray border */
-  border-radius: 10px;
-  padding: 20px;
-}
-
-button {
-  background-color: #04aa6d; /* Green background for buttons */
-  color: #ffffff; /* White text for buttons */
-  padding: 15px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #038c5a; /* Darker green hover background */
-}
-
-#addButton {
-  margin-right: 10px;
-}
-
-#InvalidContent {
-  background-color: #ffcccc; /* Light red background */
-  color: #cc0000; /* Dark red text color */
-  padding: 10px; /* Padding around the content */
-  margin-top: 10px; /* Add some space at the top */
-  border: 1px solid #cc0000; /* Dark red border */
-  border-radius: 4px; /* Rounded corners */
-  text-align: center; /* Center the text */
-  display: none;
-}
-
-/* Table styling */
+/* Make the table wide */
 table {
-  border-collapse: separate;
-  border-spacing: 0 10px;
-  padding: 10px;
-  width: 100%;
+    width: 100%;
 }
-td:nth-child(1) {
-  width: 5%;
+
+/* alternate color of table rows */
+tr:nth-child(even) {
+    background: #303030;
+    border-color: #ffab40;
+    border-width: 3px;
 }
+
+
+tr:nth-child(odd) {
+    background: #303030;
+    border-color: #ffab40;
+    border-width: 3px;
+}
+
+
+/* make table row height a bit taller */
+tr {
+    height: 150px;
+}
+
+/* make the "title" column of the table wide */
 td:nth-child(2) {
-  width: 80%; /* Adjust width for the 2nd column */
-  border: solid 2px #333;
+    width: 75%;
 }
 
-td:nth-child(n + 3):nth-child(-n + 5) {
-  width: 5%; /* Adjust width for the 3rd, 4th, and 5th columns */
+
+/* make the form elements wide,
+* and make the Edit entry stack vertical
+* Add some space between them
+ */
+input,
+label,
+textarea {
+    display: block;
+    width: 200px;
+    margin-bottom: 10px;
 }
 
-td {
-  border: solid 2px #333; /* Darker and thicker border */
-  border-style: solid none;
-  padding: 10px;
+
+/* put some left space before form elements */
+label,
+input,
+textarea,
+#addButton,
+#editButton,
+#dislikeButton {
+    margin-left: 15px;
 }
 
-td:first-child {
-  border-left-style: solid;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+/* custom formatting for the span where we put the creation date */
+#editCreated {
+    display: block;
+    margin-bottom: 5px;
+    margin-left: 15px;
 }
 
-td:last-child {
-  border-right-style: solid;
-  border-bottom-right-radius: 10px;
-  border-top-right-radius: 10px;
+#InvalidContent{
+    display: none;
+    font-family: 'Sumana';
+    color: white;
+    font-style: italic;
+    font-weight: bolder;
 }
 
-#postTitle {
-  font-weight: bold;
-  color: #333;
+#likeCol{
+    color: red;
+    text-align: center;
 }
 
-#postBody {
-  color: #666;
+.dislikebtn {
+    background-color: #00FFFF; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px; /* Adjust spacing */
 }
 
-/* Button styling */
-button {
-  border: none;
-  border-radius: 4px;
-  padding: 8px 12px; /* Reduce button padding */
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.editbtn {
-  background-color: #04aa6d; /* Green for Edit button */
-  color: #fff;
-}
-
-.delbtn {
-  background-color: #ff4d4d; /* Red for Delete button */
-  color: #fff;
-}
-
-.likebtn {
-  background-color: #337ab7; /* Blue for Like button */
-  color: #fff;
-}
-
-/* Button hover styling */
-.editbtn:hover {
-  background-color: #038c5a; /* Darker green hover background */
-}
-
-.delbtn:hover {
-  background-color: #e60000; /* Darker red hover background */
-}
-
-.likebtn:hover {
-  background-color: #005580; /* Darker blue hover background */
+.dislikebtn:hover {
+    background-color: #FFC0CB; /* Darker red on hover */
 }

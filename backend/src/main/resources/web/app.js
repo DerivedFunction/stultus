@@ -48,7 +48,7 @@ var newEntryForm;
  * Backend server link to dokku
  * @type {string}
  */
-var backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
+var backendUrl = "localhost:8998"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu"; //https://team-stultus.dokku.cse.lehigh.edu
 /**
  * Component name to fetch resources
  * @type {string}
@@ -167,6 +167,23 @@ var NewEntryForm = /** @class */ (function () {
             console.log("Unspecified error");
         }
     };
+    NewEntryForm.prototype.updateUserProfile = function (data) {
+        var userId = "user_id"; //needs to be updated
+        fetch("".concat(backendUrl, "/user/profile/").concat(userId), {
+            method: "PUT",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+            console.log("Profile updated:", data);
+        })
+            .catch(function (error) {
+            console.error("Error updating profile:", error);
+        });
+    };
     return NewEntryForm;
 }());
 /** Global variable to be referenced for ElementList
@@ -184,11 +201,14 @@ var EditEntryForm = /** @class */ (function () {
      * @return {EditEntryForm}
      */
     function EditEntryForm() {
-        var _a, _b;
+        var _a, _b, _c;
         (_a = document.getElementById("editCancel")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", function (e) {
             editEntryForm.clearForm();
         });
         (_b = document.getElementById("editButton")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", function (e) {
+            editEntryForm.submitForm();
+        });
+        (_c = document.getElementById("dislikeButton")) === null || _c === void 0 ? void 0 : _c.addEventListener("click", function (e) {
             editEntryForm.submitForm();
         });
     }
@@ -324,6 +344,23 @@ var EditEntryForm = /** @class */ (function () {
             console.log("Unspecified error");
         }
     };
+    EditEntryForm.prototype.updateUserProfile = function (data) {
+        var userId = "user_id"; //needs to be updated
+        fetch("".concat(backendUrl, "/user/profile/").concat(userId), {
+            method: "PUT",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+            console.log("Profile updated:", data);
+        })
+            .catch(function (error) {
+            console.error("Error updating profile:", error);
+        });
+    };
     return EditEntryForm;
 }());
 /** Global variable to be referenced for ElementList
@@ -337,10 +374,32 @@ var mainList;
 var ElementList = /** @class */ (function () {
     function ElementList() {
     }
-    /**
-     * Refresh updates the messageList
-     * @
-     */
+    ElementList.prototype.submitComment = function (postId, comment) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/user/comments/").concat(postId), {
+                            method: "POST",
+                            body: JSON.stringify({
+                                postId: postId,
+                                comment: comment,
+                            }),
+                            headers: {
+                                "Content-type": "application/json; charset=UTF-8",
+                            },
+                        })
+                            .then(function (response) { return response.json(); })
+                            .then(function (data) {
+                            console.log("Comment submitted", data);
+                        })
+                            .catch(function (error) { return console.error("Error submitting comment:", error); })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     ElementList.prototype.refresh = function () {
         var _this = this;
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
@@ -384,23 +443,42 @@ var ElementList = /** @class */ (function () {
      * @param data to be updated
      */
     ElementList.prototype.update = function (data) {
+        var _this = this;
         var elem_messageList = document.getElementById("messageList");
         if (elem_messageList !== null) {
             elem_messageList.innerHTML = "";
             var fragment = document.createDocumentFragment();
             var table = document.createElement("table");
-            for (var i = 0; i < data.mData.length; ++i) {
+            var _loop_1 = function (i) {
                 var tr = document.createElement("tr");
                 var td_title = document.createElement("td");
                 var td_id = document.createElement("td");
                 var td_like = document.createElement("td");
+                var td_dislike = document.createElement("td");
                 td_title.innerHTML = "<div id = \"postTitle\">" + data.mData[i].mSubject + "</div><br><div id = \"postBody\">" + data.mData[i].mMessage + "</div>";
                 td_id.innerHTML = data.mData[i].mId;
                 td_like.innerHTML = data.mData[i].numLikes;
+                td_dislike.innerHTML = data.mData[i].numLikes;
+                var dislikeButton = document.createElement("button");
+                dislikeButton.textContent = "Dislike";
+                dislikeButton.className = "dislikebtn";
+                td_dislike.appendChild(dislikeButton);
                 tr.appendChild(td_like);
-                tr.appendChild(td_title);
-                tr.appendChild(this.buttons(data.mData[i].mId));
+                tr.appendChild(td_dislike);
+                tr.appendChild(this_1.buttons(data.mData[i].mId));
+                // Add a comment form for each post
+                var commentForm = document.createElement("form");
+                commentForm.innerHTML = "\n          <input type=\"text\" name=\"comment\" placeholder=\"Write a comment...\" />\n          <button type=\"submit\">Comment</button>\n        ";
+                commentForm.onsubmit = function (e) {
+                    e.preventDefault();
+                    _this.submitComment(data.mData[i].mId, commentForm.comment.value);
+                };
+                tr.appendChild(commentForm);
                 table.appendChild(tr);
+            };
+            var this_1 = this;
+            for (var i = 0; i < data.mData.length; ++i) {
+                _loop_1(i);
             }
             fragment.appendChild(table);
             elem_messageList.appendChild(fragment);
@@ -423,6 +501,12 @@ var ElementList = /** @class */ (function () {
         for (var i = 0; i < all_likebtns.length; ++i) {
             all_likebtns[i].addEventListener("click", function (e) {
                 mainList.clickLike(e);
+            });
+        }
+        var all_dislikebtns = (document.getElementsByClassName("dislikebtn"));
+        for (var i = 0; i < all_dislikebtns.length; ++i) {
+            all_dislikebtns[i].addEventListener("click", function (e) {
+                mainList.clickDislike(e);
             });
         }
     };
@@ -454,6 +538,13 @@ var ElementList = /** @class */ (function () {
         btn.classList.add("likebtn");
         btn.setAttribute("data-value", id);
         btn.innerHTML = "Like";
+        td.appendChild(btn);
+        fragment.appendChild(td);
+        td = document.createElement("td");
+        btn = document.createElement("button");
+        btn.classList.add("dislikebtn");
+        btn.setAttribute("data-value", id);
+        btn.innerHTML = "Dislike";
         td.appendChild(btn);
         fragment.appendChild(td);
         return fragment;
@@ -512,7 +603,7 @@ var ElementList = /** @class */ (function () {
         var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/").concat(componentName, "/").concat(id, "/like"), {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/user/upvote/").concat(id), {
                             // Grab the element from "database"
                             method: "PUT",
                             headers: {
@@ -544,6 +635,51 @@ var ElementList = /** @class */ (function () {
             });
         }); };
         // post AJAX values to console
+        doAjax().then(console.log).catch(console.log);
+    };
+    /**
+   * Ajax function that sends HTTP function to update like count (by decrementing)
+   * @param e
+   */
+    ElementList.prototype.clickDislike = function (e) {
+        var _this = this;
+        var id = e.target.getAttribute("data-value");
+        var doAjax = function () { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch("".concat(backendUrl, "/user/downvote/").concat(id), {
+                            // HTTP PUT request for disliking a post
+                            method: "PUT",
+                            headers: {
+                                "Content-type": "application/json; charset=UTF-8",
+                            },
+                        })
+                            .then(function (response) {
+                            if (response.ok) {
+                                return Promise.resolve(response.json());
+                            }
+                            else {
+                                console.log("The server replied not ok: ".concat(response.status, "\n") +
+                                    response.statusText);
+                            }
+                            return Promise.reject(response);
+                        })
+                            .then(function (data) {
+                            // Refresh the main message list to reflect the changes
+                            mainList.refresh();
+                            console.log(data);
+                        })
+                            .catch(function (error) {
+                            console.warn("Something went wrong. ", error);
+                            console.log("Unspecified error");
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        // Execute the AJAX request
         doAjax().then(console.log).catch(console.log);
     };
     /**
@@ -599,6 +735,28 @@ var ElementList = /** @class */ (function () {
  */
 document.addEventListener("DOMContentLoaded", function () {
     var _a, _b;
+    // Run configuration code when the web page loads
+    document.addEventListener("DOMContentLoaded", function () {
+        // Existing code...
+        // Handle profile update form submission
+        var profileForm = document.getElementById("profileForm");
+        if (profileForm) {
+            profileForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+                var formData = new FormData(profileForm);
+                var userProfile = {
+                    username: formData.get("username"),
+                    email: formData.get("email"),
+                    sexualIdentity: formData.get("sexualIdentity"),
+                    genderOrientation: formData.get("genderOrientation"),
+                    note: formData.get("note"),
+                };
+                newEntryForm.updateUserProfile(userProfile);
+                editEntryForm.updateUserProfile(userProfile);
+            });
+        }
+        // Existing code...
+    });
     // set up initial UI state
     document.getElementById("editElement").style.display =
         "none";

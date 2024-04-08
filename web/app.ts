@@ -13,7 +13,7 @@ var newEntryForm: NewEntryForm;
  * Backend server link to dokku
  * @type {string}
  */
-const backendUrl = "https://team-stultus.dokku.cse.lehigh.edu"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu";
+const backendUrl = "localhost:8998"; //"https://2024sp-tutorial-del226.dokku.cse.lehigh.edu"; //https://team-stultus.dokku.cse.lehigh.edu
 
 /**
  * Component name to fetch resources

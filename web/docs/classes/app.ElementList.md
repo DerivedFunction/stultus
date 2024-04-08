@@ -55,7 +55,7 @@ a new button
 
 #### Defined in
 
-[app.ts:447](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-447)
+[app.ts:488](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-488)
 
 ___
 
@@ -77,7 +77,7 @@ Delete the item off the table
 
 #### Defined in
 
-[app.ts:491](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-491)
+[app.ts:532](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-532)
 
 ___
 
@@ -99,7 +99,7 @@ Ajax function that sends HTTP function to update like count (by decrementing)
 
 #### Defined in
 
-[app.ts:568](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-568)
+[app.ts:609](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-609)
 
 ___
 
@@ -121,7 +121,7 @@ clickEdit is the code we run in response to a click of a delete button
 
 #### Defined in
 
-[app.ts:609](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-609)
+[app.ts:650](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-650)
 
 ___
 
@@ -143,7 +143,7 @@ Ajax function that sends HTTP function to update like count
 
 #### Defined in
 
-[app.ts:530](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-530)
+[app.ts:571](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-571)
 
 ___
 
@@ -157,7 +157,7 @@ ___
 
 #### Defined in
 
-[app.ts:324](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-324)
+[app.ts:365](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-365)
 
 ___
 
@@ -178,7 +178,7 @@ ___
 
 #### Defined in
 
-[app.ts:305](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-305)
+[app.ts:346](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-346)
 
 ___
 
@@ -200,4 +200,4 @@ Update the data
 
 #### Defined in
 
-[app.ts:359](https://bitbucket.org/sml3/cse216_sp24_team_21/src/bd184c8/web/app.ts#lines-359)
+[app.ts:400](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-400)

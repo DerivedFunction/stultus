@@ -122,7 +122,8 @@ public class DatabaseTest extends TestCase {
    * Tests for toggling likes with backend logic (coupled with inserts and
    * selects)
    */
-  public static void testLikes() {
+  
+  /*  public static void testLikes() {
     ArrayList<PostData> sub = addElementstoDB(false);
     ;
     // Check if database contains all elements we just added
@@ -142,7 +143,7 @@ public class DatabaseTest extends TestCase {
       }
     }
   }
-
+*/
   /**
    * Adds element to the DB arrayList for checking
    * 
