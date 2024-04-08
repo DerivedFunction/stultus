@@ -436,6 +436,7 @@ public class Database {
                                                         + "id SERIAL PRIMARY KEY,"
                                                         + "subject VARCHAR(100) NOT NULL,"
                                                         + "message VARCHAR(1024) NOT NULL,"
+                                                        + "user_id INT,"
                                                         + "likes INT DEFAULT 0)");
       //Create User Table
       db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE usrData ("
@@ -451,7 +452,7 @@ public class Database {
                                                         + "post_id INT,"
                                                         + "user_id INT,"
                                                         + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
-                                                        + "FOREIGN KEY (userid) REFERENCES userData(id)");
+                                                        + "FOREIGN KEY (user_id) REFERENCES usrData(id))");
       //Create Like Table
       db.lCreateTable = db.mConnection.prepareStatement("CREATE TABLE likeData ("
                                                         + "id SERIAL PRIMARY KEY,"
@@ -459,7 +460,7 @@ public class Database {
                                                         + "vote INT,"
                                                         + "user_id INT,"
                                                         + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
-                                                        + "FOREIGN KEY (userid) REFERENCES userData(id)");
+                                                        + "FOREIGN KEY (user_id) REFERENCES usrData(id))");
 
       //Drop All Tables
       db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
@@ -480,15 +481,16 @@ public class Database {
       // Standard CRUD User operations
       db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM usrData WHERE id=?");
       db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO usrData (username,email) VALUES (?,?)");
-      db.uSelectUserByEmail = db.mConnection.prepareStatement("SELECT id FROM usrData WHERE email=?");
-      db.uSelectUser = db.mConnection.prepareStatement("SELECT FROM usrData WHERE id=?");
+      db.uSelectUserByEmail = db.mConnection.prepareStatement("SELECT * FROM usrData WHERE email=?");
+      db.uSelectUser = db.mConnection.prepareStatement("SELECT * FROM usrData WHERE id=?");
       db.uUpdateOne = db.mConnection.prepareStatement("UPDATE usrData SET username=?, gender=?, so=? where id=?");
+      db.uSelectAll = db.mConnection.prepareStatement("SELECT * FROM usrData");
 
 
       // Standard CRUD Voting operations
-      db.lSelectVoteFromUser = db.mConnection.prepareStatement("SELECT vote FROM likeData WHERE post_id=? AND userID=?");
+      db.lSelectVoteFromUser = db.mConnection.prepareStatement("SELECT vote FROM likeData WHERE post_id=? AND user_id=?");
       db.lSelectAllVotes = db.mConnection.prepareStatement("SELECT * FROM likeData");
-      db.lDeleteVote = db.mConnection.prepareStatement("DELETE FROM likeData WHERE post_id=? AND usrID=?");
+      db.lDeleteVote = db.mConnection.prepareStatement("DELETE FROM likeData WHERE post_id=? AND user_id=?");
       
       // Standard CRUD Comment operations
       db.cSelectAllCommentsForAPost = db.mConnection.prepareStatement("SELECT * FROM cmntData WHERE post_id=? ORDER BY ID DESC");
@@ -497,7 +499,7 @@ public class Database {
       db.cSelectComment = db.mConnection.prepareStatement("SELECT * cmntData WHERE id=?");
       db.cDeleteComment = db.mConnection.prepareStatement("DELETE cmntData WHERE id=? and user_id=?");
       db.cUpdateComment = db.mConnection.prepareStatement("UPDATE cmntData SET comMessage=? WHERE id=? AND user_id=?");
-      db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO cmntData (message, post_id, user_id) VALUES (?,?,?)");
+      db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO cmntData (comMessage, post_id, user_id) VALUES (?,?,?)");
 
 
     } catch (SQLException e) {
@@ -655,14 +657,14 @@ public class Database {
   }
 
   //USER METHODS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
+
   ArrayList<UserRowData> selectAllUsers() {
     ArrayList<UserRowData> res = new ArrayList<>();
     try {
       ResultSet rs = uSelectAll.executeQuery();
       while (rs.next()) {
-        res.add(new UserRowData(rs.getInt("uId"), rs.getString("uName"),
-              rs.getString("uEmail"), rs.getInt("uGender"), rs.getString("uSO")));
+        res.add(new UserRowData(rs.getInt("id"), rs.getString("username"),
+              rs.getString("email"), rs.getInt("gender"), rs.getString("so")));
       }
       rs.close();
       return res;
@@ -684,8 +686,8 @@ public class Database {
       uSelectUser.setInt(1, id);
       ResultSet rs = uSelectUser.executeQuery();
       if (rs.next()) {
-        res = new UserRowData(rs.getInt("uId"), rs.getString("uName"),
-            rs.getString("uEmail"), rs.getInt("uGender"), rs.getString("uSO"));
+        res = new UserRowData(rs.getInt("id"), rs.getString("username"),
+            rs.getString("email"), rs.getInt("gender"), rs.getString("so"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -705,8 +707,8 @@ public class Database {
       uSelectUserByEmail.setString(1, email);
       ResultSet rs = uSelectUserByEmail.executeQuery();
       if (rs.next()) {
-        res = new UserRowData(rs.getInt("uId"), rs.getString("uName"),
-            rs.getString("uEmail"), rs.getInt("uGender"), rs.getString("uSO"));
+        res = new UserRowData(rs.getInt("id"), rs.getString("username"),
+            rs.getString("email"), rs.getInt("gender"), rs.getString("so"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -792,11 +794,13 @@ public class Database {
   //COMMENT METHODS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /* 
-  public CommentRowData(int cid, String com, int mid, int uid) {
-    cId = cid;
-    comment = com;
-    mId = mid;
-    uId = uid;
+  db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE cmntData ("
+                                                        + "id SERIAL PRIMARY KEY,"
+                                                        + "comMessage VARCHAR(2048) NOT NULL,"
+                                                        + "post_id INT,"
+                                                        + "user_id INT,"
+                                                        + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
+                                                        + "FOREIGN KEY (user_id) REFERENCES userData(id))");
   }
 
   /**
@@ -864,8 +868,8 @@ public class Database {
       cSelectComment.setInt(1, id);
       ResultSet rs = cSelectComment.executeQuery();
       if (rs.next()) {
-        res =new CommentRowData(rs.getInt("cId"), rs.getString("comment"),
-          rs.getInt("mId"), rs.getInt("uId"));
+        res =new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
+          rs.getInt("post_id"), rs.getInt("user_id"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -885,8 +889,8 @@ public class Database {
       cSelectAllCommentsForAPost.setInt(1, post_id);
       ResultSet rs = cSelectAllCommentsForAPost.executeQuery();
       while (rs.next()) {
-        res.add(new CommentRowData(rs.getInt("cId"), rs.getString("comment"),
-            rs.getInt("mId"), rs.getInt("uId")));
+        res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
+            rs.getInt("post_id"), rs.getInt("user_id")));
       }
       rs.close();
       return res;
@@ -906,8 +910,8 @@ public class Database {
       cSelectAllCommentsForAUser.setInt(1, user_id);
       ResultSet rs = cSelectAllCommentsForAUser.executeQuery();
       while (rs.next()) {
-        res.add(new CommentRowData(rs.getInt("cId"), rs.getString("comment"),
-            rs.getInt("mId"), rs.getInt("uId")));
+        res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
+            rs.getInt("post_id"), rs.getInt("user_id")));
       }
       rs.close();
       return res;
@@ -929,8 +933,8 @@ public class Database {
       cSelectAllCommentsForAUserANDPost.setInt(2, user_id );
       ResultSet rs = cSelectAllCommentsForAUserANDPost.executeQuery();
       while (rs.next()) {
-        res.add(new CommentRowData(rs.getInt("cId"), rs.getString("comment"),
-            rs.getInt("mId"), rs.getInt("uId")));
+        res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
+            rs.getInt("post_id"), rs.getInt("user_id")));
       }
       rs.close();
       return res;
@@ -964,8 +968,16 @@ public class Database {
 
 
   //VOTING METHODS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+  /*
+   * //Create Like Table
+      db.lCreateTable = db.mConnection.prepareStatement("CREATE TABLE likeData ("
+                                                        + "id SERIAL PRIMARY KEY,"
+                                                        + "post_id INT,"
+                                                        + "vote INT,"
+                                                        + "user_id INT,"
+                                                        + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
+                                                        + "FOREIGN KEY (user_id) REFERENCES userData(id))");
+   */
   LikeRowData selectUserVote(int post_id, int user_id) {
     LikeRowData res = null;
     try {
@@ -973,8 +985,8 @@ public class Database {
       lSelectVoteFromUser.setInt(2, user_id);
       ResultSet rs = lSelectVoteFromUser.executeQuery();
       if (rs.next()) {
-        res = new LikeRowData(rs.getInt("lId"), rs.getInt("mId"),
-            rs.getInt("uId"), rs.getInt("lVote"));
+        res = new LikeRowData(rs.getInt("id"), rs.getInt("post_id"),
+            rs.getInt("user_id"), rs.getInt("vote"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -1010,8 +1022,8 @@ public class Database {
     try {
       ResultSet rs = lSelectAllVotes.executeQuery();
       while (rs.next()) {
-        res.add(new LikeRowData(rs.getInt("lId"), rs.getInt("mId"),
-            rs.getInt("uId"), rs.getInt("lVote")));
+        res.add(new LikeRowData(rs.getInt("id"), rs.getInt("post_id"),
+            rs.getInt("user_id"), rs.getInt("vote")));
       }
       rs.close();
       return res;
