@@ -24,6 +24,7 @@ public class App {
    */
   private static final String APPLICATION_JSON = "application/json";
 
+  private static final String AUTH_DOMAIN = "lehigh.edu";
   /**
    * Whether or not a user needs to be verified to do certain actions.
    * Note: some methods will still need the cookies to perform certain actions
@@ -818,15 +819,24 @@ public class App {
       if (verified) {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
+        if (!email.substring(email.length() - AUTH_DOMAIN.length()).equalsIgnoreCase(AUTH_DOMAIN)) {
+          Log.info(String.format("A email account outside of the domain is trying to log in: %s", email));
+          return unAuthJSON(gson, res);
+        }
         name = Oauth.getName(idToken);
         sub = Oauth.getSub(idToken);
         Log.info(String.format("A user is attempting to login: %s", email));
         // Checks if user exists in Database
         int userExists = db.findUserID(email);
         UserData user = db.getUserFull(userExists);
-        if (user == null && userExists < 1) { // creating a new user account
-          Log.info(String.format("Creating acount: %s, %s, %s", name, email, sub));
-          db.insertUser(name, email, sub);
+        if (user == null) { // creating a new user account
+          if (userExists < 1) {
+            Log.info(String.format("Creating acount: %s, %s, %s", name, email, sub));
+            db.insertUser(name, email, sub);
+          } else { // user already exists, so it is a banned account
+            Log.info(String.format("A banned acount is trying to log in: %s", email));
+            return unAuthJSON(gson, res);
+          }
         }
         userID = db.findUserIDfromSub(sub);
         if (TokenManager.getToken(userID) != null) {
