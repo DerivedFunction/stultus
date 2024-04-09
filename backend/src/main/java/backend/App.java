@@ -861,7 +861,7 @@ public class App {
       UserData user = db.getUserFull(db.findUserID(email));
       return getJSONResponse(gson,
           String.format("Invalid or missing ID token: %s", idToken), !verified,
-          String.format("ID token authenticated: %s", idToken), user, res);
+          String.format("ID token authenticated for email: %s", email), user, res);
     };
   }
 
