@@ -249,11 +249,11 @@ public class Database {
       db.mFindUser = db.mConnection.prepareStatement(
           "SELECT id FROM " + userTable + " WHERE email=?");
       db.mGetUserSimple = db.mConnection.prepareStatement(
-          "SELECT id, username, email, note FROM " + userTable + " WHERE id=?");
+          "SELECT id, username, email, note FROM " + userTable + " WHERE id=? and status=1");
       db.mGetUserFull = db.mConnection.prepareStatement(
-          "SELECT * FROM " + userTable + " WHERE id=?");
+          "SELECT * FROM " + userTable + " WHERE id=? and status=1");
       db.mGetUserIDFromSub = db.mConnection.prepareStatement(
-          "SELECT id FROM " + userTable + " WHERE sub=?");
+          "SELECT id FROM " + userTable + " WHERE sub=? and status=1");
       db.mUpdateUser = db.mConnection.prepareStatement(
           "UPDATE " + userTable + " SET username=?, gender=?, so=?, note=? WHERE id=? AND sub=?");
       db.mDeleteUser = db.mConnection.prepareStatement(
@@ -309,15 +309,17 @@ public class Database {
    *
    * @param subject The subject for this new row
    * @param message The message body for this new row
-   * @param userid  The userID of author
+   * @param userID  The userID of author
    * @return The number of rows that were inserted
    */
-  int insertRow(String subject, String message, int userid) {
+  int insertRow(String subject, String message, int userID) {
     int count = -1;
+    if (userID < 1)
+      return count;
     try {
       mInsertOne.setString(1, subject);
       mInsertOne.setString(2, message);
-      mInsertOne.setInt(3, userid);
+      mInsertOne.setInt(3, userID);
       count = mInsertOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -378,6 +380,8 @@ public class Database {
    */
   int deleteRow(int id, int userID) {
     int res = -1;
+    if (userID < 1)
+      return res;
     PostData data = selectOne(id);
     // Wrong user cannot update post
     if (data.mUserID != userID)
@@ -403,6 +407,8 @@ public class Database {
    */
   int updateOne(int id, String title, String message, int userID) {
     int res = -1;
+    if (userID < 1)
+      return res;
     PostData data = selectOne(id);
     // Wrong user cannot update post
     if (data.mUserID != userID)
@@ -429,6 +435,8 @@ public class Database {
    */
   int toggleVote(int id, int vote, int userID) {
     int res = -1;
+    if (userID < 1)
+      return res;
     int oldVote = findVotes(id, userID);
     try {
       // If it is the same value (upvoted already and
@@ -461,6 +469,8 @@ public class Database {
    */
   int findVotes(int postID, int userID) {
     int res = 0; // default vote count
+    if (userID < 1)
+      return res;
     try {
       mfindVoteforUser.setInt(1, postID);
       mfindVoteforUser.setInt(2, userID);
@@ -483,6 +493,8 @@ public class Database {
    */
   int deleteVote(int postID, int userID) {
     int res = -1;
+    if (userID < 1)
+      return res;
     try {
       mDeleteVote.setInt(1, postID);
       mDeleteVote.setInt(2, userID);
@@ -563,6 +575,8 @@ public class Database {
    */
   UserDataLite getUserSimple(int userID) {
     UserDataLite res = null;
+    if (userID < 1)
+      return res;
     try {
       mGetUserSimple.setInt(1, userID);
       ResultSet rs = mGetUserSimple.executeQuery();
@@ -583,6 +597,8 @@ public class Database {
    */
   UserData getUserFull(int userID) {
     UserData res = null;
+    if (userID < 1)
+      return res;
     try {
       mGetUserFull.setInt(1, userID);
       ResultSet rs = mGetUserFull.executeQuery();
@@ -607,6 +623,8 @@ public class Database {
    */
   int insertUser(String username, String email, String sub) {
     int count = -1;
+    if (email == null)
+      return count;
     // User already exist
     if (findUserID(email.trim()) > 0) {
       return 0;
@@ -635,6 +653,8 @@ public class Database {
    */
   int updateUser(int userID, String sub, String username, int gender, String sOrientation, String note) {
     int count = -1;
+    if (userID < 1)
+      return count;
     try {
       mUpdateUser.setString(1, username.trim());
       mUpdateUser.setInt(2, gender);
@@ -657,6 +677,8 @@ public class Database {
    */
   int deleteUser(int userID) {
     int count = 0;
+    if (userID < 1)
+      return count;
     try {
       mDeleteUser.setInt(1, userID);
       count = mDeleteUser.executeUpdate();
@@ -676,6 +698,8 @@ public class Database {
    */
   int insertComment(String message, int postID, int userID) {
     int count = -1;
+    if (userID < 1 || postID < 1 || message == null)
+      return count;
     try {
       mInsertComment.setString(1, message.trim());
       mInsertComment.setInt(2, postID);
@@ -697,6 +721,8 @@ public class Database {
    */
   int updateComment(String message, int commentID, int userID) {
     int count = -1;
+    if (userID < 1 || commentID < 1 || message == null)
+      return count;
     try {
       mUpdateComment.setString(1, message.trim());
       mUpdateComment.setInt(2, commentID);
@@ -717,6 +743,8 @@ public class Database {
    */
   int deleteComment(int commentID, int userID) {
     int count = -1;
+    if (userID < 1 || commentID < 1)
+      return count;
     try {
       mDeleteComment.setInt(1, commentID);
       mDeleteComment.setInt(2, userID);
@@ -735,6 +763,8 @@ public class Database {
    */
   CommentData selectComment(int commentID) {
     CommentData res = null;
+    if (commentID < 1)
+      return res;
     try {
       mSelectOneComment.setInt(1, commentID);
       ResultSet rs = mSelectOneComment.executeQuery();
@@ -756,6 +786,8 @@ public class Database {
    */
   ArrayList<CommentData> selectAllCommentByPost(int postID) {
     ArrayList<CommentData> res = new ArrayList<>();
+    if (postID < 1)
+      return res;
     try {
       mSelectAllCommentsForPost.setInt(1, postID);
       ResultSet rs = mSelectAllCommentsForPost.executeQuery();
@@ -779,6 +811,8 @@ public class Database {
    */
   ArrayList<CommentData> selectAllCommentByUserID(int userID) {
     ArrayList<CommentData> res = new ArrayList<>();
+    if (userID < 1)
+      return res;
     try {
       mSelectAllCommentsByUser.setInt(1, userID);
       ResultSet rs = mSelectAllCommentsByUser.executeQuery();
@@ -804,6 +838,8 @@ public class Database {
    */
   ArrayList<CommentData> selectAllComments(int userID, int postID) {
     ArrayList<CommentData> res = new ArrayList<>();
+    if (userID < 1 || postID < 1)
+      return res;
     try {
       mSelectAllCommentsByUserAndPost.setInt(1, userID);
       mSelectAllCommentsByUserAndPost.setInt(2, postID);
