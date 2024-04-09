@@ -384,6 +384,9 @@ public class App {
    * @return JSON response
    */
   private static String unAuthJSON(final Gson gson, Response res) {
+    // Clear all cookies and data
+    res.cookie(ID_TOKEN, "", 0);
+    res.cookie(SUB_TOKEN, "", 0);
     res.type(APPLICATION_JSON);
     res.status(401); // Unauthorized
     return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
