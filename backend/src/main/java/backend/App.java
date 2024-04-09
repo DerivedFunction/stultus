@@ -887,6 +887,12 @@ public class App {
     };
   }
 
+  /**
+   * Checks if email falls within the authorized domain
+   * 
+   * @param email email to check
+   * @return true if authorized, false if not
+   */
   private static boolean checkEmail(String email) {
     // Extract the domain part of the email
     String[] parts = email.split("@");
@@ -898,7 +904,7 @@ public class App {
         return true; // Email domain is authorized
       }
     }
-    // If SAME_DOMAIN is true, email domain is unauthorized
+    // If SAME_DOMAIN is true, email domain is unauthorized but we allow it
     return SAME_DOMAIN;
   }
 
