@@ -848,7 +848,7 @@ public class App {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
         boolean checkEmail = checkEmail(email);
-        if (checkEmail) {
+        if (!checkEmail) {
           Log.info(String.format("A email account outside of the domain is trying to log in: %s", email));
           return unAuthJSON(gson, res);
         }
@@ -904,8 +904,9 @@ public class App {
         return true; // Email domain is authorized
       }
     }
-    // If SAME_DOMAIN is true, email domain is unauthorized but we allow it
-    return SAME_DOMAIN;
+    // If SAME_DOMAIN is true, unauthorized should return false
+    // If SAME_DOMAIN is false, unauthorized should be allowed
+    return !SAME_DOMAIN;
   }
 
   /**
