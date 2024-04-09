@@ -314,7 +314,7 @@ public class Database {
    */
   int insertRow(String subject, String message, int userID) {
     int count = -1;
-    if (userID < 1)
+    if (userID < 1 || subject == null || message == null)
       return count;
     try {
       mInsertOne.setString(1, subject);
@@ -352,18 +352,20 @@ public class Database {
   /**
    * Get all the data for a specific row, by ID
    *
-   * @param id The id being requested
+   * @param postID The id being requested
    * @return the data for the requested row, null otherwise
    */
-  PostData selectOne(int id) {
+  PostData selectOne(int postID) {
     PostData res = null;
+    if (postID < 1)
+      return res;
     try {
-      mSelectOne.setInt(1, id);
+      mSelectOne.setInt(1, postID);
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
-        int postID = rs.getInt("id");
-        res = new PostData(postID, rs.getString("subject"),
-            rs.getString(MESSAGE), totalVotes(postID), rs.getInt(USERID));
+        int postId = rs.getInt("id");
+        res = new PostData(postId, rs.getString("subject"),
+            rs.getString(MESSAGE), totalVotes(postId), rs.getInt(USERID));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -374,20 +376,20 @@ public class Database {
   /**
    * Delete a row by ID
    * 
-   * @param id     The id of the row to delete
+   * @param postID The id of the row to delete
    * @param userID The id of user wanting to delete it
    * @return the number of rows deleted, -1 if error
    */
-  int deleteRow(int id, int userID) {
+  int deleteRow(int postID, int userID) {
     int res = -1;
-    if (userID < 1)
+    if (userID < 1 || postID < 1)
       return res;
-    PostData data = selectOne(id);
+    PostData data = selectOne(postID);
     // Wrong user cannot update post
     if (data.mUserID != userID)
       return res;
     try {
-      mDeleteOne.setInt(1, id);
+      mDeleteOne.setInt(1, postID);
       res = mDeleteOne.executeUpdate();
 
     } catch (SQLException e) {
@@ -399,24 +401,24 @@ public class Database {
   /**
    * Update the message for a row in the database
    *
-   * @param id      The id of the row to update
+   * @param postID  The id of the row to update
    * @param title   The title of the message
    * @param message The new msg contents
    * @param userID  The id of user wanting to update it
    * @return the number of rows updated, -1 on error
    */
-  int updateOne(int id, String title, String message, int userID) {
+  int updateOne(int postID, String title, String message, int userID) {
     int res = -1;
-    if (userID < 1)
+    if (userID < 1 || postID < 1 || title == null || message == null)
       return res;
-    PostData data = selectOne(id);
+    PostData data = selectOne(postID);
     // Wrong user cannot update post
     if (data.mUserID != userID)
       return res;
     try {
       mUpdateOne.setString(1, title.trim());
       mUpdateOne.setString(2, message.trim());
-      mUpdateOne.setInt(3, id);
+      mUpdateOne.setInt(3, postID);
       res = mUpdateOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -428,29 +430,29 @@ public class Database {
    * Checks to see if user upvotes or downvotes a post.
    * If it already exists in the LikeData, then it will remove it
    * 
-   * @param id     ID of the post
+   * @param postID ID of the post
    * @param vote   value of the vote
    * @param userID ID of user
    * @return number of rows updated (1 on success)
    */
-  int toggleVote(int id, int vote, int userID) {
+  int toggleVote(int postID, int vote, int userID) {
     int res = -1;
-    if (userID < 1)
+    if (userID < 1 || postID < 1 || vote == 0)
       return res;
-    int oldVote = findVotes(id, userID);
+    int oldVote = findVotes(postID, userID);
     try {
       // If it is the same value (upvoted already and
       // upvote button clicked again)
       // Delete the vote
       if (oldVote == vote) {
-        return deleteVote(id, userID);
+        return deleteVote(postID, userID);
       } else
       // If it is different value ex (already downvoted and
       // now an upvote) delete it and replace it.
       if (oldVote != 0) {
-        deleteVote(id, userID);
+        deleteVote(postID, userID);
       }
-      mVote.setInt(1, id);
+      mVote.setInt(1, postID);
       mVote.setInt(2, vote);
       mVote.setInt(3, userID);
       res = mVote.executeUpdate();
@@ -469,7 +471,7 @@ public class Database {
    */
   int findVotes(int postID, int userID) {
     int res = 0; // default vote count
-    if (userID < 1)
+    if (userID < 1 || postID < 1)
       return res;
     try {
       mfindVoteforUser.setInt(1, postID);
@@ -493,7 +495,7 @@ public class Database {
    */
   int deleteVote(int postID, int userID) {
     int res = -1;
-    if (userID < 1)
+    if (userID < 1 || postID < 1)
       return res;
     try {
       mDeleteVote.setInt(1, postID);
@@ -513,6 +515,8 @@ public class Database {
    */
   int totalVotes(int postID) {
     int res = 0;
+    if (postID < 1)
+      return res;
     try {
       mfindTotalVotes.setInt(1, postID);
       ResultSet rs = mfindTotalVotes.executeQuery();
@@ -533,6 +537,8 @@ public class Database {
    */
   int findUserID(String email) {
     int res = 0;
+    if (email == null)
+      return res;
     try {
       mFindUser.setString(1, email.trim());
       ResultSet rs = mFindUser.executeQuery();
@@ -554,6 +560,8 @@ public class Database {
    */
   int findUserIDfromSub(String sub) {
     int res = 0;
+    if (sub == null)
+      return res;
     try {
       mGetUserIDFromSub.setString(1, sub.trim());
       ResultSet rs = mGetUserIDFromSub.executeQuery();
@@ -623,7 +631,7 @@ public class Database {
    */
   int insertUser(String username, String email, String sub) {
     int count = -1;
-    if (email == null)
+    if (email == null || sub == null || username == null)
       return count;
     // User already exist
     if (findUserID(email.trim()) > 0) {
@@ -653,7 +661,7 @@ public class Database {
    */
   int updateUser(int userID, String sub, String username, int gender, String sOrientation, String note) {
     int count = -1;
-    if (userID < 1)
+    if (userID < 1 || sub == null || username == null || sOrientation == null)
       return count;
     try {
       mUpdateUser.setString(1, username.trim());
