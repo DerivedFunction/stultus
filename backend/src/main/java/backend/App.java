@@ -25,6 +25,8 @@ public class App {
   private static final String APPLICATION_JSON = "application/json";
 
   private static final String AUTH_DOMAIN = "lehigh.edu";
+
+  private static final boolean SAME_DOMAIN = Boolean.parseBoolean(System.getenv("SAME_DOMAIN"));
   /**
    * Whether or not a user needs to be verified to do certain actions.
    * Note: some methods will still need the cookies to perform certain actions
@@ -819,7 +821,7 @@ public class App {
       if (verified) {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
-        if (!email.substring(email.length() - AUTH_DOMAIN.length()).equalsIgnoreCase(AUTH_DOMAIN)) {
+        if (!email.substring(email.length() - AUTH_DOMAIN.length()).equalsIgnoreCase(AUTH_DOMAIN) && SAME_DOMAIN) {
           Log.info(String.format("A email account outside of the domain is trying to log in: %s", email));
           return unAuthJSON(gson, res);
         }
