@@ -13,6 +13,9 @@ public class Log {
      */
     private static final Logger logger = Logger.getLogger("Backend");
 
+    /**
+     * env variable on whether or not to enable logging messages
+     */
     private static final boolean ENABLED = Boolean.parseBoolean(System.getenv("logging"));
 
     /**
