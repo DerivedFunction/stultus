@@ -858,9 +858,18 @@ public class App {
    */
   private static Route logout(Database db) {
     return (req, res) -> {
-      int userID = db.findUserIDfromSub(req.cookie(SUB_TOKEN));
-      Log.info("A user is attempting to log out: " + db.getUserFull(userID).uEmail);
-      TokenManager.removeToken(userID);
+      String sub = req.cookie(SUB_TOKEN);
+      String idToken = req.cookie(ID_TOKEN);
+      int userID = 0;
+      if (sub != null) {
+        userID = db.findUserIDfromSub(sub);
+        Log.info("A user is attempting to log out: " + db.getUserFull(userID).uEmail);
+      } else if (idToken != null) {
+        userID = db.findUserID(Oauth.getEmail(idToken));
+        Log.info("A user is attempting to log out: " + db.getUserFull(userID).uEmail);
+      }
+      if (userID > 0)
+        TokenManager.removeToken(userID);
       res.cookie(ID_TOKEN, "", 0);
       res.cookie(SUB_TOKEN, "", 0);
       // Return a response indicating successful logout
