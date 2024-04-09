@@ -15,8 +15,14 @@ import spark.Spark;
  */
 public class App {
 
+  /**
+   * the HTML page for login
+   */
   private static final String LOGIN_HTML = "/login.html";
 
+  /**
+   * the HTML page for home
+   */
   private static final String HOME_HTML = "/home.html";
 
   /**
@@ -24,8 +30,14 @@ public class App {
    */
   private static final String APPLICATION_JSON = "application/json";
 
-  private static final String AUTH_DOMAIN = "lehigh.edu";
+  /**
+   * The authorized domain lists
+   */
+  private static final ArrayList<String> AUTH_DOMAIN = initializeAuth();
 
+  /**
+   * The env variable on whether or not users with different domains can log in
+   */
   private static final boolean SAME_DOMAIN = Boolean.parseBoolean(System.getenv("SAME_DOMAIN"));
   /**
    * Whether or not a user needs to be verified to do certain actions.
@@ -170,6 +182,17 @@ public class App {
     ret.add("userData");
     ret.add("commentData");
     return ret;
+  }
+
+  /**
+   * Initalize authorized domains
+   * 
+   * @return ArrayList of authorized domains
+   */
+  private static ArrayList<String> initializeAuth() {
+    ArrayList<String> res = new ArrayList<>();
+    res.add("lehigh.edu");
+    return res;
   }
 
   /**
@@ -824,7 +847,8 @@ public class App {
       if (verified) {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
-        if (!email.substring(email.length() - AUTH_DOMAIN.length()).equalsIgnoreCase(AUTH_DOMAIN) && SAME_DOMAIN) {
+        boolean checkEmail = checkEmail(email);
+        if (checkEmail) {
           Log.info(String.format("A email account outside of the domain is trying to log in: %s", email));
           return unAuthJSON(gson, res);
         }
@@ -849,8 +873,7 @@ public class App {
           TokenManager.removeToken(userID);
         }
         TokenManager.addToken(userID, idToken);
-        Log.info("Added new token to TokenManager");
-        Log.info("Adding new cookies to client");
+        Log.info("Added new token to TokenManager, Adding new cookies to client");
         res.cookie(ID_TOKEN, idToken);
         res.cookie(SUB_TOKEN, sub);
         res.redirect(HOME_HTML);
@@ -858,11 +881,25 @@ public class App {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
       }
-      UserData user = db.getUserFull(db.findUserID(email));
       return getJSONResponse(gson,
           String.format("Invalid or missing ID token: %s", idToken), !verified,
-          String.format("ID token authenticated for email: %s", email), user, res);
+          String.format("ID token authenticated for email: %s", email), db.getUserFull(db.findUserID(email)), res);
     };
+  }
+
+  private static boolean checkEmail(String email) {
+    // Extract the domain part of the email
+    String[] parts = email.split("@");
+    String domain = parts[1]; // Extract the domain
+
+    // Check if the domain matches any domain in the AUTH_DOMAIN list
+    for (String authDomain : AUTH_DOMAIN) {
+      if (domain.equalsIgnoreCase(authDomain)) {
+        return true; // Email domain is authorized
+      }
+    }
+    // If SAME_DOMAIN is true, email domain is unauthorized
+    return SAME_DOMAIN;
   }
 
   /**
