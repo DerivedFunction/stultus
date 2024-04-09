@@ -822,8 +822,9 @@ public class App {
         sub = Oauth.getSub(idToken);
         Log.info(String.format("A user is attempting to login: %s", email));
         // Checks if user exists in Database
-        UserData user = db.getUserFull(db.findUserID(email));
-        if (user == null) { // creating a new user account
+        int userExists = db.findUserID(email);
+        UserData user = db.getUserFull(userExists);
+        if (user == null && userExists < 1) { // creating a new user account
           Log.info(String.format("Creating acount: %s, %s, %s", name, email, sub));
           db.insertUser(name, email, sub);
         }
@@ -863,13 +864,15 @@ public class App {
       int userID = 0;
       if (sub != null) {
         userID = db.findUserIDfromSub(sub);
-        Log.info("A user is attempting to log out: " + db.getUserFull(userID).uEmail);
       } else if (idToken != null) {
         userID = db.findUserID(Oauth.getEmail(idToken));
-        Log.info("A user is attempting to log out: " + db.getUserFull(userID).uEmail);
       }
-      if (userID > 0)
+      if (userID > 0) {
+        Log.info("A verified user is attempting to log out: " + db.getUserFull(userID).uEmail);
         TokenManager.removeToken(userID);
+      } else {
+        Log.info("A banned user or guest is logging out");
+      }
       res.cookie(ID_TOKEN, "", 0);
       res.cookie(SUB_TOKEN, "", 0);
       // Return a response indicating successful logout
