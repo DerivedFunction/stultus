@@ -41,7 +41,7 @@ public class App {
     System.out.println("  [?] Help (this message)");
   }
   /**
-   * Method used to print options for message menu
+   * Method used to print options for user menu
    */
   static void userMenu() {
     System.out.println("User Menu");
@@ -56,7 +56,9 @@ public class App {
     System.out.println("  [q] Quit Table");
     System.out.println("  [?] Help (this message)");
   }
-
+  /**
+   * Method used to print options for comment menu
+   */
   static void cmntMenu() {
     System.out.println("Comments Menu");
     System.out.println("  [T] Create cmntData"); 
@@ -64,14 +66,15 @@ public class App {
     System.out.println("  [1] Query a single post's comments");
     System.out.println("  [2] Query a single user's comments");
     System.out.println("  [3] Query a single user's comments on a post");
-    //System.out.println("  [4] Query for a comment with an id");
     System.out.println("  [-] Delete a comment");
     System.out.println("  [+] Insert a new comment");
     System.out.println("  [~] Update a comment");
     System.out.println("  [q] Quit Table");
     System.out.println("  [?] Help (this message)");
   }
-
+  /**
+   * Method used to print options for vote menu
+   */
   static void likeMenu() {
     System.out.println("Voting Menu");
     System.out.println("  [T] Create likeData");
@@ -198,21 +201,12 @@ public class App {
     db.disconnect();
   }
 
-  /*
-   * System.out.println("Comments Menu");
-  System.out.println("  [T] Create cmntData"); 
-  System.out.println("  [D] Drop cmntData"); 
-  System.out.println("  [1] Query a single post's comments");
-  System.out.println("  [2] Query a single user's comments");
-  System.out.println("  [3] Query a single user's comments on a post");
-  System.out.println("  [4] Query for a comment with an id");
-  System.out.println("  [-] Delete a comment");
-  System.out.println("  [+] Insert a new comment");
-  System.out.println("  [~] Update a comment");
-  System.out.println("  [q] Quit Table");
-  System.out.println("  [?] Help (this message)");
+  /**
+   * Refactored methods that manipulate comments
+   * 
+   * @param in for getString and getInt
+   * @param db database to be manipulated
    */
-  
   public static void commentMethods(BufferedReader in, Database db){
     cmntMenu();
     String printfmt = " [%3s] |  %-30s | %-40s | [%3s]%n";
@@ -281,19 +275,6 @@ public class App {
             System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId);
           }
           break;
-        /*
-        case '4':
-          int commentId = getInt(in, "Enter the comment ID");
-          if(commentId == -1)
-            continue
-          Database.CommentRowData res4 = db.selectComment(commentId);
-          if (res4 != null) {
-            System.out.println(" [" + res4.cId + "] " + res4.comment);
-            System.out.println(" Post Id: " + res4.mId);
-            System.out.println(" User Id: " + res4.uId);
-          }
-          break;
-        */
         case '-':{
           int comid = getInt(in, "Enter the comment ID");
           int usrId = getInt(in, "Enter the user ID");
@@ -337,23 +318,12 @@ public class App {
       }
     }
   }
-/*
-  static void userMenu() {
-    System.out.println("User Menu");
-    System.out.println("  [T] Create usrData"); 
-    System.out.println("  [D] Drop usrData"); 
-    System.out.println("  [1] Query a User By Email"); 
-    System.out.println("  [2] Query a User By ID"); 
-    System.out.println("  [*] Query for all users");
-    System.out.println("  [-] Delete a user");
-    System.out.println("  [+] Insert a new user");
-    System.out.println("  [~] Update a user");
-    System.out.println("  [q] Quit Table");
-    System.out.println("  [?] Help (this message)");
-  }
-
-  */
-
+  /**
+   * Refactored methods that manipulate users
+   * 
+   * @param in for getString and getInt
+   * @param db database to be manipulated
+   */
   public static void userMethods(BufferedReader in, Database db){
     userMenu();
     boolean cont = true;
@@ -459,19 +429,12 @@ public class App {
     }
   }
 
-  /*
-   *   static void likeMenu() {
-    System.out.println("Voting Menu");
-    System.out.println("  [T] Create likeData");
-    System.out.println("  [D] Drop likeData");
-    System.out.println("  [1] Query for a specific vote row");
-    System.out.println("  [*] Query for all votes");
-    System.out.println("  [-] Delete a row");
-    System.out.println("  [q] Quit Table");
-    System.out.println("  [?] Help (this message)");
-  }
+  /**
+   * Refactored methods that manipulate votes
+   * 
+   * @param in for getString and getInt
+   * @param db database to be manipulated
    */
-
   public static void likeMethods(BufferedReader in, Database db){
     likeMenu();
     boolean cont = true;
@@ -538,6 +501,12 @@ public class App {
       }
     }
   }
+  /**
+   * Refactored methods that manipulate posts
+   * 
+   * @param in for getString and getInt
+   * @param db database to be manipulated
+   */
   public static void postMethods(BufferedReader in, Database db){
     messageMenu();
     boolean cont = true;
@@ -573,7 +542,7 @@ public class App {
           if (res != null) {
             System.out.println(" [" + res.mId + "] " + res.mSubject);
             System.out.println(" Message: " + res.mMessage);
-            System.out.println(" Likes: " + res.mLikes);
+            System.out.println(" User: " + res.uID);
           }
           break;
         }
@@ -584,17 +553,17 @@ public class App {
           System.out.println(" Current Database Contents");
           System.out.println(" -------------------------");
           String printfmt = " [%3s] |  %-30s | %-40s | [%3s]%n";
-          System.out.printf(printfmt, "Id", "Subject", "Message", "Likes");
+          System.out.printf(printfmt, "Id", "Subject", "Message", "User");
           System.out.println("--------------------------------------------------------------------------------------------------");
           for (Database.RowData rd : res) {
             String subject = rd.mSubject.length() > 30 ? rd.mSubject.substring(0, 30) : rd.mSubject;
             String message = rd.mMessage.length() > 40 ? rd.mMessage.substring(0, 40) : rd.mMessage;
-            System.out.printf(printfmt, rd.mId, subject, message, rd.mLikes);
+            System.out.printf(printfmt, rd.mId, subject, message, rd.uID);
           }
             break;
         }
         case '-': {
-          int id = getInt(in, "Enter the row ID");
+          int id = getInt(in, "Enter the message ID");
           if (id == -1)
             continue;
           int res = db.deleteRow(id);
@@ -616,7 +585,10 @@ public class App {
           }
           if (subject.equals("") || message.equals(""))
             continue;
-          int res = db.insertRow(subject, message);
+          int user = getInt(in, "Enter the User ID");
+          if (user == -1)
+            continue;
+          int res = db.insertRow(subject, message, user);
           System.out.println(res + " rows added");
           break;
         }
