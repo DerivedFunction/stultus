@@ -751,7 +751,7 @@ public class App {
       res.type(APPLICATION_JSON);
       res.status(403);
       return gson.toJson(new StructuredResponse(
-          "error", "invalid parameters", null));
+          "err", "invalid parameters", null));
     }
   }
 
@@ -958,7 +958,7 @@ public class App {
       Log.info(errorMsg);
       response.status(403);
       return gson.toJson(new StructuredResponse(
-          "error", errorMsg, data));
+          "err", errorMsg, data));
     } else {
       Log.info(message);
       response.status(200);
