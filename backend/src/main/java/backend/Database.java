@@ -259,17 +259,17 @@ public class Database {
       db.mDeleteUser = db.mConnection.prepareStatement(
           "DELETE FROM " + userTable + " WHERE id=?");
       db.mSelectAllCommentsForPost = db.mConnection.prepareStatement(
-          "SELECT * FROM " + commentTable + " WHERE post_id=? ORDER BY ID DESC");
+          "SELECT * FROM " + commentTable + " WHERE post_id=? AND status=1 ORDER BY ID DESC");
       db.mSelectAllCommentsByUser = db.mConnection.prepareStatement(
-          "SELECT * FROM " + commentTable + " WHERE userid=? ORDER BY ID DESC");
+          "SELECT * FROM " + commentTable + " WHERE userid=? AND status=1 ORDER BY ID DESC");
       db.mSelectAllCommentsByUserAndPost = db.mConnection.prepareStatement(
-          "SELECT * FROM " + commentTable + " WHERE userid=? AND post_id=? ORDER BY ID DESC");
+          "SELECT * FROM " + commentTable + " WHERE userid=? AND post_id=? AND status=1 ORDER BY ID DESC");
       db.mSelectOneComment = db.mConnection.prepareStatement(
-          "SELECT * FROM " + commentTable + " WHERE id=?");
+          "SELECT * FROM " + commentTable + " WHERE id=? AND status=1");
       db.mDeleteComment = db.mConnection.prepareStatement(
           "DELETE FROM " + commentTable + " WHERE id=? AND userid=?");
       db.mUpdateComment = db.mConnection.prepareStatement(
-          "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=?");
+          "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=? AND status=1");
       db.mInsertComment = db.mConnection.prepareStatement(
           "INSERT INTO " + commentTable + " (message, post_id, userid) VALUES (?,?,?)");
 
