@@ -61,7 +61,7 @@ public class DatabaseTest extends TestCase {
   public static String rngString() {
     Random random = new Random();
     int num = random.nextInt(10000) + 1;
-    return " : " + num;
+    return "" + num;
   }
 
   /**
@@ -288,6 +288,9 @@ public class DatabaseTest extends TestCase {
       assertEquals(i, user2Comments.size());
       assertEquals(i * 2, db.selectAllCommentByPost(postID).size());
     }
+    CommentData com = db.selectAllCommentByUserID(userID2).get(0);
+    assertEquals(1, db.updateComment(rngString() + "edited", com.cId, userID2));
+    assertFalse(db.selectComment(com.cId).equals(com));
     // Delete the comments
     for (int i = 0; i < num; i++) {
       assertEquals(1, db.deleteComment(user1Comments.get(i).cId, userID1));
