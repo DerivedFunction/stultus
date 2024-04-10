@@ -220,8 +220,8 @@ public class Database {
       db.mInsertOne = db.mConnection.prepareStatement(
           "INSERT INTO  " + tableName + "  VALUES (default,?,?,?)");
       db.mSelectAll = db.mConnection.prepareStatement(
-          "SELECT * FROM  " + tableName + "  ORDER BY id DESC");
-      db.mSelectOne = db.mConnection.prepareStatement("SELECT * from  " + tableName + "  WHERE id=?");
+          "SELECT * FROM  " + tableName + " WHERE status=1 ORDER BY id DESC");
+      db.mSelectOne = db.mConnection.prepareStatement("SELECT * from  " + tableName + "  WHERE id=? AND status=1");
       db.mUpdateOne = db.mConnection.prepareStatement(
           "UPDATE  " + tableName + "  SET subject=?, message=? WHERE id=?");
       db.mVote = db.mConnection.prepareStatement(
