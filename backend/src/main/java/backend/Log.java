@@ -14,12 +14,18 @@ public class Log {
     private static final Logger logger = Logger.getLogger("Backend");
 
     /**
+     * env variable on whether or not to enable logging messages
+     */
+    private static final boolean ENABLED = Boolean.parseBoolean(System.getenv("logging"));
+
+    /**
      * Logs an informational message.
      *
      * @param message The message to log.
      */
     public static void info(String message) {
-        logger.log(Level.INFO, message);
+        if (ENABLED)
+            logger.log(Level.INFO, message);
     }
 
     /**
@@ -28,7 +34,8 @@ public class Log {
      * @param message The message to log.
      */
     public static void warning(String message) {
-        logger.log(Level.WARNING, message);
+        if (ENABLED)
+            logger.log(Level.WARNING, message);
     }
 
     /**
@@ -37,7 +44,8 @@ public class Log {
      * @param message The message to log.
      */
     public static void error(String message) {
-        logger.log(Level.SEVERE, message);
+        if (ENABLED)
+            logger.log(Level.SEVERE, message);
     }
 
 }

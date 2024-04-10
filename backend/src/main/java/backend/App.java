@@ -15,8 +15,14 @@ import spark.Spark;
  */
 public class App {
 
+  /**
+   * the HTML page for login
+   */
   private static final String LOGIN_HTML = "/login.html";
 
+  /**
+   * the HTML page for home
+   */
   private static final String HOME_HTML = "/home.html";
 
   /**
@@ -24,6 +30,15 @@ public class App {
    */
   private static final String APPLICATION_JSON = "application/json";
 
+  /**
+   * The authorized domain lists
+   */
+  private static final ArrayList<String> AUTH_DOMAIN = initializeAuth();
+
+  /**
+   * The env variable on whether or not users with different domains can log in
+   */
+  private static final boolean SAME_DOMAIN = Boolean.parseBoolean(System.getenv("SAME_DOMAIN"));
   /**
    * Whether or not a user needs to be verified to do certain actions.
    * Note: some methods will still need the cookies to perform certain actions
@@ -167,6 +182,17 @@ public class App {
     ret.add("userData");
     ret.add("commentData");
     return ret;
+  }
+
+  /**
+   * Initalize authorized domains
+   * 
+   * @return ArrayList of authorized domains
+   */
+  private static ArrayList<String> initializeAuth() {
+    ArrayList<String> res = new ArrayList<>();
+    res.add("lehigh.edu");
+    return res;
   }
 
   /**
@@ -381,6 +407,9 @@ public class App {
    * @return JSON response
    */
   private static String unAuthJSON(final Gson gson, Response res) {
+    // Clear all cookies and data
+    res.cookie(ID_TOKEN, "", 0);
+    res.cookie(SUB_TOKEN, "", 0);
     res.type(APPLICATION_JSON);
     res.status(401); // Unauthorized
     return gson.toJson(new StructuredResponse("err", "Unauthorized User", null));
@@ -818,14 +847,25 @@ public class App {
       if (verified) {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
+        boolean checkEmail = checkEmail(email);
+        if (!checkEmail) {
+          Log.info(String.format("A email account outside of the domain is trying to log in: %s", email));
+          return unAuthJSON(gson, res);
+        }
         name = Oauth.getName(idToken);
         sub = Oauth.getSub(idToken);
         Log.info(String.format("A user is attempting to login: %s", email));
         // Checks if user exists in Database
-        UserData user = db.getUserFull(db.findUserID(email));
+        int userExists = db.findUserID(email);
+        UserData user = db.getUserFull(userExists);
         if (user == null) { // creating a new user account
-          Log.info(String.format("Creating acount: %s, %s, %s", name, email, sub));
-          db.insertUser(name, email, sub);
+          if (userExists < 1) {
+            Log.info(String.format("Creating acount: %s, %s, %s", name, email, sub));
+            db.insertUser(name, email, sub);
+          } else { // user already exists, so it is a banned account
+            Log.info(String.format("A banned acount is trying to log in: %s", email));
+            return unAuthJSON(gson, res);
+          }
         }
         userID = db.findUserIDfromSub(sub);
         if (TokenManager.getToken(userID) != null) {
@@ -833,8 +873,7 @@ public class App {
           TokenManager.removeToken(userID);
         }
         TokenManager.addToken(userID, idToken);
-        Log.info("Added new token to TokenManager");
-        Log.info("Adding new cookies to client");
+        Log.info("Added new token to TokenManager, Adding new cookies to client");
         res.cookie(ID_TOKEN, idToken);
         res.cookie(SUB_TOKEN, sub);
         res.redirect(HOME_HTML);
@@ -842,11 +881,32 @@ public class App {
         // Token is invalid or missing
         res.status(401); // Unauthorized status code
       }
-      UserData user = db.getUserFull(db.findUserID(email));
       return getJSONResponse(gson,
           String.format("Invalid or missing ID token: %s", idToken), !verified,
-          String.format("ID token authenticated: %s", idToken), user, res);
+          String.format("ID token authenticated for email: %s", email), db.getUserFull(db.findUserID(email)), res);
     };
+  }
+
+  /**
+   * Checks if email falls within the authorized domain
+   * 
+   * @param email email to check
+   * @return true if authorized, false if not
+   */
+  private static boolean checkEmail(String email) {
+    // Extract the domain part of the email
+    String[] parts = email.split("@");
+    String domain = parts[1]; // Extract the domain
+
+    // Check if the domain matches any domain in the AUTH_DOMAIN list
+    for (String authDomain : AUTH_DOMAIN) {
+      if (domain.equalsIgnoreCase(authDomain)) {
+        return true; // Email domain is authorized
+      }
+    }
+    // If SAME_DOMAIN is true, unauthorized should return false
+    // If SAME_DOMAIN is false, unauthorized should be allowed
+    return !SAME_DOMAIN;
   }
 
   /**
@@ -858,9 +918,20 @@ public class App {
    */
   private static Route logout(Database db) {
     return (req, res) -> {
-      int userID = db.findUserIDfromSub(req.cookie(SUB_TOKEN));
-      Log.info("A user is attempting to log out: " + db.getUserFull(userID).uEmail);
-      TokenManager.removeToken(userID);
+      String sub = req.cookie(SUB_TOKEN);
+      String idToken = req.cookie(ID_TOKEN);
+      int userID = 0;
+      if (sub != null) {
+        userID = db.findUserIDfromSub(sub);
+      } else if (idToken != null) {
+        userID = db.findUserID(Oauth.getEmail(idToken));
+      }
+      if (userID > 0) {
+        Log.info("A verified user is attempting to log out: " + db.getUserFull(userID).uEmail);
+        TokenManager.removeToken(userID);
+      } else {
+        Log.info("A banned user or guest is logging out");
+      }
       res.cookie(ID_TOKEN, "", 0);
       res.cookie(SUB_TOKEN, "", 0);
       // Return a response indicating successful logout

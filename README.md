@@ -68,13 +68,15 @@ git checkout backend
 
 ### Dokku configurations
 
-- POSTGRES URL: <postgres://***:***@salt.db.elephantsql.com/***>
-- POSTGRES Port: 5432
-- PORT: 8998
-- NUM_TESTS: 3
-- CLIENT_ID: \*\*\*\*
-- CLIENT_SECRET: \*\*\*\*
-- AUTH: (1 = need verification, 0 = no verification)
+- `POSTGRES_URL`: <postgres://***:***@salt.db.elephantsql.com/***>
+- `POSTGRES_PORT`: 5432
+- `PORT`: 8998
+- `NUM_TESTS`: 3
+- `CLIENT_ID`: \*\*\*\*
+- `CLIENT_SECRET`: \*\*\*\*
+- `AUTH`: (`1` = need verification, `0` = no verification)
+- `SAME_DOMAIN`: `true` or `false` if only certain domains are allowed
+- `logging`: `true` or `false` if extra logging information is necessary
 
 ### Useful Dokku commands
 

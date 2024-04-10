@@ -14,6 +14,20 @@ import java.util.ArrayList;
  */
 public class Database {
   /**
+   * Constant column name for message
+   */
+  private static final String MESSAGE = "message";
+  /**
+   * Constant column name for userid
+   */
+  private static final String USERID = "userid";
+
+  /**
+   * Constant column name for post_id
+   */
+  private static final String POST_ID = "post_id";
+
+  /**
    * The connection to the database. When there is no connection, it
    * should be null. Otherwise, there is a valid open connection
    */
@@ -130,20 +144,20 @@ public class Database {
   /**
    * Get a fully-configured connection to the database
    * 
-   * @param db_url       The url to the database
-   * @param port_default port to use if absent in db_url
-   * @param dbTable      ArrayList of all SQL tables to use
+   * @param dbUrl       The url to the database
+   * @param portDefault port to use if absent in db_url
+   * @param dbTable     ArrayList of all SQL tables to use
    * 
    * @return A Database object, or null if we cannot connect properly
    */
-  static Database getDatabase(String db_url, String port_default, ArrayList<String> dbTable) {
+  static Database getDatabase(String dbUrl, String portDefault, ArrayList<String> dbTable) {
     try {
-      URI dbUri = new URI(db_url);
+      URI dbUri = new URI(dbUrl);
       String username = dbUri.getUserInfo().split(":")[0];
       String password = dbUri.getUserInfo().split(":")[1];
       String host = dbUri.getHost();
       String path = dbUri.getPath();
-      String port = dbUri.getPort() == -1 ? port_default : Integer.toString(dbUri.getPort());
+      String port = dbUri.getPort() == -1 ? portDefault : Integer.toString(dbUri.getPort());
 
       return getDatabase(host, port, path, username, password, dbTable);
     } catch (URISyntaxException s) {
@@ -204,10 +218,10 @@ public class Database {
       // Standard CRUD operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM " + tableName + " WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO  " + tableName + "  VALUES (default, ?, ?,default,?)");
+          "INSERT INTO  " + tableName + "  VALUES (default,?,?,?)");
       db.mSelectAll = db.mConnection.prepareStatement(
-          "SELECT * FROM  " + tableName + "  ORDER BY id DESC");
-      db.mSelectOne = db.mConnection.prepareStatement("SELECT * from  " + tableName + "  WHERE id=?");
+          "SELECT * FROM  " + tableName + " WHERE status=1 ORDER BY id DESC");
+      db.mSelectOne = db.mConnection.prepareStatement("SELECT * from  " + tableName + "  WHERE id=? AND status=1");
       db.mUpdateOne = db.mConnection.prepareStatement(
           "UPDATE  " + tableName + "  SET subject=?, message=? WHERE id=?");
       db.mVote = db.mConnection.prepareStatement(
@@ -235,27 +249,27 @@ public class Database {
       db.mFindUser = db.mConnection.prepareStatement(
           "SELECT id FROM " + userTable + " WHERE email=?");
       db.mGetUserSimple = db.mConnection.prepareStatement(
-          "SELECT id, username, email, note FROM " + userTable + " WHERE id=?");
+          "SELECT id, username, email, note FROM " + userTable + " WHERE id=? and status=1");
       db.mGetUserFull = db.mConnection.prepareStatement(
-          "SELECT * FROM " + userTable + " WHERE id=?");
+          "SELECT * FROM " + userTable + " WHERE id=? and status=1");
       db.mGetUserIDFromSub = db.mConnection.prepareStatement(
-          "SELECT id FROM " + userTable + " WHERE sub=?");
+          "SELECT id FROM " + userTable + " WHERE sub=? and status=1");
       db.mUpdateUser = db.mConnection.prepareStatement(
           "UPDATE " + userTable + " SET username=?, gender=?, so=?, note=? WHERE id=? AND sub=?");
       db.mDeleteUser = db.mConnection.prepareStatement(
           "DELETE FROM " + userTable + " WHERE id=?");
       db.mSelectAllCommentsForPost = db.mConnection.prepareStatement(
-          "SELECT * FROM " + commentTable + " WHERE post_id=? ORDER BY ID DESC");
+          "SELECT * FROM " + commentTable + " WHERE post_id=? AND status=1 ORDER BY ID DESC");
       db.mSelectAllCommentsByUser = db.mConnection.prepareStatement(
-          "SELECT * FROM " + commentTable + " WHERE userid=? ORDER BY ID DESC");
+          "SELECT * FROM " + commentTable + " WHERE userid=? AND status=1 ORDER BY ID DESC");
       db.mSelectAllCommentsByUserAndPost = db.mConnection.prepareStatement(
-          "SELECT * FROM " + commentTable + " WHERE userid=? AND post_id=? ORDER BY ID DESC");
+          "SELECT * FROM " + commentTable + " WHERE userid=? AND post_id=? AND status=1 ORDER BY ID DESC");
       db.mSelectOneComment = db.mConnection.prepareStatement(
-          "SELECT * FROM " + commentTable + " WHERE id=?");
+          "SELECT * FROM " + commentTable + " WHERE id=? AND status=1");
       db.mDeleteComment = db.mConnection.prepareStatement(
           "DELETE FROM " + commentTable + " WHERE id=? AND userid=?");
       db.mUpdateComment = db.mConnection.prepareStatement(
-          "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=?");
+          "UPDATE " + commentTable + " SET message=? WHERE id=? AND userid=? AND status=1");
       db.mInsertComment = db.mConnection.prepareStatement(
           "INSERT INTO " + commentTable + " (message, post_id, userid) VALUES (?,?,?)");
 
@@ -295,15 +309,17 @@ public class Database {
    *
    * @param subject The subject for this new row
    * @param message The message body for this new row
-   * @param userid  The userID of author
+   * @param userID  The userID of author
    * @return The number of rows that were inserted
    */
-  int insertRow(String subject, String message, int userid) {
+  int insertRow(String subject, String message, int userID) {
     int count = -1;
+    if (userID < 1 || subject == null || message == null)
+      return count;
     try {
       mInsertOne.setString(1, subject);
       mInsertOne.setString(2, message);
-      mInsertOne.setInt(3, userid);
+      mInsertOne.setInt(3, userID);
       count = mInsertOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -323,31 +339,33 @@ public class Database {
       while (rs.next()) {
         int id = rs.getInt("id");
         res.add(new PostData(id, rs.getString("subject"),
-            rs.getString("message"), totalVotes(id), rs.getInt("userid")));
+            rs.getString(MESSAGE), totalVotes(id), rs.getInt(USERID)));
       }
       rs.close();
       return res;
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      return new ArrayList<>();
     }
   }
 
   /**
    * Get all the data for a specific row, by ID
    *
-   * @param id The id being requested
+   * @param postID The id being requested
    * @return the data for the requested row, null otherwise
    */
-  PostData selectOne(int id) {
+  PostData selectOne(int postID) {
     PostData res = null;
+    if (postID < 1)
+      return res;
     try {
-      mSelectOne.setInt(1, id);
+      mSelectOne.setInt(1, postID);
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
-        int postID = rs.getInt("id");
-        res = new PostData(postID, rs.getString("subject"),
-            rs.getString("message"), totalVotes(postID), rs.getInt("userid"));
+        int postId = rs.getInt("id");
+        res = new PostData(postId, rs.getString("subject"),
+            rs.getString(MESSAGE), totalVotes(postId), rs.getInt(USERID));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -358,18 +376,20 @@ public class Database {
   /**
    * Delete a row by ID
    * 
-   * @param id     The id of the row to delete
+   * @param postID The id of the row to delete
    * @param userID The id of user wanting to delete it
    * @return the number of rows deleted, -1 if error
    */
-  int deleteRow(int id, int userID) {
+  int deleteRow(int postID, int userID) {
     int res = -1;
-    PostData data = selectOne(id);
+    if (userID < 1 || postID < 1)
+      return res;
+    PostData data = selectOne(postID);
     // Wrong user cannot update post
     if (data.mUserID != userID)
       return res;
     try {
-      mDeleteOne.setInt(1, id);
+      mDeleteOne.setInt(1, postID);
       res = mDeleteOne.executeUpdate();
 
     } catch (SQLException e) {
@@ -381,22 +401,24 @@ public class Database {
   /**
    * Update the message for a row in the database
    *
-   * @param id      The id of the row to update
+   * @param postID  The id of the row to update
    * @param title   The title of the message
    * @param message The new msg contents
    * @param userID  The id of user wanting to update it
    * @return the number of rows updated, -1 on error
    */
-  int updateOne(int id, String title, String message, int userID) {
+  int updateOne(int postID, String title, String message, int userID) {
     int res = -1;
-    PostData data = selectOne(id);
+    if (userID < 1 || postID < 1 || title == null || message == null)
+      return res;
+    PostData data = selectOne(postID);
     // Wrong user cannot update post
     if (data.mUserID != userID)
       return res;
     try {
       mUpdateOne.setString(1, title.trim());
       mUpdateOne.setString(2, message.trim());
-      mUpdateOne.setInt(3, id);
+      mUpdateOne.setInt(3, postID);
       res = mUpdateOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -408,27 +430,29 @@ public class Database {
    * Checks to see if user upvotes or downvotes a post.
    * If it already exists in the LikeData, then it will remove it
    * 
-   * @param id     ID of the post
+   * @param postID ID of the post
    * @param vote   value of the vote
    * @param userID ID of user
    * @return number of rows updated (1 on success)
    */
-  int toggleVote(int id, int vote, int userID) {
+  int toggleVote(int postID, int vote, int userID) {
     int res = -1;
-    int oldVote = findVotes(id, userID);
+    if (userID < 1 || postID < 1 || vote == 0)
+      return res;
+    int oldVote = findVotes(postID, userID);
     try {
       // If it is the same value (upvoted already and
       // upvote button clicked again)
       // Delete the vote
       if (oldVote == vote) {
-        return deleteVote(id, userID);
+        return deleteVote(postID, userID);
       } else
       // If it is different value ex (already downvoted and
       // now an upvote) delete it and replace it.
       if (oldVote != 0) {
-        deleteVote(id, userID);
+        deleteVote(postID, userID);
       }
-      mVote.setInt(1, id);
+      mVote.setInt(1, postID);
       mVote.setInt(2, vote);
       mVote.setInt(3, userID);
       res = mVote.executeUpdate();
@@ -447,6 +471,8 @@ public class Database {
    */
   int findVotes(int postID, int userID) {
     int res = 0; // default vote count
+    if (userID < 1 || postID < 1)
+      return res;
     try {
       mfindVoteforUser.setInt(1, postID);
       mfindVoteforUser.setInt(2, userID);
@@ -469,6 +495,8 @@ public class Database {
    */
   int deleteVote(int postID, int userID) {
     int res = -1;
+    if (userID < 1 || postID < 1)
+      return res;
     try {
       mDeleteVote.setInt(1, postID);
       mDeleteVote.setInt(2, userID);
@@ -487,6 +515,8 @@ public class Database {
    */
   int totalVotes(int postID) {
     int res = 0;
+    if (postID < 1)
+      return res;
     try {
       mfindTotalVotes.setInt(1, postID);
       ResultSet rs = mfindTotalVotes.executeQuery();
@@ -507,6 +537,8 @@ public class Database {
    */
   int findUserID(String email) {
     int res = 0;
+    if (email == null)
+      return res;
     try {
       mFindUser.setString(1, email.trim());
       ResultSet rs = mFindUser.executeQuery();
@@ -528,6 +560,8 @@ public class Database {
    */
   int findUserIDfromSub(String sub) {
     int res = 0;
+    if (sub == null)
+      return res;
     try {
       mGetUserIDFromSub.setString(1, sub.trim());
       ResultSet rs = mGetUserIDFromSub.executeQuery();
@@ -549,6 +583,8 @@ public class Database {
    */
   UserDataLite getUserSimple(int userID) {
     UserDataLite res = null;
+    if (userID < 1)
+      return res;
     try {
       mGetUserSimple.setInt(1, userID);
       ResultSet rs = mGetUserSimple.executeQuery();
@@ -569,6 +605,8 @@ public class Database {
    */
   UserData getUserFull(int userID) {
     UserData res = null;
+    if (userID < 1)
+      return res;
     try {
       mGetUserFull.setInt(1, userID);
       ResultSet rs = mGetUserFull.executeQuery();
@@ -593,6 +631,8 @@ public class Database {
    */
   int insertUser(String username, String email, String sub) {
     int count = -1;
+    if (email == null || sub == null || username == null)
+      return count;
     // User already exist
     if (findUserID(email.trim()) > 0) {
       return 0;
@@ -611,20 +651,22 @@ public class Database {
   /**
    * Updates user profile
    * 
-   * @param userID   The userID associated with user
-   * @param sub      The user's sub value to verify
-   * @param username The new username
-   * @param gender   The new gender
-   * @param SO       The new SO
-   * @param note     the new note
+   * @param userID       The userID associated with user
+   * @param sub          The user's sub value to verify
+   * @param username     The new username
+   * @param gender       The new gender
+   * @param sOrientation The new SO
+   * @param note         the new note
    * @return 1 on success, -1 on fail
    */
-  int updateUser(int userID, String sub, String username, int gender, String SO, String note) {
+  int updateUser(int userID, String sub, String username, int gender, String sOrientation, String note) {
     int count = -1;
+    if (userID < 1 || sub == null || username == null || sOrientation == null)
+      return count;
     try {
       mUpdateUser.setString(1, username.trim());
       mUpdateUser.setInt(2, gender);
-      mUpdateUser.setString(3, SO.trim());
+      mUpdateUser.setString(3, sOrientation.trim());
       mUpdateUser.setString(4, (note != null) ? note.trim() : "");
       mUpdateUser.setInt(5, userID);
       mUpdateUser.setString(6, sub.trim());
@@ -643,6 +685,8 @@ public class Database {
    */
   int deleteUser(int userID) {
     int count = 0;
+    if (userID < 1)
+      return count;
     try {
       mDeleteUser.setInt(1, userID);
       count = mDeleteUser.executeUpdate();
@@ -662,6 +706,8 @@ public class Database {
    */
   int insertComment(String message, int postID, int userID) {
     int count = -1;
+    if (userID < 1 || postID < 1 || message == null)
+      return count;
     try {
       mInsertComment.setString(1, message.trim());
       mInsertComment.setInt(2, postID);
@@ -683,6 +729,8 @@ public class Database {
    */
   int updateComment(String message, int commentID, int userID) {
     int count = -1;
+    if (userID < 1 || commentID < 1 || message == null)
+      return count;
     try {
       mUpdateComment.setString(1, message.trim());
       mUpdateComment.setInt(2, commentID);
@@ -703,6 +751,8 @@ public class Database {
    */
   int deleteComment(int commentID, int userID) {
     int count = -1;
+    if (userID < 1 || commentID < 1)
+      return count;
     try {
       mDeleteComment.setInt(1, commentID);
       mDeleteComment.setInt(2, userID);
@@ -721,12 +771,14 @@ public class Database {
    */
   CommentData selectComment(int commentID) {
     CommentData res = null;
+    if (commentID < 1)
+      return res;
     try {
       mSelectOneComment.setInt(1, commentID);
       ResultSet rs = mSelectOneComment.executeQuery();
       if (rs.next()) {
-        res = new CommentData(rs.getInt("id"), rs.getString("message"),
-            rs.getInt("post_id"), rs.getInt("userid"));
+        res = new CommentData(rs.getInt("id"), rs.getString(MESSAGE),
+            rs.getInt(POST_ID), rs.getInt(USERID));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -742,18 +794,20 @@ public class Database {
    */
   ArrayList<CommentData> selectAllCommentByPost(int postID) {
     ArrayList<CommentData> res = new ArrayList<>();
+    if (postID < 1)
+      return res;
     try {
       mSelectAllCommentsForPost.setInt(1, postID);
       ResultSet rs = mSelectAllCommentsForPost.executeQuery();
       while (rs.next()) {
-        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
-            rs.getInt("post_id"), rs.getInt("userid")));
+        res.add(new CommentData(rs.getInt("id"), rs.getString(MESSAGE),
+            rs.getInt(POST_ID), rs.getInt(USERID)));
       }
       rs.close();
       return res;
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      return new ArrayList<>();
     }
   }
 
@@ -765,18 +819,20 @@ public class Database {
    */
   ArrayList<CommentData> selectAllCommentByUserID(int userID) {
     ArrayList<CommentData> res = new ArrayList<>();
+    if (userID < 1)
+      return res;
     try {
       mSelectAllCommentsByUser.setInt(1, userID);
       ResultSet rs = mSelectAllCommentsByUser.executeQuery();
       while (rs.next()) {
-        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
-            rs.getInt("post_id"), rs.getInt("userid")));
+        res.add(new CommentData(rs.getInt("id"), rs.getString(MESSAGE),
+            rs.getInt(POST_ID), rs.getInt(USERID)));
       }
       rs.close();
       return res;
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      return new ArrayList<>();
     }
   }
 
@@ -790,19 +846,21 @@ public class Database {
    */
   ArrayList<CommentData> selectAllComments(int userID, int postID) {
     ArrayList<CommentData> res = new ArrayList<>();
+    if (userID < 1 || postID < 1)
+      return res;
     try {
       mSelectAllCommentsByUserAndPost.setInt(1, userID);
       mSelectAllCommentsByUserAndPost.setInt(2, postID);
       ResultSet rs = mSelectAllCommentsByUserAndPost.executeQuery();
       while (rs.next()) {
-        res.add(new CommentData(rs.getInt("id"), rs.getString("message"),
-            rs.getInt("post_id"), rs.getInt("userid")));
+        res.add(new CommentData(rs.getInt("id"), rs.getString(MESSAGE),
+            rs.getInt(POST_ID), rs.getInt(USERID)));
       }
       rs.close();
       return res;
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      return new ArrayList<>();
     }
   }
 }
