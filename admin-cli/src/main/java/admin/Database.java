@@ -18,115 +18,115 @@ public class Database {
   private Connection mConnection;
 
   /**
-   * A prepared statement for getting all the data in the Database
+   * A prepared statement for getting all the messages in the table
    */
   private PreparedStatement mSelectAll;
 
   /**
-   * A Prepared Statement for getting one row from the Database
+   * A Prepared Statement for getting one message from the Database
    */
   private PreparedStatement mSelectOne;
 
   /**
-   * A Prepared Statement for deleting one row from the Database
+   * A Prepared Statement for deleting one message from the Database
    */
   private PreparedStatement mDeleteOne;
 
   /**
-   * A Prepared Statement for inserting one row from the Database
+   * A Prepared Statement for inserting one message from the Database
    */
   private PreparedStatement mInsertOne;
 
   /**
-   * A Prepared Statement for updating one row from the Database
+   * A Prepared Statement for updating one message from the Database
    */
   private PreparedStatement mUpdateOne;
 
   /**
-   * A Prepared Statement for creating the table from the Database
+   * A Prepared Statement for creating the table of messages
    */
   private PreparedStatement mCreateTable;
 
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for deleting the message table from the Database
    */
   private PreparedStatement mDropTable;
 
   /* USER STATEMENTS *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /**
-   * A prepared statement for getting all the data in the Database
+   * A prepared statement for getting all the Users in the Database
    */
   private PreparedStatement uSelectAll;
 
   /**
-   * A Prepared Statement for deleting one row from the Database
+   * A Prepared Statement for deleting one User from the Database
    */
   private PreparedStatement uDeleteOne;
 
   /**
-   * A Prepared Statement for updating one row from the Database
+   * A Prepared Statement for updating one User from the Database
    */
   private PreparedStatement uUpdateOne;
   /**
-   * A Prepared Statement for updating one row from the Database
+   * A Prepared Statement for selecting one User from the Database using User ID
    */
   private PreparedStatement uSelectUser;
   /**
-   * A Prepared Statement for updating one row from the Database
+   * A Prepared Statement for selecting one User from the Database using Email account
    */
   private PreparedStatement uSelectUserByEmail;
 
   /**
-   * A Prepared Statement for creating the table from the Database
+   * A Prepared Statement for creating the table of Users from the Database
    */
   private PreparedStatement uCreateTable;
 
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for deleting the table of Users from the Database
    */
   private PreparedStatement uDropTable;
 
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for deleting the table of Users from the Database
    */
   private PreparedStatement uInsertOne;
 
   /*COMMENT STATEMENTS *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * A prepared statement for getting all the data in the Database
+   * A prepared statement for creating the comment table in the Database
    */
   private PreparedStatement cCreateTable;
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for deleting the comment table from the Database
    */
   private PreparedStatement cDropTable;
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for selecting all the comments on a single post
    */
   private PreparedStatement cSelectAllCommentsForAPost;
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for selecting all the comments from a single user
    */
   private PreparedStatement cSelectAllCommentsForAUser;
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for selecting all the comments from a single user on a single post
    */
   private PreparedStatement cSelectAllCommentsForAUserANDPost;
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for selecting all the comments by an ID
    */
   private PreparedStatement cSelectComment;
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for deleting a comment from the Database
    */
   private PreparedStatement cDeleteComment;
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for updating a comment from the Database
    */
   private PreparedStatement cUpdateComment;
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for adding a new comment to the table from the Database
    */
   private PreparedStatement cInsertComment;
 
@@ -134,15 +134,15 @@ public class Database {
   /*VOTING STATEMENTS *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * A prepared statement for getting all the data in the Database
+   * A prepared statement for creating the voting table
    */
   private PreparedStatement lCreateTable;
   /**
-   * A Prepared Statement for deleting the table from the Database
+   * A Prepared Statement for deleting the voting table from the Database
    */
   private PreparedStatement lDropTable;
   /**
-   * A Prepared Finding How A User Voted
+   * A Prepared Finding How A User Voted on a post
    */
   private PreparedStatement lSelectVoteFromUser;
   /**
@@ -150,7 +150,7 @@ public class Database {
    */
   private PreparedStatement lDeleteVote;
   /**
-   * A Prepared Statement for deleting the vote from the database
+   * A Prepared Statement for seeing how everyone voted on all posts
    */
   private PreparedStatement lSelectAllVotes;
 
@@ -171,11 +171,6 @@ public class Database {
     int mId;
 
     /**
-     * Likes for comments/posts
-     */
-    int mLikes;
-
-    /**
      * The subject stored in this row
      */
     String mSubject;
@@ -186,18 +181,23 @@ public class Database {
     String mMessage;
 
     /**
+     * User Idea
+     */
+    int uID;
+
+    /**
      * Method that constructs a RowData object by providing values for its fields
      * 
      * @param id      the id of the message
      * @param subject the user-inputted subject/title of their message
      * @param message the user-inputted message/content of their post
-     * @param likes   the number of likes a message has
+     * @param uid the number of likes a message has
      */
-    public RowData(int id, String subject, String message, int likes) {
+    public RowData(int id, String subject, String message, int uid) {
       mId = id;
       mSubject = subject;
       mMessage = message;
-      mLikes = likes;
+      uID = uid;
     }
 
     /**
@@ -248,10 +248,11 @@ public class Database {
     /**
      * Method that constructs a RowData object by providing values for its fields
      * 
-     * @param id      the id of the message
-     * @param subject the user-inputted subject/title of their message
-     * @param message the user-inputted message/content of their post
-     * @param likes   the number of likes a message has
+     * @param id      the id of the user
+     * @param name the username
+     * @param email the user's email
+     * @param gender   the users gender
+     * @param SO the users gender orientation
      */
     public UserRowData(int id, String name, String email, int gender, String SO) {
       uId = id;
@@ -262,11 +263,9 @@ public class Database {
     }
 
     /**
-     * Method that checks if the username or id of one post is identical to another
-     * post
+     * Method that checks if the username or email of one post is identical to another
      * 
-     * @param other the other object(post) that is being compared to the post being
-     *              created
+     * @param other the other object(post) that is being compared to the post being created
      * @return boolean determining whether the two objects are equal or not
      */
     @Override
@@ -286,7 +285,7 @@ public class Database {
 
   public static class LikeRowData {
     /**
-     * The ID of this row of the database
+     * The ID of this vote of the database
      */
     int lId;
 
@@ -308,10 +307,10 @@ public class Database {
     /**
      * Method that constructs a RowData object by providing values for its fields
      * 
-     * @param id      the id of the message
-     * @param subject the user-inputted subject/title of their message
-     * @param message the user-inputted message/content of their post
-     * @param likes   the number of likes a message has
+     * @param lid      the id of the vote
+     * @param mid      the id of the message being voted on
+     * @param uid      the id of the voter
+     * @param lvote    the valuue of the vote (up or down) 
      */
     public LikeRowData(int lid, int mid, int uid, int lvote) {
       lId = lid;
@@ -322,10 +321,6 @@ public class Database {
     /**
      * Method that checks if the username or id of one post is identical to another
      * post
-     * 
-     * @param other the other object(post) that is being compared to the post being
-     *              created
-     * @return boolean determining whether the two objects are equal or not
      * 
      * @Override
      *           public boolean equals(Object other) {
@@ -341,32 +336,32 @@ public class Database {
 
   public static class CommentRowData {
     /**
-     * The ID of this row of the database
+     * The ID of this comment of the database
      */
     int cId;
 
     /**
-     * Message id for the liked post
+     * Comment's string value displayed
      */
     String comment;
 
     /**
-     * The user id of the liker stored in this row
+     * The user id of the commenter stored in this row
      */
     int mId;
 
     /**
-     * Like/Dislike Sign stored in this row
+     * The user ID of the message sender
      */
     int uId;
 
     /**
      * Method that constructs a RowData object by providing values for its fields
      * 
-     * @param id      the id of the message
-     * @param subject the user-inputted subject/title of their message
-     * @param message the user-inputted message/content of their post
-     * @param likes   the number of likes a message has
+     * @param cid      the id of the comment
+     * @param com      the value of the comment
+     * @param mid      the id of the message being commented on
+     * @param uid      the id of the user commenting
      */
     public CommentRowData(int cid, String com, int mid, int uid) {
       cId = cid;
@@ -376,11 +371,10 @@ public class Database {
     }
 
     /**
-     * Method that checks if the username or id of one post is identical to another
+     * Method that checks if the message id, user id, and comment of one post is identical to another
      * post
      * 
-     * @param other the other object(post) that is being compared to the post being
-     *              created
+     * @param other the other object(post) that is being compared to the post being created
      * @return boolean determining whether the two objects are equal or not
      */
     @Override
@@ -436,42 +430,42 @@ public class Database {
                                                         + "id SERIAL PRIMARY KEY,"
                                                         + "subject VARCHAR(100) NOT NULL,"
                                                         + "message VARCHAR(1024) NOT NULL,"
-                                                        + "user_id INT,"
-                                                        + "likes INT DEFAULT 0)");
+                                                        + "userid INT,"
+                                                        + "FOREIGN KEY (userid) REFERENCES userData(id))");
       //Create User Table
-      db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE usrData ("
+      db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE userData ("
                                                         + "id SERIAL PRIMARY KEY,"
                                                         + "username VARCHAR(50) NOT NULL,"
                                                         + "email VARCHAR(50) NOT NULL UNIQUE,"
                                                         + "gender INT DEFAULT 0,"
                                                         + "so VARCHAR(10) DEFAULT 'private')");
       //Create Comment Table
-      db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE cmntData ("
+      db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE commentData  ("
                                                         + "id SERIAL PRIMARY KEY,"
                                                         + "comMessage VARCHAR(2048) NOT NULL,"
                                                         + "post_id INT,"
-                                                        + "user_id INT,"
+                                                        + "userid INT,"
                                                         + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
-                                                        + "FOREIGN KEY (user_id) REFERENCES usrData(id))");
+                                                        + "FOREIGN KEY (userid) REFERENCES userData(id))");
       //Create Like Table
       db.lCreateTable = db.mConnection.prepareStatement("CREATE TABLE likeData ("
                                                         + "id SERIAL PRIMARY KEY,"
                                                         + "post_id INT,"
                                                         + "vote INT,"
-                                                        + "user_id INT,"
+                                                        + "userid INT,"
                                                         + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
-                                                        + "FOREIGN KEY (user_id) REFERENCES usrData(id))");
+                                                        + "FOREIGN KEY (userid) REFERENCES userData(id))");
 
       //Drop All Tables
       db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
-      db.uDropTable = db.mConnection.prepareStatement("DROP TABLE usrData");
-      db.cDropTable = db.mConnection.prepareStatement("DROP TABLE cmntData");
+      db.uDropTable = db.mConnection.prepareStatement("DROP TABLE userData");
+      db.cDropTable = db.mConnection.prepareStatement("DROP TABLE commentData ");
       db.lDropTable = db.mConnection.prepareStatement("DROP TABLE likeData");
 
       // Standard CRUD Messages operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblData WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO tblData VALUES (default, ?, ?, 0)");
+          "INSERT INTO tblData VALUES (default, ?, ?, ?)");
       db.mSelectAll = db.mConnection.prepareStatement(
           "SELECT * FROM tblData");
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
@@ -479,27 +473,27 @@ public class Database {
           "UPDATE tblData SET message=? WHERE id=?");
 
       // Standard CRUD User operations
-      db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM usrData WHERE id=?");
-      db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO usrData (username,email) VALUES (?,?)");
-      db.uSelectUserByEmail = db.mConnection.prepareStatement("SELECT * FROM usrData WHERE email=?");
-      db.uSelectUser = db.mConnection.prepareStatement("SELECT * FROM usrData WHERE id=?");
-      db.uUpdateOne = db.mConnection.prepareStatement("UPDATE usrData SET username=?, gender=?, so=? where id=?");
-      db.uSelectAll = db.mConnection.prepareStatement("SELECT * FROM usrData");
+      db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM userData WHERE id=?");
+      db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO userData (username,email) VALUES (?,?)");
+      db.uSelectUserByEmail = db.mConnection.prepareStatement("SELECT * FROM userData WHERE email=?");
+      db.uSelectUser = db.mConnection.prepareStatement("SELECT * FROM userData WHERE id=?");
+      db.uUpdateOne = db.mConnection.prepareStatement("UPDATE userData SET username=?, gender=?, so=? where id=?");
+      db.uSelectAll = db.mConnection.prepareStatement("SELECT * FROM userData");
 
 
       // Standard CRUD Voting operations
-      db.lSelectVoteFromUser = db.mConnection.prepareStatement("SELECT vote FROM likeData WHERE post_id=? AND user_id=?");
+      db.lSelectVoteFromUser = db.mConnection.prepareStatement("SELECT vote FROM likeData WHERE post_id=? AND userid=?");
       db.lSelectAllVotes = db.mConnection.prepareStatement("SELECT * FROM likeData");
-      db.lDeleteVote = db.mConnection.prepareStatement("DELETE FROM likeData WHERE post_id=? AND user_id=?");
+      db.lDeleteVote = db.mConnection.prepareStatement("DELETE FROM likeData WHERE post_id=? AND userid=?");
       
       // Standard CRUD Comment operations
-      db.cSelectAllCommentsForAPost = db.mConnection.prepareStatement("SELECT * FROM cmntData WHERE post_id=? ORDER BY ID DESC");
-      db.cSelectAllCommentsForAUser = db.mConnection.prepareStatement("SELECT * FROM cmntData WHERE user_id=? ORDER BY ID DESC");
-      db.cSelectAllCommentsForAUserANDPost = db.mConnection.prepareStatement("SELECT * FROM cmntData WHERE post_id=? AND user_id=? ORDER BY ID DESC");
-      db.cSelectComment = db.mConnection.prepareStatement("SELECT * cmntData WHERE id=?");
-      db.cDeleteComment = db.mConnection.prepareStatement("DELETE cmntData WHERE id=? and user_id=?");
-      db.cUpdateComment = db.mConnection.prepareStatement("UPDATE cmntData SET comMessage=? WHERE id=? AND user_id=?");
-      db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO cmntData (comMessage, post_id, user_id) VALUES (?,?,?)");
+      db.cSelectAllCommentsForAPost = db.mConnection.prepareStatement("SELECT * FROM commentData  WHERE post_id=? ORDER BY ID DESC");
+      db.cSelectAllCommentsForAUser = db.mConnection.prepareStatement("SELECT * FROM commentData  WHERE userid=? ORDER BY ID DESC");
+      db.cSelectAllCommentsForAUserANDPost = db.mConnection.prepareStatement("SELECT * FROM commentData  WHERE post_id=? AND userid=? ORDER BY ID DESC");
+      db.cSelectComment = db.mConnection.prepareStatement("SELECT * commentData  WHERE id=?");
+      db.cDeleteComment = db.mConnection.prepareStatement("DELETE commentData  WHERE id=? and userid=?");
+      db.cUpdateComment = db.mConnection.prepareStatement("UPDATE commentData  SET comMessage=? WHERE id=? AND userid=?");
+      db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO commentData  (comMessage, post_id, userid) VALUES (?,?,?)");
 
 
     } catch (SQLException e) {
@@ -542,13 +536,15 @@ public class Database {
    *
    * @param subject The subject for this new row
    * @param message The message body for this new row
+   * @param user user who will post
    * @return The number of rows that were inserted
    */
-  int insertRow(String subject, String message) {
+  int insertRow(String subject, String message, int user) {
     int count = 0;
     try {
       mInsertOne.setString(1, subject);
       mInsertOne.setString(2, message);
+      mInsertOne.setInt(3, user);
       count += mInsertOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -567,7 +563,7 @@ public class Database {
       ResultSet rs = mSelectAll.executeQuery();
       while (rs.next()) {
         res.add(new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message"), rs.getInt("likes")));
+            rs.getString("message"), rs.getInt("userid")));
       }
       rs.close();
       return res;
@@ -590,7 +586,7 @@ public class Database {
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
         res = new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message"), rs.getInt("likes"));
+            rs.getString("message"), rs.getInt("userid"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -658,6 +654,11 @@ public class Database {
 
   //USER METHODS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Method that queries the database for a list of all Users and their attributes
+   * 
+   * @return All rows, as an ArrayList
+   */
   ArrayList<UserRowData> selectAllUsers() {
     ArrayList<UserRowData> res = new ArrayList<>();
     try {
@@ -675,7 +676,7 @@ public class Database {
   }
    
    /**
-   * Method that gets all the data for a specific row, by ID
+   * Method that gets all the data for a specific uer, by ID
    *
    * @param id The id being requested
    * @return the data for the requested row, null otherwise
@@ -696,10 +697,10 @@ public class Database {
   }
 
    /**
-   * Method that gets all the data for a specific row, by ID
+   * Method that gets the users  for a specific row, by email
    *
-   * @param id The id being requested
-   * @return the data for the requested row, null otherwise
+   * @param email The email being requested
+   * @return the data for the requested user, null otherwise
    */
   UserRowData SelectUserByEmail(String email) {
     UserRowData res = null;
@@ -717,11 +718,10 @@ public class Database {
   }
 
    /**
-   * Method that inserts a row into the database. These rows are the user-inputted
-   * subject+message
+   * Method that inserts a user into the database. These users are the user-inputted subject+message with null values for nonessential attribues
    *
-   * @param subject The subject for this new row
-   * @param message The message body for this new row
+   * @param username The subject for this new row
+   * @param email The message body for this new row
    * @return The number of rows that were inserted
    */
   int insertUser(String username, String email) {
@@ -737,10 +737,10 @@ public class Database {
   }
 
   /**
-   * Method that deletes a row by ID
+   * Method that deletes a user by ID
    * 
-   * @param id The id of the row to delete
-   * @return the number of rows deleted, -1 if error
+   * @param id The id of the users to delete
+   * @return the number of users deleted, -1 if error
    */
   int deleteRowUser(int id) {
     int res = -1;
@@ -753,7 +753,15 @@ public class Database {
     return res;
   }
 
-  //private PreparedStatement uUpdateOne;
+  /**
+   * Method that updates a users attributes
+   * 
+   * @param username The name of the new user
+   * @param gender The gender of the new user
+   * @param so The so of the new user
+   * @param id The id of the new user
+   * @return the number of users deleted, -1 if error
+   */
   int updateOneUser(String username, int gender, String so, int id) {
     int res = -1;
     try {
@@ -769,7 +777,7 @@ public class Database {
   }
 
   /**
-   * Method to create usrData. If it already exists, print error
+   * Method to create userData. If it already exists, print error
    */
   void createUserTable() {
     try {
@@ -793,30 +801,21 @@ public class Database {
 
   //COMMENT METHODS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  /* 
-  db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE cmntData ("
-                                                        + "id SERIAL PRIMARY KEY,"
-                                                        + "comMessage VARCHAR(2048) NOT NULL,"
-                                                        + "post_id INT,"
-                                                        + "user_id INT,"
-                                                        + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
-                                                        + "FOREIGN KEY (user_id) REFERENCES userData(id))");
-  }
-
   /**
    * Method that inserts a row into the database. These rows are the user-inputted
    * subject+message
    *
-   * @param subject The subject for this new row
-   * @param message The message body for this new row
+   * @param message The message for this new comment
+   * @param post_id The post_id  for this new comment
+   * @param userid The userid for this new comment
    * @return The number of rows that were inserted
    */
-  int insertComment(String message, int post_id, int user_id) {
+  int insertComment(String message, int post_id, int userid) {
     int count = 0;
     try {
       cInsertComment.setString(1, message);
       cInsertComment.setInt(2, post_id);
-      cInsertComment.setInt(3, user_id);
+      cInsertComment.setInt(3, userid);
       count += cInsertComment.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -825,18 +824,19 @@ public class Database {
   }
 
   /**
-   * Method that updates the message for a row in the database
+   * Method that updates a comment  in the database
    *
-   * @param id      The id of the row to update
-   * @param message The new message contents
+   * @param comMessage The message of the comment to that will replace an old one
+   * @param id The id of the comment to be replaced 
+   * @param userid The user who left this comment 
    * @return the number of rows udpated, -1 on error
    */
-  int updateComment(String comMessage, int id, int user_id) {
+  int updateComment(String comMessage, int id, int userid) {
     int res = -1;
     try {
       cUpdateComment.setString(1, comMessage);
       cUpdateComment.setInt(2, id);
-      cUpdateComment.setInt(3, user_id);
+      cUpdateComment.setInt(3, userid);
       res = mUpdateOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -847,14 +847,15 @@ public class Database {
   /**
    * Method that deletes a row by ID
    * 
-   * @param id The id of the row to delete
-   * @return the number of rows deleted, -1 if error
+   * @param id The id of the comment to delete
+   * @param userid The id of the comment to delete
+   * @return the number of comment deleted, -1 if error
    */
-  int deleteComment(int id, int user_id) {
+  int deleteComment(int id, int userid) {
     int res = -1;
     try {
       cDeleteComment.setInt(1, id);
-      cDeleteComment.setInt(2, user_id);
+      cDeleteComment.setInt(2, userid);
       res = cDeleteComment.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -862,6 +863,12 @@ public class Database {
     return res;
   }
 
+  /**
+   * Method that gets a comment, by id
+   *
+   * @param id The id of the comment being requested
+   * @return the row data for the requested comment, null otherwise
+   */
   CommentRowData selectComment(int id) {
     CommentRowData res = null;
     try {
@@ -869,7 +876,7 @@ public class Database {
       ResultSet rs = cSelectComment.executeQuery();
       if (rs.next()) {
         res =new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
-          rs.getInt("post_id"), rs.getInt("user_id"));
+          rs.getInt("post_id"), rs.getInt("userid"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -879,9 +886,10 @@ public class Database {
 
 
   /**
-   * Method that queries the database for a list of all subjects and their IDs
+   * Method that queries the database for a list of all comments by a post
    * 
-   * @return All rows, as an ArrayList
+   * @param post_id The id of the post that's comments are being requested
+   * @return All comments, as an ArrayList
    */
   ArrayList<CommentRowData> selectAllPostComments(int post_id) {
     ArrayList<CommentRowData> res = new ArrayList<>();
@@ -890,7 +898,7 @@ public class Database {
       ResultSet rs = cSelectAllCommentsForAPost.executeQuery();
       while (rs.next()) {
         res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
-            rs.getInt("post_id"), rs.getInt("user_id")));
+            rs.getInt("post_id"), rs.getInt("userid")));
       }
       rs.close();
       return res;
@@ -900,18 +908,19 @@ public class Database {
     }
   }
   /**
-   * Method that queries the database for a list of all subjects and their IDs
+   * Method that queries the database for a list of all comments by a user
    * 
+   * @param userid id of the user whose comments are being requested
    * @return All rows, as an ArrayList
    */
-  ArrayList<CommentRowData> selectAllUserComments(int user_id) {
+  ArrayList<CommentRowData> selectAllUserComments(int userid) {
     ArrayList<CommentRowData> res = new ArrayList<>();
     try {
-      cSelectAllCommentsForAUser.setInt(1, user_id);
+      cSelectAllCommentsForAUser.setInt(1, userid);
       ResultSet rs = cSelectAllCommentsForAUser.executeQuery();
       while (rs.next()) {
         res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
-            rs.getInt("post_id"), rs.getInt("user_id")));
+            rs.getInt("post_id"), rs.getInt("userid")));
       }
       rs.close();
       return res;
@@ -922,19 +931,21 @@ public class Database {
   }
 
   /**
-   * Method that queries the database for a list of all subjects and their IDs
+   * Method that queries the database for a list of all the comments by a user on a single post
    * 
+   * @param userid id of the user whose comments are being requested
+   * @param post_id The id of the post that's comments are being requested
    * @return All rows, as an ArrayList
    */
-  ArrayList<CommentRowData> selectAllUserCommentsOnPost(int user_id, int post_id) {
+  ArrayList<CommentRowData> selectAllUserCommentsOnPost(int userid, int post_id) {
     ArrayList<CommentRowData> res = new ArrayList<>();
     try {
       cSelectAllCommentsForAUserANDPost.setInt(1, post_id);
-      cSelectAllCommentsForAUserANDPost.setInt(2, user_id );
+      cSelectAllCommentsForAUserANDPost.setInt(2, userid );
       ResultSet rs = cSelectAllCommentsForAUserANDPost.executeQuery();
       while (rs.next()) {
         res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
-            rs.getInt("post_id"), rs.getInt("user_id")));
+            rs.getInt("post_id"), rs.getInt("userid")));
       }
       rs.close();
       return res;
@@ -968,25 +979,23 @@ public class Database {
 
 
   //VOTING METHODS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /*
-   * //Create Like Table
-      db.lCreateTable = db.mConnection.prepareStatement("CREATE TABLE likeData ("
-                                                        + "id SERIAL PRIMARY KEY,"
-                                                        + "post_id INT,"
-                                                        + "vote INT,"
-                                                        + "user_id INT,"
-                                                        + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
-                                                        + "FOREIGN KEY (user_id) REFERENCES userData(id))");
+
+  /**
+   * Method that gets a vote of a user on a post, by their id
+   *
+   * @param post_id The id of the post being requested
+   * @param userid The id of the user being requested
+   * @return the row data for the requested comment, null otherwise
    */
-  LikeRowData selectUserVote(int post_id, int user_id) {
+  LikeRowData selectUserVote(int post_id, int userid) {
     LikeRowData res = null;
     try {
       lSelectVoteFromUser.setInt(1, post_id);
-      lSelectVoteFromUser.setInt(2, user_id);
+      lSelectVoteFromUser.setInt(2, userid);
       ResultSet rs = lSelectVoteFromUser.executeQuery();
       if (rs.next()) {
         res = new LikeRowData(rs.getInt("id"), rs.getInt("post_id"),
-            rs.getInt("user_id"), rs.getInt("vote"));
+            rs.getInt("userid"), rs.getInt("vote"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -995,16 +1004,17 @@ public class Database {
   }
 
   /**
-   * Method that deletes a row by ID
+   * Method that deletes a vote by user and post
    * 
-   * @param id The id of the row to delete
+   * @param post_id The id of the post with the unwanted vote
+   * @param userid The id of the user who voted unwantedly
    * @return the number of rows deleted, -1 if error
    */
-  int deleteVote(int post_id, int user_id) {
+  int deleteVote(int post_id, int userid) {
     int res = -1;
     try {
       lDeleteVote.setInt(1, post_id);
-      lDeleteVote.setInt(2, user_id);
+      lDeleteVote.setInt(2, userid);
       res = lDeleteVote.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -1013,7 +1023,7 @@ public class Database {
   }
 
   /**
-   * Method that queries the database for a list of all subjects and their IDs
+   * Method that queries the database for a list of all likes and their attributes
    * 
    * @return All rows, as an ArrayList
    */
@@ -1023,7 +1033,7 @@ public class Database {
       ResultSet rs = lSelectAllVotes.executeQuery();
       while (rs.next()) {
         res.add(new LikeRowData(rs.getInt("id"), rs.getInt("post_id"),
-            rs.getInt("user_id"), rs.getInt("vote")));
+            rs.getInt("userid"), rs.getInt("vote")));
       }
       rs.close();
       return res;
@@ -1033,6 +1043,9 @@ public class Database {
     }
   }
 
+  /**
+   * Method to create likeData in the database, print error if already made
+   */
   void createLikeTable() {
     try {
       lCreateTable.execute();
@@ -1042,7 +1055,7 @@ public class Database {
   }
 
   /**
-   * Method to remove tblData from the database, print error if DNE
+   * Method to remove likeData from the database, print error if DNE
    */
   void dropLikeTable() {
     try {

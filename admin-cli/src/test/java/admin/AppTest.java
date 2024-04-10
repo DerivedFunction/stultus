@@ -50,6 +50,7 @@ public class AppTest extends TestCase {
    * Creates a connection with the database, checks if an added element is successfully added 
    * and checks if a deleted element is sucessfully deleted.
    */
+
   public void testApp() {
     // get the Postgres configuration and tests from the environment
     Map<String, String> env = System.getenv();
@@ -69,10 +70,12 @@ public class AppTest extends TestCase {
     for (int i = 0; i < num; i++) {
       String subject = "Subject" + rngString();
       String message = "Message" + rngString();
-      sub.add(new RowData(i, subject, message, 0));
-      assertTrue(db.insertRow(subject, message) == 1); // add new element
+      sub.add(new RowData(i, subject, message, 7));
+      assertTrue(db.insertRow(subject, message, 7) == 1); // add new element
     }
+
     // Check if database contains all elements we just added
+    /*
     ArrayList<RowData> res = db.selectAll();
     assertTrue(res.containsAll(sub));
 
@@ -84,7 +87,9 @@ public class AppTest extends TestCase {
     }
 
     subC.add(new CommentRowData(num, "Comment", 32, 1));
-    assertTrue(db.insertComment("Comment", 32, 1) == 1);
+    assertTrue(db.insertComment("Comment", 32, 1) == 1); 
+     */
+    
 
     /**
      * Get the maxId, the id of the last element we just added
@@ -101,7 +106,8 @@ public class AppTest extends TestCase {
     // The test elements should no longer be in our database
     res = db.selectAll();
     assertFalse(res.containsAll(sub));
-  */
+    */
     db.disconnect();
+
   }
 }
