@@ -840,20 +840,17 @@ public class App {
     return (req, res) -> {
       String idToken = req.queryParams("credential"); // Assuming the ID token is sent as a query parameter
       boolean verified = idToken != null && Oauth.verifyToken(idToken);
-      String email = null;
-      String name = null;
-      String sub = null;
       int userID = 0;
+      String email = null;
       if (verified) {
         // Token is valid, extract email from payload
         email = Oauth.getEmail(idToken);
-        boolean checkEmail = checkEmail(email);
-        if (!checkEmail) {
+        if (!checkEmail(email)) {
           Log.info(String.format("A email account outside of the domain is trying to log in: %s", email));
           return unAuthJSON(gson, res);
         }
-        name = Oauth.getName(idToken);
-        sub = Oauth.getSub(idToken);
+        String name = Oauth.getName(idToken);
+        String sub = Oauth.getSub(idToken);
         Log.info(String.format("A user is attempting to login: %s", email));
         // Checks if user exists in Database
         int userExists = db.findUserID(email);
@@ -874,8 +871,8 @@ public class App {
         }
         TokenManager.addToken(userID, idToken);
         Log.info("Added new token to TokenManager, Adding new cookies to client");
-        res.cookie(ID_TOKEN, idToken);
-        res.cookie(SUB_TOKEN, sub);
+        res.cookie(ID_TOKEN, idToken, 3600, true);
+        res.cookie(SUB_TOKEN, sub, 3600, true);
         res.redirect(HOME_HTML);
       } else {
         // Token is invalid or missing
@@ -932,8 +929,8 @@ public class App {
       } else {
         Log.info("A banned user or guest is logging out");
       }
-      res.cookie(ID_TOKEN, "", 0);
-      res.cookie(SUB_TOKEN, "", 0);
+      res.cookie(ID_TOKEN, "", 0, true);
+      res.cookie(SUB_TOKEN, "", 0, true);
       // Return a response indicating successful logout
       res.status(200); // OK status code
       return "User logout successful. You can now close this page";
