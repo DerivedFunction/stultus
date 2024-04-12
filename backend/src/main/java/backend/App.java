@@ -243,8 +243,9 @@ public class App {
       // If it doesn't exist in TokenManager, return error
       if (!verified) {
         res.redirect(LOGIN_HTML);
+      } else {
+        res.redirect(HOME_HTML);
       }
-      res.redirect(HOME_HTML);
       return "";
     });
 
