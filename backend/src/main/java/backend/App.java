@@ -355,12 +355,9 @@ public class App {
    */
   private static Route deleteIdea(final Gson gson, Database db) {
     return (req, res) -> {
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       int userID = getUserIDfromCookie(req);
       int postID = getPostID(req);
       int result = db.deleteRow(postID, userID);
@@ -453,12 +450,9 @@ public class App {
    */
   private static Route putUser(final Gson gson, Database db) {
     return (req, res) -> {
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       String sub = req.cookie(SUB_TOKEN);
       int userID = getUserIDfromCookie(req);
       UserData profile = gson.fromJson(req.body(), UserData.class);
@@ -480,12 +474,9 @@ public class App {
    */
   private static Route putComment(final Gson gson, Database db) {
     return (req, res) -> {
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       int userID = getUserIDfromCookie(req);
       int commentID = getCommentID(req);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
@@ -507,13 +498,9 @@ public class App {
   private static Route postUpVote(final Gson gson, Database db) {
     return (req, res) -> {
 
-      // Verify the token
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       int userID = getUserIDfromCookie(req);
       int postID = getPostID(req);
       int result = db.toggleVote(postID, 1, userID);
@@ -533,13 +520,9 @@ public class App {
    */
   private static Route postDownVote(final Gson gson, Database db) {
     return (req, res) -> {
-      // Verify the token
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       int userID = getUserIDfromCookie(req);
       int postID = getPostID(req);
       int result = db.toggleVote(postID, -1, userID);
@@ -559,13 +542,9 @@ public class App {
    */
   private static Route postIdea(final Gson gson, Database db) {
     return (req, res) -> {
-      // Verify the token
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       int userID = getUserIDfromCookie(req);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
       // createEntry checks for null title/message (-1)
@@ -586,13 +565,9 @@ public class App {
    */
   private static Route postComment(final Gson gson, Database db) {
     return (req, res) -> {
-      // Verify the token
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       int userID = getUserIDfromCookie(req);
       int postID = getPostID(req);
       SimpleRequest sReq = gson.fromJson(req.body(), SimpleRequest.class);
@@ -614,14 +589,12 @@ public class App {
    */
   private static Route getAllIdeas(final Gson gson, Database db) {
     return (req, res) -> {
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
-      return getJSONResponse(gson, "Invalid or missing ID token", !verified,
-          "Successfully retreived all messages", db.selectAll(), res);
+      ArrayList<PostData> posts = db.selectAll();
+      return getJSONResponse(gson, "Invalid or missing ID token", posts.isEmpty(),
+          "Successfully retreived all messages", posts, res);
     };
   }
 
@@ -635,12 +608,9 @@ public class App {
    */
   private static Route getIdea(final Gson gson, Database db) {
     return (req, res) -> {
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       int postID = getPostID(req);
       PostData data = db.selectOne(postID);
       return getJSONResponse(gson,
@@ -659,16 +629,11 @@ public class App {
    */
   private static Route getUser(final Gson gson, Database db) {
     return (req, res) -> {
-      // Verify the token
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       int userID = Integer.parseInt(req.params(USER_ID));
       UserDataLite data = db.getUserSimple(userID);
-
       return getJSONResponse(gson,
           String.format("user %d not found", userID), (data == null),
           String.format("user %d found", userID), data, res);
@@ -685,16 +650,12 @@ public class App {
    */
   private static Route getUserFull(final Gson gson, Database db) {
     return (req, res) -> {
-      // Verify the token
-      boolean verified = getVerified(db, req);
       // If it doesn't exist in TokenManager, return error
-      if (!verified) {
-        res.status(401); // Unauthorized
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       int userID = getUserIDfromCookie(req);
       UserData data = db.getUserFull(userID);
-      return getJSONResponse(gson, "Cannot verify user identity", !verified, "Verified user found", data, res);
+      return getJSONResponse(gson, "Cannot verify user identity", data == null, "Verified user found", data, res);
     };
   }
 
@@ -711,11 +672,9 @@ public class App {
    */
   private static Route getCommentsForPost(final Gson gson, Database db, boolean needsUser, boolean needsPost) {
     return (req, res) -> {
-      boolean verified = getVerified(db, req);
-      if (!verified) {
-
+      // If it doesn't exist in TokenManager, return error
+      if (!getVerified(db, req))
         return unAuthJSON(gson, res);
-      }
       int postID = needsPost ? getPostID(req) : 0;
       int userId = needsUser ? Integer.parseInt(req.params(USER_ID)) : 0;
       res.type(APPLICATION_JSON);
@@ -819,7 +778,6 @@ public class App {
     String sub = req.cookie(SUB_TOKEN);
     if (idToken == null || sub == null)
       return false;
-
     int userID = TokenManager.getUserID(idToken);
     int userIDSub = db.findUserIDfromSub(sub);
     // Verify the token
