@@ -31,12 +31,15 @@ public class App {
   static void messageMenu() {
     System.out.println("Message Menu");
     System.out.println("  [T] Create tblData");
+    System.out.println("  [U] Update userPostData");
     System.out.println("  [D] Drop tblData");
     System.out.println("  [1] Query for a specific post");
+    System.out.println("  [2] Query for all post with By Username");
     System.out.println("  [*] Query for all post");
     System.out.println("  [-] Delete a post");
     System.out.println("  [+] Insert a new posts");
-    System.out.println("  [~] Update a posts");
+    System.out.println("  [~] Update a post");
+    System.out.println("  [h] Hide/Unhide a post");
     System.out.println("  [q] Quit Table");
     System.out.println("  [?] Help (this message)");
   }
@@ -53,6 +56,7 @@ public class App {
     System.out.println("  [-] Delete a user");
     System.out.println("  [+] Insert a new user");
     System.out.println("  [~] Update a user");
+    System.out.println("  [h] Hide/Unhide a user");
     System.out.println("  [q] Quit Table");
     System.out.println("  [?] Help (this message)");
   }
@@ -69,6 +73,7 @@ public class App {
     System.out.println("  [-] Delete a comment");
     System.out.println("  [+] Insert a new comment");
     System.out.println("  [~] Update a comment");
+    System.out.println("  [h] Hide/Unhide a Comment");
     System.out.println("  [q] Quit Table");
     System.out.println("  [?] Help (this message)");
   }
@@ -96,7 +101,7 @@ public class App {
    */
   static char prompt(BufferedReader in) {
     // valid actions
-    String actions = "TD1234*-+~q?IUCL";
+    String actions = "TD1234*-+~hq?IUCL";
     // We repeat until a valid char is selected
     while (true) {
       System.out.print("[" + actions + "] :> ");
@@ -209,7 +214,7 @@ public class App {
    */
   public static void commentMethods(BufferedReader in, Database db){
     cmntMenu();
-    String printfmt = " [%3s] |  %-30s | %-40s | [%3s]%n";
+    String printfmt = " [%3s] |  %-30s | %-40s | [%3s] | [%3s]%n";
     boolean cont = true;
     while(cont){
       char action = prompt(in);
@@ -239,11 +244,11 @@ public class App {
             ArrayList<Database.CommentRowData> res = db.selectAllPostComments(id);
             System.out.println(" Current Comments On Queried Post");
             System.out.println(" -------------------------");
-            System.out.printf(printfmt, "Id", "Message", "Post", "User");
+            System.out.printf(printfmt, "Id", "Message", "Post", "User", "Status");
             System.out.println("--------------------------------------------------------------------------------------------------");
             for (Database.CommentRowData rd : res) {
               String comment = rd.comment.length() > 30 ? rd.comment.substring(0, 30) : rd.comment;
-              System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId);
+              System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId, rd.status);
             }
           break;
         case '2':
@@ -253,11 +258,11 @@ public class App {
           ArrayList<Database.CommentRowData> res_1 = db.selectAllUserComments(userId);
           System.out.println(" Current Comments By Queried User");
           System.out.println(" -------------------------");
-          System.out.printf(printfmt, "Id", "Message", "Post", "User");
+          System.out.printf(printfmt, "Id", "Message", "Post", "User", "Status");
           System.out.println("--------------------------------------------------------------------------------------------------");
           for (Database.CommentRowData rd : res_1) {
             String comment = rd.comment.length() > 30 ? rd.comment.substring(0, 30) : rd.comment;
-            System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId);
+            System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId, rd.status);
           }
           break;
         case '3':
@@ -268,11 +273,11 @@ public class App {
           ArrayList<Database.CommentRowData> res_2 = db.selectAllUserCommentsOnPost(userId_1, postId);
           System.out.println(" Comments On Post By Queried User");
           System.out.println(" -------------------------");
-          System.out.printf(printfmt, "Id", "Message", "Post", "User");
+          System.out.printf(printfmt, "Id", "Message", "Post", "User", "Status");
           System.out.println("--------------------------------------------------------------------------------------------------");
           for (Database.CommentRowData rd : res_2) {
             String comment = rd.comment.length() > 30 ? rd.comment.substring(0, 30) : rd.comment;
-            System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId);
+            System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId, rd.status);
           }
           break;
         case '-':{
@@ -312,6 +317,16 @@ public class App {
           int resup = db.updateComment(messageUpd, pidup, uidup);
           System.out.println(resup + " comments updated");
           break;
+        case 'h': {
+          int idh = getInt(in, "Enter the user ID");
+          if (idh == -1)
+            continue;
+          int resh = db.toggleStatusCom(idh);
+          if (resh == -1)
+            continue;
+          System.out.println(" " + resh + " statuses updated");
+          break;
+        }
         case 'q':
           cont = false;
           break;
@@ -359,6 +374,14 @@ public class App {
             System.out.println(" Message Id: " + res.uEmail);
             System.out.println(" User Gender: " + res.uGender);
             System.out.println(" User SO: " + res.uSO);
+
+            System.out.println(" User Sub: " + res.sub);
+            System.out.println(" User Bio: " + res.note);
+            if(res.status == 1){
+              System.out.println(" User Status: Public");
+            }else{
+              System.out.println(" User Status: Blocked From Public View");
+            }
           }
           break;  
         case '2':
@@ -371,6 +394,14 @@ public class App {
               System.out.println(" Message ID: " + resid.uEmail);
               System.out.println(" User Gender: " + resid.uGender);
               System.out.println(" User SO: " + resid.uSO);
+
+              System.out.println(" User Sub: " + resid.sub);
+              System.out.println(" User Bio: " + resid.note);
+              if(resid.status == 1){
+                System.out.println(" User Status: Public");
+              }else{
+                System.out.println(" User Status: Blocked From Public View");
+              }
             }
           break;
         case '*':{
@@ -379,14 +410,22 @@ public class App {
             continue;
           System.out.println(" All Current Users");
           System.out.println(" -------------------------");
-          String printfmt = " [%3s] |  %-25s | %-30s | | %-15s | [%3s]%n";
-          System.out.printf(printfmt, "Id", "Username", "Email", "SO", "Gender");
-          System.out.println("--------------------------------------------------------------------------------------------------");
+          String printfmt = " [%3s] |  %-25s | %-30s | | %-15s | %-15s | %-15s | [%3s] |[%3s]%n";
+          System.out.printf(printfmt, "Id", "Username", "Email", "SO", "Sub", "Note", "Gender", "Status");
+          System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------");
           for (Database.UserRowData rd : resall) {
             String name = rd.uName.length() > 25 ? rd.uName.substring(0, 25) : rd.uName;
             String subemail = rd.uEmail.length() > 30 ? rd.uEmail.substring(0, 30) : rd.uEmail;
             String SO = rd.uSO.length() > 15 ? rd.uSO.substring(0,15) : rd.uSO; 
-            System.out.printf(printfmt, rd.uId, name, subemail, SO, rd.uGender);
+            String su = rd.sub.length() > 15 ? rd.sub.substring(0,15) : rd.sub;
+            if(rd.note != null){
+              String no = rd.note.length() > 15 ? rd.note.substring(0,15) : rd.note;
+              System.out.printf(printfmt, rd.uId, name, subemail, SO, su, no, rd.uGender, rd.status);
+            }else{
+              System.out.printf(printfmt, rd.uId, name, subemail, SO, su, rd.note, rd.uGender, rd.status);
+            }
+            
+            
           }
             break;
         }
@@ -402,6 +441,8 @@ public class App {
         case '+':
           String insuser = getString(in, "Enter Username");
           String inemail = getString(in, "Enter Email");
+          String insub = getString(in, "Enter Sub Value");
+          String innote = getString(in, "Enter Bio");
           if(insuser.length() > 50){
             System.out.println("Username length too long (must not exceed 50 characters)");
             break;
@@ -410,21 +451,40 @@ public class App {
             System.out.println("Email length too long (must not exceed 50 characters)");
             break;
           }
-          int resins = db.insertUser(insuser, inemail);
+          if(insub.length() > 255){
+            System.out.println("Sub length too long (must not exceed 255 characters)");
+            break;
+          }
+          if(innote.length() > 2048){
+            System.out.println("Note length too long (must not exceed 2048 characters)");
+            break;
+          }
+          int resins = db.insertUser(insuser, inemail, insub, innote);
           System.out.println(resins + " rows added");
           break;
         case '~':
           String upuser = getString(in, "Enter Username");
           int upgender = getInt(in, "Enter Gender (INT)");
           String upso = getString(in, "Enter SO");
+          String upnote = getString(in, "Enter Bio");
           int upuid = getInt(in, "Enter ID");
           if(upgender == -1 || upuid == -1)
             continue;
-          int upres = db.updateOneUser(upuser, upgender, upso, upuid);
+          int upres = db.updateOneUser(upuser, upgender, upso, upnote, upuid);
           if (upres == -1)
             continue;
           System.out.println(" " + upres + " users updated");
           break;
+        case 'h': {
+          int id = getInt(in, "Enter the user ID");
+          if (id == -1)
+            continue;
+          int resh = db.toggleStatusUse(id);
+          if (resh == -1)
+            continue;
+          System.out.println(" " + resh + " statuses updated");
+          break;
+        }
       }
     }
   }
@@ -522,6 +582,9 @@ public class App {
         case 'T':
           db.createTable();
           break;
+        case 'U':
+          db.updateView();
+          break;
         case 'D':
         Scanner scan = new Scanner(System.in);
         String input;
@@ -543,8 +606,30 @@ public class App {
             System.out.println(" [" + res.mId + "] " + res.mSubject);
             System.out.println(" Message: " + res.mMessage);
             System.out.println(" User: " + res.uID);
+            if(res.status == 1){
+              System.out.println(" Status: Visable To Users");
+            }else{
+              System.out.println(" Status: Hidden From Users");
+            }
+            
           }
           break;
+        }
+        case '2': {
+          ArrayList<Database.ViewRowData> res = db.selectAllView();
+          if (res == null)
+            continue;
+          System.out.println(" Current Posts By Username");
+          System.out.println(" -------------------------");
+          String printfmt = "%-40s | %-20s%n";
+          System.out.printf(printfmt, "Messgae", "Username");
+          System.out.println("--------------------------------------------------------------------------------------------------");
+          for (Database.ViewRowData rd : res) {
+            String message = rd.mMessage.length() > 40 ? rd.mMessage.substring(0, 40) : rd.mMessage;
+            String username = rd.uName.length() > 20 ? rd.uName.substring(0, 20) : rd.uName;
+            System.out.printf(printfmt, message, username);
+          }
+            break;
         }
         case '*': {
           ArrayList<Database.RowData> res = db.selectAll();
@@ -552,13 +637,13 @@ public class App {
             continue;
           System.out.println(" Current Database Contents");
           System.out.println(" -------------------------");
-          String printfmt = " [%3s] |  %-30s | %-40s | [%3s]%n";
-          System.out.printf(printfmt, "Id", "Subject", "Message", "User");
+          String printfmt = " [%3s] |  %-30s | %-40s | [%3s] | [%3s]%n";
+          System.out.printf(printfmt, "Id", "Subject", "Message", "User", "Status");
           System.out.println("--------------------------------------------------------------------------------------------------");
           for (Database.RowData rd : res) {
             String subject = rd.mSubject.length() > 30 ? rd.mSubject.substring(0, 30) : rd.mSubject;
             String message = rd.mMessage.length() > 40 ? rd.mMessage.substring(0, 40) : rd.mMessage;
-            System.out.printf(printfmt, rd.mId, subject, message, rd.uID);
+            System.out.printf(printfmt, rd.mId, subject, message, rd.uID, rd.status);
           }
             break;
         }
@@ -601,6 +686,16 @@ public class App {
           if (res == -1)
             continue;
           System.out.println(" " + res + " rows updated");
+          break;
+        }
+        case 'h': {
+          int id = getInt(in, "Enter the row ID");
+          if (id == -1)
+            continue;
+          int res = db.toggleStatus(id);
+          if (res == -1)
+            continue;
+          System.out.println(" " + res + " statuses updated");
           break;
         }
       }

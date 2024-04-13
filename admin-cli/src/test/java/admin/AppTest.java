@@ -70,25 +70,23 @@ public class AppTest extends TestCase {
     for (int i = 0; i < num; i++) {
       String subject = "Subject" + rngString();
       String message = "Message" + rngString();
-      sub.add(new RowData(i, subject, message, 7));
+      sub.add(new RowData(i, subject, message, 7, 1));
       assertTrue(db.insertRow(subject, message, 7) == 1); // add new element
     }
 
     // Check if database contains all elements we just added
-    /*
+    
     ArrayList<RowData> res = db.selectAll();
     assertTrue(res.containsAll(sub));
 
+    /* 
     for(int i = 0; i < num; i++){
       String email = "Email" + rngString();
       String username = "Username" + rngString();
       subU.add(new UserRowData(i, username, email, 0, "None"));
       assertTrue(db.insertUser(username, email) == 1);
     }
-
-    subC.add(new CommentRowData(num, "Comment", 32, 1));
-    assertTrue(db.insertComment("Comment", 32, 1) == 1); 
-     */
+    */
     
 
     /**
