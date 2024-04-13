@@ -31,8 +31,10 @@ public class App {
   static void messageMenu() {
     System.out.println("Message Menu");
     System.out.println("  [T] Create tblData");
+    System.out.println("  [U] Update userPostData");
     System.out.println("  [D] Drop tblData");
     System.out.println("  [1] Query for a specific post");
+    System.out.println("  [2] Query for all post with By Username");
     System.out.println("  [*] Query for all post");
     System.out.println("  [-] Delete a post");
     System.out.println("  [+] Insert a new posts");
@@ -580,6 +582,9 @@ public class App {
         case 'T':
           db.createTable();
           break;
+        case 'U':
+          db.updateView();
+          break;
         case 'D':
         Scanner scan = new Scanner(System.in);
         String input;
@@ -609,6 +614,22 @@ public class App {
             
           }
           break;
+        }
+        case '2': {
+          ArrayList<Database.ViewRowData> res = db.selectAllView();
+          if (res == null)
+            continue;
+          System.out.println(" Current Posts By Username");
+          System.out.println(" -------------------------");
+          String printfmt = "%-40s | %-20s%n";
+          System.out.printf(printfmt, "Messgae", "Username");
+          System.out.println("--------------------------------------------------------------------------------------------------");
+          for (Database.ViewRowData rd : res) {
+            String message = rd.mMessage.length() > 40 ? rd.mMessage.substring(0, 40) : rd.mMessage;
+            String username = rd.uName.length() > 20 ? rd.uName.substring(0, 20) : rd.uName;
+            System.out.printf(printfmt, message, username);
+          }
+            break;
         }
         case '*': {
           ArrayList<Database.RowData> res = db.selectAll();

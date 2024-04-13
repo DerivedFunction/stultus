@@ -59,6 +59,14 @@ public class Database {
    * A Prepared Statement making the status 0
    */
   private PreparedStatement mHidePublic;
+  /**
+   * A Prepared Statement making the status 0
+   */
+  private PreparedStatement updateViewTable;
+  /**
+   * View the SQL View Table
+   */
+  private PreparedStatement selectAllView;
 
 
   /* USER STATEMENTS *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -442,6 +450,44 @@ public class Database {
     }
   }
 
+  public  static class ViewRowData{
+    /**
+     * The message stored in this row
+     */
+    String mMessage;
+    /**
+     * Name for the user (username if you will)
+     */
+    String uName;
+
+    /**
+     * Method that constructs a ViewRowData object by providing values for its fields
+     * 
+     * @param um      the message 
+     * @param un      the username
+     */
+    public ViewRowData(String um, String un){
+      mMessage = um;
+      uName = un;
+    }
+    /**
+     * Method that checks if the message id, user id, and comment of one post is identical to another
+     * post
+     * 
+     * @param other the other object(post) that is being compared to the post being created
+     * @return boolean determining whether the two objects are equal or not
+     */
+    @Override
+    public boolean equals(Object other) {
+      ViewRowData obj = (ViewRowData) other;
+      if (this.mMessage != obj.mMessage)
+        return false;
+      if (!this.uName.equals(obj.uName))
+        return false;
+      return true;
+    }
+  }
+
   // Database constructor is private
   private Database() {
   }
@@ -512,6 +558,10 @@ public class Database {
                                                         + "userid INT NOT NULL,"
                                                         + "FOREIGN KEY (post_id) REFERENCES tblData(id) ON DELETE CASCADE,"
                                                         + "FOREIGN KEY (userid) REFERENCES userData(id) ON DELETE CASCADE)");
+
+      //Create SQL Views
+      db.updateViewTable = db.mConnection.prepareStatement("CREATE OR UPDATE VIEW userPostData AS SELECT message, username FROM tblData, userData");
+      db.selectAllView = db.mConnection.prepareStatement("SELECT * FROM userPostData");
 
       //Drop All Tables
       db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
@@ -731,6 +781,32 @@ public class Database {
       mDropTable.execute();
     } catch (SQLException e) {
       e.printStackTrace();
+    }
+  }
+
+  /**
+   * Method to create tblData. If it already exists, print error
+   */
+  void updateView() {
+    try {
+      updateViewTable.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  ArrayList<ViewRowData> selectAllView() {
+    ArrayList<ViewRowData> res = new ArrayList<>();
+    try {
+      ResultSet rs = selectAllView.executeQuery();
+      while (rs.next()) {
+        res.add(new ViewRowData(rs.getString("message"), rs.getString("username")));
+      }
+      rs.close();
+      return res;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
     }
   }
 
