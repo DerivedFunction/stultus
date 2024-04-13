@@ -240,7 +240,7 @@ public class App {
     // Set up route for serving main page
     Spark.get("/", (req, res) -> {
       boolean verified = getVerified(db, req);
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!verified) {
         res.redirect(LOGIN_HTML);
       } else {
@@ -355,7 +355,7 @@ public class App {
    */
   private static Route deleteIdea(final Gson gson, Database db) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       int userID = getUserIDfromCookie(req);
@@ -384,7 +384,7 @@ public class App {
    * @return userID
    */
   private static int getUserIDfromCookie(Request req) {
-    return TokenManager.getUserID(req.cookie(ID_TOKEN));
+    return SessionManager.getUserID(req.cookie(ID_TOKEN));
   }
 
   /**
@@ -424,7 +424,7 @@ public class App {
   private static Route putIdea(final Gson gson, Database db) {
     return (req, res) -> {
       boolean verified = getVerified(db, req);
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!verified) {
         return unAuthJSON(gson, res);
       }
@@ -450,7 +450,7 @@ public class App {
    */
   private static Route putUser(final Gson gson, Database db) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       String sub = req.cookie(SUB_TOKEN);
@@ -474,7 +474,7 @@ public class App {
    */
   private static Route putComment(final Gson gson, Database db) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       int userID = getUserIDfromCookie(req);
@@ -498,7 +498,7 @@ public class App {
   private static Route postUpVote(final Gson gson, Database db) {
     return (req, res) -> {
 
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       int userID = getUserIDfromCookie(req);
@@ -520,7 +520,7 @@ public class App {
    */
   private static Route postDownVote(final Gson gson, Database db) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       int userID = getUserIDfromCookie(req);
@@ -542,7 +542,7 @@ public class App {
    */
   private static Route postIdea(final Gson gson, Database db) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       int userID = getUserIDfromCookie(req);
@@ -565,7 +565,7 @@ public class App {
    */
   private static Route postComment(final Gson gson, Database db) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       int userID = getUserIDfromCookie(req);
@@ -589,7 +589,7 @@ public class App {
    */
   private static Route getAllIdeas(final Gson gson, Database db) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       ArrayList<PostData> posts = db.selectAll();
@@ -608,7 +608,7 @@ public class App {
    */
   private static Route getIdea(final Gson gson, Database db) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       int postID = getPostID(req);
@@ -629,7 +629,7 @@ public class App {
    */
   private static Route getUser(final Gson gson, Database db) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       int userID = Integer.parseInt(req.params(USER_ID));
@@ -650,7 +650,7 @@ public class App {
    */
   private static Route getUserFull(final Gson gson, Database db) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       int userID = getUserIDfromCookie(req);
@@ -672,7 +672,7 @@ public class App {
    */
   private static Route getCommentsForPost(final Gson gson, Database db, boolean needsUser, boolean needsPost) {
     return (req, res) -> {
-      // If it doesn't exist in TokenManager, return error
+      // If it doesn't exist in SessionManager, return error
       if (!getVerified(db, req))
         return unAuthJSON(gson, res);
       int postID = needsPost ? getPostID(req) : 0;
@@ -776,14 +776,17 @@ public class App {
     // Retrieve the value of the ID_TOKEN cookie
     String idToken = req.cookie(ID_TOKEN);
     String sub = req.cookie(SUB_TOKEN);
-    if (idToken == null || sub == null)
+    String ip = req.ip();
+    String userAgent = req.userAgent();
+    if (idToken == null || sub == null || ip == null || userAgent == null)
       return false;
-    int userID = TokenManager.getUserID(idToken);
+    int userID = SessionManager.getUserID(idToken);
     int userIDSub = db.findUserIDfromSub(sub);
+    Session session = new Session(ip, userAgent, userIDSub);
+    Session old = SessionManager.getSession(idToken);
     // Verify the token
-    // If it doesn't exist in TokenManager, return error
-    return TokenManager.containsToken(idToken)
-        && (userID == userIDSub);
+    // If it doesn't exist in SessionManager, return error
+    return session.equals(old) && (userID == userIDSub);
   }
 
   /**
@@ -823,12 +826,15 @@ public class App {
           }
         }
         userID = db.findUserIDfromSub(sub);
-        if (TokenManager.getToken(userID) != null) {
+        String ip = req.ip();
+        String userAgent = req.userAgent();
+        Session session = new Session(ip, userAgent, userID);
+        if (SessionManager.getToken(session) != null) {
           Log.info("User has already logged in. Deleting old credentials");
-          TokenManager.removeToken(userID);
+          SessionManager.removeToken(session);
         }
-        Log.info("Added new token to TokenManager, Adding new cookies to client");
-        res.cookie(ID_TOKEN, TokenManager.addToken(userID), 3600, true, true);
+        Log.info("New session: " + session.toString());
+        res.cookie(ID_TOKEN, SessionManager.addToken(session), 86400, true, true);
         res.cookie(SUB_TOKEN, sub, 3600, true, true);
         res.redirect(HOME_HTML);
       } else {
@@ -882,7 +888,7 @@ public class App {
       }
       if (userID > 0) {
         Log.info("A verified user is attempting to log out: " + db.getUserFull(userID).uEmail);
-        TokenManager.removeToken(userID);
+        SessionManager.removeToken(new Session(req.ip(), req.userAgent(), userID));
       } else {
         Log.info("A banned user or guest is logging out");
       }
