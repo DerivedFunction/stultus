@@ -51,6 +51,15 @@ public class Database {
    * A Prepared Statement for deleting the message table from the Database
    */
   private PreparedStatement mDropTable;
+  /**
+   * A Prepared Statement for making the status 1
+   */
+  private PreparedStatement mMakePublic;
+  /**
+   * A Prepared Statement making the status 0
+   */
+  private PreparedStatement mHidePublic;
+
 
   /* USER STATEMENTS *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /**
@@ -91,6 +100,15 @@ public class Database {
    */
   private PreparedStatement uInsertOne;
 
+  /**
+   * A Prepared Statement for making the status 1
+   */
+  private PreparedStatement uMakePublic;
+  /**
+   * A Prepared Statement making the status 0
+   */
+  private PreparedStatement uHidePublic;
+
   /*COMMENT STATEMENTS *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -129,6 +147,14 @@ public class Database {
    * A Prepared Statement for adding a new comment to the table from the Database
    */
   private PreparedStatement cInsertComment;
+  /**
+   * A Prepared Statement for making the status 1
+   */
+  private PreparedStatement cMakePublic;
+  /**
+   * A Prepared Statement making the status 0
+   */
+  private PreparedStatement cHidePublic;
 
 
   /*VOTING STATEMENTS *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,6 +401,10 @@ public class Database {
      * The user ID of the message sender
      */
     int uId;
+     /**
+     * visability of comment
+     */
+    int status;
 
     /**
      * Method that constructs a RowData object by providing values for its fields
@@ -384,11 +414,12 @@ public class Database {
      * @param mid      the id of the message being commented on
      * @param uid      the id of the user commenting
      */
-    public CommentRowData(int cid, String com, int mid, int uid) {
+    public CommentRowData(int cid, String com, int mid, int uid, int stat) {
       cId = cid;
       comment = com;
       mId = mid;
       uId = uid;
+      status = stat;
     }
 
     /**
@@ -497,6 +528,8 @@ public class Database {
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
       db.mUpdateOne = db.mConnection.prepareStatement(
           "UPDATE tblData SET message=? WHERE id=?");
+      db.mMakePublic=db.mConnection.prepareStatement("UPDATE tblData SET status=status+1 WHERE id=? AND status=0");
+      db.mHidePublic=db.mConnection.prepareStatement("UPDATE tblData SET status=status-1 WHERE id=? AND status=1");
 
       // Standard CRUD User operations
       db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM userData WHERE id=?");
@@ -505,6 +538,8 @@ public class Database {
       db.uSelectUser = db.mConnection.prepareStatement("SELECT * FROM userData WHERE id=?");
       db.uUpdateOne = db.mConnection.prepareStatement("UPDATE userData SET username=?, gender=?, so=?, note=? where id=?");
       db.uSelectAll = db.mConnection.prepareStatement("SELECT * FROM userData");
+      db.uMakePublic=db.mConnection.prepareStatement("UPDATE userData SET status=status+1 WHERE id=? AND status=0");
+      db.uHidePublic=db.mConnection.prepareStatement("UPDATE userData SET status=status-1 WHERE id=? AND status=1");
 
 
       // Standard CRUD Voting operations
@@ -520,6 +555,8 @@ public class Database {
       db.cDeleteComment = db.mConnection.prepareStatement("DELETE commentData  WHERE id=? and userid=?");
       db.cUpdateComment = db.mConnection.prepareStatement("UPDATE commentData  SET comMessage=? WHERE id=? AND userid=?");
       db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO commentData (comMessage, post_id, userid) VALUES (?,?,?)");
+      db.cMakePublic=db.mConnection.prepareStatement("UPDATE commentData SET status=status+1 WHERE id=? AND status=0");
+      db.cHidePublic=db.mConnection.prepareStatement("UPDATE commentData SET status=status-1 WHERE id=? AND status=1");
 
 
     } catch (SQLException e) {
@@ -655,7 +692,26 @@ public class Database {
     }
     return res;
   }
-
+  /**
+   * Toggle Visability of Post
+   * @param id The id of the row to add the like
+   * @return the number of rows updated
+   */
+  int toggleStatus(int id){
+    int res=-1;
+    try {
+      mMakePublic.setInt(1,id);
+      res = mMakePublic.executeUpdate();
+      if(res ==0){
+        mHidePublic.setInt(1, id);
+        res=mHidePublic.executeUpdate();
+      }
+    }catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+  
   /**
    * Method to create tblData. If it already exists, print error
    */
@@ -806,6 +862,25 @@ public class Database {
     }
     return res;
   }
+  /**
+   * Toggle Visability of User
+   * @param id The id of the row to add the like
+   * @return the number of rows updated
+   */
+  int toggleStatusUse(int id){
+    int res=-1;
+    try {
+      uMakePublic.setInt(1,id);
+      res = uMakePublic.executeUpdate();
+      if(res ==0){
+        uHidePublic.setInt(1, id);
+        res=uHidePublic.executeUpdate();
+      }
+    }catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
 
   /**
    * Method to create userData. If it already exists, print error
@@ -907,7 +982,7 @@ public class Database {
       ResultSet rs = cSelectComment.executeQuery();
       if (rs.next()) {
         res =new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
-          rs.getInt("post_id"), rs.getInt("userid"));
+          rs.getInt("post_id"), rs.getInt("userid"), rs.getInt("status"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -929,7 +1004,7 @@ public class Database {
       ResultSet rs = cSelectAllCommentsForAPost.executeQuery();
       while (rs.next()) {
         res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
-            rs.getInt("post_id"), rs.getInt("userid")));
+            rs.getInt("post_id"), rs.getInt("userid"), rs.getInt("status")));
       }
       rs.close();
       return res;
@@ -951,7 +1026,7 @@ public class Database {
       ResultSet rs = cSelectAllCommentsForAUser.executeQuery();
       while (rs.next()) {
         res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
-            rs.getInt("post_id"), rs.getInt("userid")));
+            rs.getInt("post_id"), rs.getInt("userid"), rs.getInt("status")));
       }
       rs.close();
       return res;
@@ -976,7 +1051,7 @@ public class Database {
       ResultSet rs = cSelectAllCommentsForAUserANDPost.executeQuery();
       while (rs.next()) {
         res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
-            rs.getInt("post_id"), rs.getInt("userid")));
+            rs.getInt("post_id"), rs.getInt("userid"), rs.getInt("status")));
       }
       rs.close();
       return res;
@@ -984,6 +1059,25 @@ public class Database {
       e.printStackTrace();
       return null;
     }
+  }
+  /**
+   * Toggle Visability of Comment
+   * @param id The id of the row to add the like
+   * @return the number of rows updated
+   */
+  int toggleStatusCom(int id){
+    int res=-1;
+    try {
+      cMakePublic.setInt(1,id);
+      res = cMakePublic.executeUpdate();
+      if(res ==0){
+        cHidePublic.setInt(1, id);
+        res=cHidePublic.executeUpdate();
+      }
+    }catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return res;
   }
 
   /**

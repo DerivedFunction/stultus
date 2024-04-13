@@ -36,7 +36,8 @@ public class App {
     System.out.println("  [*] Query for all post");
     System.out.println("  [-] Delete a post");
     System.out.println("  [+] Insert a new posts");
-    System.out.println("  [~] Update a posts");
+    System.out.println("  [~] Update a post");
+    System.out.println("  [h] Hide/Unhide a post");
     System.out.println("  [q] Quit Table");
     System.out.println("  [?] Help (this message)");
   }
@@ -53,6 +54,7 @@ public class App {
     System.out.println("  [-] Delete a user");
     System.out.println("  [+] Insert a new user");
     System.out.println("  [~] Update a user");
+    System.out.println("  [h] Hide/Unhide a user");
     System.out.println("  [q] Quit Table");
     System.out.println("  [?] Help (this message)");
   }
@@ -69,6 +71,7 @@ public class App {
     System.out.println("  [-] Delete a comment");
     System.out.println("  [+] Insert a new comment");
     System.out.println("  [~] Update a comment");
+    System.out.println("  [h] Hide/Unhide a Comment");
     System.out.println("  [q] Quit Table");
     System.out.println("  [?] Help (this message)");
   }
@@ -96,7 +99,7 @@ public class App {
    */
   static char prompt(BufferedReader in) {
     // valid actions
-    String actions = "TD1234*-+~q?IUCL";
+    String actions = "TD1234*-+~hq?IUCL";
     // We repeat until a valid char is selected
     while (true) {
       System.out.print("[" + actions + "] :> ");
@@ -243,7 +246,7 @@ public class App {
             System.out.println("--------------------------------------------------------------------------------------------------");
             for (Database.CommentRowData rd : res) {
               String comment = rd.comment.length() > 30 ? rd.comment.substring(0, 30) : rd.comment;
-              System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId);
+              System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId, rd.status);
             }
           break;
         case '2':
@@ -257,7 +260,7 @@ public class App {
           System.out.println("--------------------------------------------------------------------------------------------------");
           for (Database.CommentRowData rd : res_1) {
             String comment = rd.comment.length() > 30 ? rd.comment.substring(0, 30) : rd.comment;
-            System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId);
+            System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId, rd.status);
           }
           break;
         case '3':
@@ -272,7 +275,7 @@ public class App {
           System.out.println("--------------------------------------------------------------------------------------------------");
           for (Database.CommentRowData rd : res_2) {
             String comment = rd.comment.length() > 30 ? rd.comment.substring(0, 30) : rd.comment;
-            System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId);
+            System.out.printf(printfmt, rd.cId, comment, rd.mId, rd.uId, rd.status);
           }
           break;
         case '-':{
@@ -312,6 +315,16 @@ public class App {
           int resup = db.updateComment(messageUpd, pidup, uidup);
           System.out.println(resup + " comments updated");
           break;
+        case 'h': {
+          int idh = getInt(in, "Enter the user ID");
+          if (idh == -1)
+            continue;
+          int resh = db.toggleStatusCom(idh);
+          if (resh == -1)
+            continue;
+          System.out.println(" " + resh + " statuses updated");
+          break;
+        }
         case 'q':
           cont = false;
           break;
@@ -455,6 +468,16 @@ public class App {
             continue;
           System.out.println(" " + upres + " users updated");
           break;
+        case 'h': {
+          int id = getInt(in, "Enter the user ID");
+          if (id == -1)
+            continue;
+          int resh = db.toggleStatusUse(id);
+          if (resh == -1)
+            continue;
+          System.out.println(" " + resh + " statuses updated");
+          break;
+        }
       }
     }
   }
@@ -637,6 +660,16 @@ public class App {
           if (res == -1)
             continue;
           System.out.println(" " + res + " rows updated");
+          break;
+        }
+        case 'h': {
+          int id = getInt(in, "Enter the row ID");
+          if (id == -1)
+            continue;
+          int res = db.toggleStatus(id);
+          if (res == -1)
+            continue;
+          System.out.println(" " + res + " statuses updated");
           break;
         }
       }
