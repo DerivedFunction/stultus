@@ -533,7 +533,7 @@ public class Database {
 
       // Standard CRUD User operations
       db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM userData WHERE id=?");
-      db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO userData (username,email,note) VALUES (?,?,?)");
+      db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO userData (username,email,sub,note) VALUES (?,?,?,?)");
       db.uSelectUserByEmail = db.mConnection.prepareStatement("SELECT * FROM userData WHERE email=?");
       db.uSelectUser = db.mConnection.prepareStatement("SELECT * FROM userData WHERE id=?");
       db.uUpdateOne = db.mConnection.prepareStatement("UPDATE userData SET username=?, gender=?, so=?, note=? where id=?");
@@ -809,12 +809,13 @@ public class Database {
    * @param email The message body for this new row
    * @return The number of rows that were inserted
    */
-  int insertUser(String username, String email, String note) {
+  int insertUser(String username, String email, String sub, String note) {
     int count = 0;
     try {
       uInsertOne.setString(1, username);
       uInsertOne.setString(2, email);
-      uInsertOne.setString(3, note);
+      uInsertOne.setString(3, sub);
+      uInsertOne.setString(4, note);
       count += uInsertOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();

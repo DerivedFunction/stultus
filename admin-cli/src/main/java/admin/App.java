@@ -439,6 +439,7 @@ public class App {
         case '+':
           String insuser = getString(in, "Enter Username");
           String inemail = getString(in, "Enter Email");
+          String insub = getString(in, "Enter Sub Value");
           String innote = getString(in, "Enter Bio");
           if(insuser.length() > 50){
             System.out.println("Username length too long (must not exceed 50 characters)");
@@ -448,11 +449,15 @@ public class App {
             System.out.println("Email length too long (must not exceed 50 characters)");
             break;
           }
+          if(insub.length() > 255){
+            System.out.println("Sub length too long (must not exceed 255 characters)");
+            break;
+          }
           if(innote.length() > 2048){
             System.out.println("Note length too long (must not exceed 2048 characters)");
             break;
           }
-          int resins = db.insertUser(insuser, inemail, innote);
+          int resins = db.insertUser(insuser, inemail, insub, innote);
           System.out.println(resins + " rows added");
           break;
         case '~':
