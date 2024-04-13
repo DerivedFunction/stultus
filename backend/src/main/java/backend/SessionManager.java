@@ -6,7 +6,7 @@ import java.util.Map;
 import java.security.SecureRandom;
 
 /**
- * The SessionManger class manages user tokens and their associated user IDs.
+ * The SessionManger class manages user tokens and their associated sessions.
  */
 public class SessionManager {
 
@@ -39,7 +39,7 @@ public class SessionManager {
     }
 
     /**
-     * HashMap to store the user ID as the key and the associated token as the
+     * HashMap to store the session as the key and the associated token as the
      * value.
      */
     private static final Map<Session, String> sessiontoToken = new HashMap<>();
@@ -51,7 +51,7 @@ public class SessionManager {
     private static final Map<String, Session> tokentoSession = new HashMap<>();
 
     /**
-     * Adds a token and its associated user ID to the manager.
+     * Adds a token and its associated session to the manager.
      *
      * @param session The session to associate with the token.
      * @return the user session token
@@ -84,10 +84,10 @@ public class SessionManager {
     }
 
     /**
-     * Retrieves the user ID associated with the given token.
+     * Retrieves the session associated with the given token.
      *
      * @param token The token to retrieve the ID.
-     * @return The user ID associated with the token, or 0 if the token is not
+     * @return The userID associated with the token, or 0 if the token is not
      *         found.
      */
     public static int getUserID(String token) {
@@ -116,9 +116,9 @@ public class SessionManager {
     }
 
     /**
-     * Removes all tokens associated with the given user ID from the manager.
+     * Removes all tokens associated with the given session from the manager.
      *
-     * @param session The user ID for which to remove all tokens.
+     * @param session The session for which to remove all tokens.
      */
     public static void removeToken(Session session) {
         String token = sessiontoToken.remove(session);
