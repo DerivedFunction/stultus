@@ -6,7 +6,7 @@ import java.util.Map;
 import java.security.SecureRandom;
 
 /**
- * The TokenManager class manages user tokens and their associated user IDs.
+ * The SessionManger class manages user tokens and their associated user IDs.
  */
 public class SessionManager {
 
@@ -29,6 +29,7 @@ public class SessionManager {
      * From https://stackoverflow.com/a/157202
      * Generate a new random token
      * 
+     * @return a randomized session token
      */
     private static String randomString() {
         StringBuilder sb = new StringBuilder(LEN);
@@ -53,6 +54,7 @@ public class SessionManager {
      * Adds a token and its associated user ID to the manager.
      *
      * @param session The session to associate with the token.
+     * @return the user session token
      */
     public static String addToken(Session session) {
         String token = randomString();
@@ -62,20 +64,20 @@ public class SessionManager {
     }
 
     /**
-     * Retrieves the token associated with the given user ID.
+     * Retrieves the session token associated with the given session
      *
-     * @param session The user ID for which to retrieve the token.
-     * @return The token associated with the user ID, or null if no token is found.
+     * @param session The session for which to retrieve the token.
+     * @return The token associated with the session, or null if no token is found.
      */
     public static String getToken(Session session) {
         return sessiontoToken.get(session);
     }
 
     /**
-     * Retrieves the token associated with the given user ID.
+     * Retrieves the token associated with the given session string
      *
-     * @param token The user ID for which to retrieve the token.
-     * @return The token associated with the user ID, or null if no token is found.
+     * @param token The session string for which to retrieve the token.
+     * @return The session associated with the string, or null if no token is found.
      */
     public static Session getSession(String token) {
         return tokentoSession.get(token);
@@ -94,20 +96,20 @@ public class SessionManager {
     }
 
     /**
-     * Checks if the TokenManager contains the given token.
+     * Checks if the SessionManager contains the given token.
      *
-     * @param session The token to check for.
-     * @return True if the token is found in the TokenManager, otherwise false.
+     * @param session The session to check for.
+     * @return True if the token is found in the SessionManager, otherwise false.
      */
     public static boolean containsToken(Session session) {
         return sessiontoToken.containsKey(session);
     }
 
     /**
-     * Checks if the TokenManager contains the given token.
+     * Checks if the SessionManager contains the given token.
      *
      * @param token The token to check for.
-     * @return True if the token is found in the TokenManager, otherwise false.
+     * @return True if the token is found in the SessionManager, otherwise false.
      */
     public static boolean containsSession(String token) {
         return tokentoSession.containsKey(token);
