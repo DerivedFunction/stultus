@@ -782,9 +782,8 @@ public class App {
     int userIDSub = db.findUserIDfromSub(sub);
     // Verify the token
     // If it doesn't exist in TokenManager, return error
-    return (Oauth.verifyToken(idToken)
-        && TokenManager.containsToken(idToken)
-        && (userID == userIDSub));
+    return TokenManager.containsToken(idToken)
+        && (userID == userIDSub);
   }
 
   /**
@@ -828,10 +827,9 @@ public class App {
           Log.info("User has already logged in. Deleting old credentials");
           TokenManager.removeToken(userID);
         }
-        TokenManager.addToken(userID, idToken);
         Log.info("Added new token to TokenManager, Adding new cookies to client");
-        res.cookie(ID_TOKEN, idToken, 3600, true);
-        res.cookie(SUB_TOKEN, sub, 3600, true);
+        res.cookie(ID_TOKEN, TokenManager.addToken(userID), 3600, true, true);
+        res.cookie(SUB_TOKEN, sub, 3600, true, true);
         res.redirect(HOME_HTML);
       } else {
         // Token is invalid or missing
@@ -994,7 +992,5 @@ public class App {
       response.header("Access-Control-Request-Method", methods);
       response.header("Access-Control-Allow-Headers", headers);
     });
-
   }
-
 }

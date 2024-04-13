@@ -3,10 +3,39 @@ package backend;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.security.SecureRandom;
+
 /**
  * The TokenManager class manages user tokens and their associated user IDs.
  */
 public class TokenManager {
+
+    /**
+     * Our chars we want to use for our session
+     */
+    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    /**
+     * Constructs a secure random number generator (RNG) implementing the default
+     * random number algorithm
+     */
+    static SecureRandom rnd = new SecureRandom();
+
+    /**
+     * Sets the session token length
+     */
+    static final int LEN = Integer.parseInt(System.getenv("SESSION_LENGTH"));
+
+    /**
+     * From https://stackoverflow.com/a/157202
+     * Generate a new random token
+     * 
+     */
+    private static String randomString() {
+        StringBuilder sb = new StringBuilder(LEN);
+        for (int i = 0; i < LEN; i++)
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        return sb.toString();
+    }
 
     /**
      * HashMap to store the user ID as the key and the associated token as the
@@ -29,6 +58,18 @@ public class TokenManager {
     public static void addToken(int userID, String token) {
         userIDtoToken.put(userID, token);
         TokentoUserID.put(token, userID); // Update the reverse lookup map
+    }
+
+    /**
+     * Adds a token and its associated user ID to the manager.
+     *
+     * @param userID The user ID to associate with the token.
+     */
+    public static String addToken(int userID) {
+        String token = randomString();
+        userIDtoToken.put(userID, token);
+        TokentoUserID.put(token, userID); // Update the reverse lookup map
+        return token; // Returns user session token
     }
 
     /**
