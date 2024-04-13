@@ -22,7 +22,7 @@ other's ideas. All relavant information about new updates and releases are in [`
 - Project Manger: **Robert Kilsdonk**, [rok326@lehigh.edu](mailto:rok326@lehigh.edu)
 - Admin: **Patrick Boles**, [pjb325@lehigh.edu](mailto:pjb325@lehigh.edu)
 - Backend: **Denny Li**, [del226@lehigh.edu](mailto:del226@lehigh.edu)
-- Front End:  **Thomas Chakif**, [thc225@lehigh.edu](mailto:thc225@lehigh.edu)
+- Front End: **Thomas Chakif**, [thc225@lehigh.edu](mailto:thc225@lehigh.edu)
 
 ### How to build and run on Dokku
 
@@ -77,6 +77,7 @@ git checkout backend
 - `AUTH`: (`1` = need verification, `0` = no verification)
 - `SAME_DOMAIN`: `true` or `false` if only certain domains are allowed
 - `logging`: `true` or `false` if extra logging information is necessary
+- `SESSION_LENGTH`: length of user session randomization string
 
 ### Useful Dokku commands
 
