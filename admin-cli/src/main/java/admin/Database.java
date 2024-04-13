@@ -186,6 +186,11 @@ public class Database {
     int uID;
 
     /**
+     * Mesage Status
+     */
+    int status;
+
+    /**
      * Method that constructs a RowData object by providing values for its fields
      * 
      * @param id      the id of the message
@@ -193,11 +198,12 @@ public class Database {
      * @param message the user-inputted message/content of their post
      * @param uid the number of likes a message has
      */
-    public RowData(int id, String subject, String message, int uid) {
+    public RowData(int id, String subject, String message, int uid, int stat) {
       mId = id;
       mSubject = subject;
       mMessage = message;
       uID = uid;
+      status = stat;
     }
 
     /**
@@ -244,6 +250,18 @@ public class Database {
      * The Sexual Orientation stored in this row
      */
     String uSO;
+    /**
+     * The Google OAuth Code
+     */
+    String sub;
+    /**
+     * The User's Bio
+     */
+    String note;
+    /**
+     * The User's Bio
+     */
+    int status;
 
     /**
      * Method that constructs a RowData object by providing values for its fields
@@ -254,12 +272,15 @@ public class Database {
      * @param gender   the users gender
      * @param SO the users gender orientation
      */
-    public UserRowData(int id, String name, String email, int gender, String SO) {
+    public UserRowData(int id, String name, String email, int gender, String SO, String su, String not, int stat) {
       uId = id;
       uName = name;
       uEmail = email;
       uGender = gender;
       uSO = SO;
+      sub = su;
+      note = not; 
+      status = stat;
     }
 
     /**
@@ -431,30 +452,35 @@ public class Database {
                                                         + "subject VARCHAR(100) NOT NULL,"
                                                         + "message VARCHAR(1024) NOT NULL,"
                                                         + "userid INT,"
-                                                        + "FOREIGN KEY (userid) REFERENCES userData(id))");
+                                                        + "status INT DEFAULT 1,"
+                                                        + "FOREIGN KEY (userid) REFERENCES userData(id) ON DELETE CASCADE)");
       //Create User Table
       db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE userData ("
                                                         + "id SERIAL PRIMARY KEY,"
                                                         + "username VARCHAR(50) NOT NULL,"
                                                         + "email VARCHAR(50) NOT NULL UNIQUE,"
                                                         + "gender INT DEFAULT 0,"
-                                                        + "so VARCHAR(10) DEFAULT 'private')");
+                                                        + "so VARCHAR(10) DEFAULT 'private',"
+                                                        + "sub CHAR(255) NOT NULL UNIQUE,"
+                                                        + "note CHAR(2048) NOT NULL,"
+                                                        + "status INT DEFAULT 1)");
       //Create Comment Table
       db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE commentData  ("
                                                         + "id SERIAL PRIMARY KEY,"
                                                         + "comMessage VARCHAR(2048) NOT NULL,"
                                                         + "post_id INT,"
                                                         + "userid INT,"
-                                                        + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
-                                                        + "FOREIGN KEY (userid) REFERENCES userData(id))");
+                                                        + "status INT DEFAULT 1,"
+                                                        + "FOREIGN KEY (post_id) REFERENCES tblData(id) ON DELETE CASCADE,"
+                                                        + "FOREIGN KEY (userid) REFERENCES userData(id) ON DELETE CASCADE)");
       //Create Like Table
       db.lCreateTable = db.mConnection.prepareStatement("CREATE TABLE likeData ("
                                                         + "id SERIAL PRIMARY KEY,"
-                                                        + "post_id INT,"
-                                                        + "vote INT,"
-                                                        + "userid INT,"
-                                                        + "FOREIGN KEY (post_id) REFERENCES tblData(id),"
-                                                        + "FOREIGN KEY (userid) REFERENCES userData(id))");
+                                                        + "post_id INT NOT NULL,"
+                                                        + "vote INT NOT NULL,"
+                                                        + "userid INT NOT NULL,"
+                                                        + "FOREIGN KEY (post_id) REFERENCES tblData(id) ON DELETE CASCADE,"
+                                                        + "FOREIGN KEY (userid) REFERENCES userData(id) ON DELETE CASCADE)");
 
       //Drop All Tables
       db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
@@ -465,7 +491,7 @@ public class Database {
       // Standard CRUD Messages operations
       db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblData WHERE id=?");
       db.mInsertOne = db.mConnection.prepareStatement(
-          "INSERT INTO tblData VALUES (default, ?, ?, ?)");
+          "INSERT INTO tblData VALUES (default, ?, ?, ?, default)");
       db.mSelectAll = db.mConnection.prepareStatement(
           "SELECT * FROM tblData");
       db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
@@ -474,10 +500,10 @@ public class Database {
 
       // Standard CRUD User operations
       db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM userData WHERE id=?");
-      db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO userData (username,email) VALUES (?,?)");
+      db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO userData (username,email,note) VALUES (?,?,?)");
       db.uSelectUserByEmail = db.mConnection.prepareStatement("SELECT * FROM userData WHERE email=?");
       db.uSelectUser = db.mConnection.prepareStatement("SELECT * FROM userData WHERE id=?");
-      db.uUpdateOne = db.mConnection.prepareStatement("UPDATE userData SET username=?, gender=?, so=? where id=?");
+      db.uUpdateOne = db.mConnection.prepareStatement("UPDATE userData SET username=?, gender=?, so=?, note=? where id=?");
       db.uSelectAll = db.mConnection.prepareStatement("SELECT * FROM userData");
 
 
@@ -493,7 +519,7 @@ public class Database {
       db.cSelectComment = db.mConnection.prepareStatement("SELECT * commentData  WHERE id=?");
       db.cDeleteComment = db.mConnection.prepareStatement("DELETE commentData  WHERE id=? and userid=?");
       db.cUpdateComment = db.mConnection.prepareStatement("UPDATE commentData  SET comMessage=? WHERE id=? AND userid=?");
-      db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO commentData  (comMessage, post_id, userid) VALUES (?,?,?)");
+      db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO commentData (comMessage, post_id, userid) VALUES (?,?,?)");
 
 
     } catch (SQLException e) {
@@ -563,7 +589,7 @@ public class Database {
       ResultSet rs = mSelectAll.executeQuery();
       while (rs.next()) {
         res.add(new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message"), rs.getInt("userid")));
+            rs.getString("message"), rs.getInt("userid"), rs.getInt("status")));
       }
       rs.close();
       return res;
@@ -586,7 +612,7 @@ public class Database {
       ResultSet rs = mSelectOne.executeQuery();
       if (rs.next()) {
         res = new RowData(rs.getInt("id"), rs.getString("subject"),
-            rs.getString("message"), rs.getInt("userid"));
+            rs.getString("message"), rs.getInt("userid"), rs.getInt("status"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -665,7 +691,8 @@ public class Database {
       ResultSet rs = uSelectAll.executeQuery();
       while (rs.next()) {
         res.add(new UserRowData(rs.getInt("id"), rs.getString("username"),
-              rs.getString("email"), rs.getInt("gender"), rs.getString("so")));
+              rs.getString("email"), rs.getInt("gender"), rs.getString("so"),
+              rs.getString("sub"), rs.getString("note"), rs.getInt("status")));
       }
       rs.close();
       return res;
@@ -688,7 +715,8 @@ public class Database {
       ResultSet rs = uSelectUser.executeQuery();
       if (rs.next()) {
         res = new UserRowData(rs.getInt("id"), rs.getString("username"),
-            rs.getString("email"), rs.getInt("gender"), rs.getString("so"));
+            rs.getString("email"), rs.getInt("gender"), rs.getString("so"),
+            rs.getString("sub"), rs.getString("note"), rs.getInt("status"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -709,7 +737,8 @@ public class Database {
       ResultSet rs = uSelectUserByEmail.executeQuery();
       if (rs.next()) {
         res = new UserRowData(rs.getInt("id"), rs.getString("username"),
-            rs.getString("email"), rs.getInt("gender"), rs.getString("so"));
+            rs.getString("email"), rs.getInt("gender"), rs.getString("so"),
+            rs.getString("sub"), rs.getString("note"), rs.getInt("status"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -724,11 +753,12 @@ public class Database {
    * @param email The message body for this new row
    * @return The number of rows that were inserted
    */
-  int insertUser(String username, String email) {
+  int insertUser(String username, String email, String note) {
     int count = 0;
     try {
       uInsertOne.setString(1, username);
       uInsertOne.setString(2, email);
+      uInsertOne.setString(3, note);
       count += uInsertOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -762,13 +792,14 @@ public class Database {
    * @param id The id of the new user
    * @return the number of users deleted, -1 if error
    */
-  int updateOneUser(String username, int gender, String so, int id) {
+  int updateOneUser(String username, int gender, String so, String note, int id) {
     int res = -1;
     try {
       uUpdateOne.setString(1, username);
       uUpdateOne.setInt(2, gender);
       uUpdateOne.setString(3, so);
-      uUpdateOne.setInt(4, id);
+      uUpdateOne.setString(4, note);
+      uUpdateOne.setInt(5, id);
       res = uUpdateOne.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
