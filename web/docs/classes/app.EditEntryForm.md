@@ -12,13 +12,19 @@ EditEntryForm contains all code for editing an entry
 
 - [constructor](app.EditEntryForm.md#constructor)
 
+### Properties
+
+- [container](app.EditEntryForm.md#container)
+- [id](app.EditEntryForm.md#id)
+- [message](app.EditEntryForm.md#message)
+- [title](app.EditEntryForm.md#title)
+
 ### Methods
 
 - [clearForm](app.EditEntryForm.md#clearform)
 - [init](app.EditEntryForm.md#init)
 - [onSubmitResponse](app.EditEntryForm.md#onsubmitresponse)
 - [submitForm](app.EditEntryForm.md#submitform)
-- [updateUserProfile](app.EditEntryForm.md#updateuserprofile)
 
 ## Constructors
 
@@ -35,7 +41,55 @@ when clicked
 
 #### Defined in
 
-[app.ts:174](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-174)
+[app.ts:188](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-188)
+
+## Properties
+
+### container
+
+• **container**: `HTMLElement`
+
+The HTML element for the container of the entire module
+
+#### Defined in
+
+[app.ts:182](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-182)
+
+___
+
+### id
+
+• **id**: `HTMLInputElement`
+
+The HTML element for id
+
+#### Defined in
+
+[app.ts:177](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-177)
+
+___
+
+### message
+
+• **message**: `HTMLInputElement`
+
+The HTML element for message
+
+#### Defined in
+
+[app.ts:172](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-172)
+
+___
+
+### title
+
+• **title**: `HTMLInputElement`
+
+The HTML element for title
+
+#### Defined in
+
+[app.ts:167](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-167)
 
 ## Methods
 
@@ -51,7 +105,7 @@ Clear the form's input fields
 
 #### Defined in
 
-[app.ts:221](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-221)
+[app.ts:228](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-228)
 
 ___
 
@@ -74,7 +128,7 @@ when clicked
 
 #### Defined in
 
-[app.ts:191](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-191)
+[app.ts:203](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-203)
 
 ___
 
@@ -97,7 +151,7 @@ result.
 
 #### Defined in
 
-[app.ts:301](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-301)
+[app.ts:298](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-298)
 
 ___
 
@@ -113,24 +167,4 @@ Check if the input fields are both valid, and if so, do an AJAX call.
 
 #### Defined in
 
-[app.ts:238](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-238)
-
-___
-
-### updateUserProfile
-
-▸ **updateUserProfile**(`data`): `void`
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `data` | [`UserProfile`](../interfaces/app.UserProfile.md) |
-
-#### Returns
-
-`void`
-
-#### Defined in
-
-[app.ts:317](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-317)
+[app.ts:241](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-241)

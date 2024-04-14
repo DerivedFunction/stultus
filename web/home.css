@@ -1,0 +1,307 @@
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Light gray background */
+    margin: 0;
+    padding: 0;
+  }
+  img {
+    max-width: 100%; /* Ensure images don't exceed the width of their container */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Prevents extra space beneath images */
+  }
+  /* CSS rules specifically for ul elements with class "navbar" */
+  ul.navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333; /* Dark background for the navigation bar */
+  }
+  
+  /* CSS rules specifically for li elements inside ul.navbar */
+  ul.navbar li {
+    float: left;
+  }
+  
+  /* CSS rules specifically for anchor elements inside li elements inside ul.navbar */
+  ul.navbar li a {
+    display: block;
+    color: #ffffff; /* White text for the navigation links */
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  .navbuttons {
+    background-color: #333; /* Dark gray background */
+    border: none;
+    border-radius: 0;
+    padding: 10px 20px; /* Reduced padding */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px; /* Reduced font size */
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+  }
+  
+  .navbutton {
+    color: #ffffff; /* Black text for buttons */
+    padding: 8px 16px; /* Reduced padding */
+  }
+  
+  .navbutton:hover {
+    background-color: #000; /* hover background */
+    color: #ffffff; /* White hover text */
+  }
+  
+  .scrollTitle {
+    background-color: #0079d3; /* blue background for scroll title */
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+  }
+  
+  .scrollTitle h3 {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #999999; /* Light gray border */
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  textarea {
+    height: 8em;
+  }
+  
+  .messageBox {
+    border: 1px solid #999999; /* Light gray border */
+    border-radius: 10px;
+    padding: 20px;
+  }
+  
+  #addButton {
+    margin-right: 10px;
+  }
+  
+  #InvalidContent {
+    background-color: #ffcccc; /* Light red background */
+    color: #cc0000; /* Dark red text color */
+    padding: 10px; /* Padding around the content */
+    margin-top: 10px; /* Add some space at the top */
+    border: 1px solid #cc0000; /* Dark red border */
+    border-radius: 4px; /* Rounded corners */
+    text-align: center; /* Center the text */
+    display: none;
+    position: fixed; /* Fixed position */
+    bottom: 0; /* Align to the bottom of the screen */
+    left: 50%; /* Align to the center horizontally */
+    transform: translateX(-50%); /* Center horizontally */
+    max-width: 80%; /* Set maximum width */
+    z-index: 9999; /* Ensure it appears in front of everything */
+    overflow: hidden; /* Prevent text overflow */
+    white-space: nowrap; /* Prevent line breaks */
+    text-overflow: ellipsis; /* Display ellipsis for overflow */
+  }
+  
+  /* Table styling */
+  table {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    padding: 10px;
+    width: 100%;
+  }
+  
+  td {
+    border: solid 2px #333; /* Darker and thicker border */
+    border-style: solid none;
+    padding: 10px;
+  }
+  
+  td:first-child {
+    border-left-style: solid;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  
+  td:last-child {
+    border-right-style: solid;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  
+  tr:hover {
+    background-color: #cce6ff;
+  }
+  
+  .postTitle,
+  #messageTitle {
+    font-weight: bold;
+    color: #0079d3; /* Reddit's primary color for titles */
+    margin-bottom: 5px; /* Add some spacing below the title */
+  }
+  .postAuthor,
+  .commentAuthor,
+  #messageAuthor {
+    font-style: italic;
+    color: #666; /* Slightly grey color */
+  }
+  
+  .postBody,
+  .commentBody #messageBody {
+    color: #000; /* Black color for body text */
+    margin-bottom: 10px; /* Add more spacing below the body */
+  }
+  
+  /* Button styling */
+  
+  /* Apply styles to all buttons */
+  button {
+    background-color: #0079d3; /* Reddit blue background */
+    color: #ffffff; /* White text */
+    padding: 8px 16px; /* Padding for inner content */
+    margin: 8px; /* Margin around buttons */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Apply border radius for rounded corners */
+    cursor: pointer; /* Set cursor to pointer */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+  }
+  
+  /* Change background color on hover */
+  button:hover {
+    background-color: #005ea7; /* Darker shade of blue on hover */
+  }
+  
+  /* Adjust the size of the edit and comment buttons */
+  .editbtn,
+  .editcommentbtn,
+  .delbtn,
+  .commentbtn {
+    color: #0079d3;
+    font-size: 14px; /* Set the font size */
+    padding: 4px 8px; /* Set padding to control button size */
+    border-radius: 4px; /* Optional: Apply border radius for rounded corners */
+    background-color: #f0f0f0; /* Optional: Set background color */
+    border: 1px solid #ccc; /* Optional: Set border */
+    cursor: pointer; /* Set cursor to pointer on hover */
+  }
+  
+  /* Style the buttons on hover */
+  .editbtn:hover,
+  .editcommentbtn:hover,
+  .commentbtn:hover {
+    background-color: #e0e0e0; /* Change background color on hover */
+  }
+  
+  .delbtn {
+    background-color: #ff4d4d; /* Red for Delete button */
+    color: #fff;
+  }
+  
+  .delbtn:hover {
+    background-color: #e60000; /* Darker red hover background */
+  }
+  
+  /* CSS rules specifically for ul elements with class "voting" */
+  /* CSS for the voting container */
+  .voting-container {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    display: inline-block;
+  }
+  
+  /* CSS for ul elements with class "voting" */
+  ul.voting {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* CSS for li elements inside ul.voting */
+  ul.voting li {
+    display: inline-block;
+    margin-right: 5px; /* Reduced margin between list items */
+  }
+  
+  /* Additional CSS for the like and dislike buttons */
+  ul.voting button.likebtn,
+  ul.voting button.dislikebtn {
+    border-radius: 50%;
+    background-color: #ff4500;
+    color: white;
+    border: none;
+    padding: 3px 8px; /* Reduced padding */
+    font-size: 12px; /* Reduced font size */
+    cursor: pointer;
+  }
+  
+  /* Adjusting padding for the numLikes */
+  ul.voting li:nth-child(2) {
+    padding-top: 3px; /* Reduced padding */
+  }
+  
+  /* Hover effect */
+  ul.voting button.likebtn:hover,
+  ul.voting button.dislikebtn:hover {
+    background-color: #ff8c00;
+  }
+  
+  .form-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .form-row label {
+    margin-right: 10px;
+  }
+  
+  select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  /* Styles for dropdown arrow */
+  select:after {
+    content: "\25BC"; /* Unicode character for down arrow */
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #555;
+  }
+  
+  /* Styles for dropdown menu options */
+  select option {
+    background-color: #fff;
+    color: #555;
+  }
+  #viewNote {
+    border: 1px solid #333; /* Darker border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside the box */
+    background-color: #f8f8f8; /* Background color */
+  }

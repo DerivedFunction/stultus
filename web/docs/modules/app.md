@@ -6,26 +6,34 @@
 
 ### Classes
 
+- [CommentEditForm](../classes/app.CommentEditForm.md)
+- [CommentForm](../classes/app.CommentForm.md)
 - [EditEntryForm](../classes/app.EditEntryForm.md)
 - [ElementList](../classes/app.ElementList.md)
 - [NewEntryForm](../classes/app.NewEntryForm.md)
-
-### Interfaces
-
-- [UserProfile](../interfaces/app.UserProfile.md)
+- [Profile](../classes/app.Profile.md)
+- [ViewUserForm](../classes/app.ViewUserForm.md)
 
 ### Variables
 
 - [$](app.md#$)
 - [backendUrl](app.md#backendurl)
-- [componentName](app.md#componentname)
+- [comment](app.md#comment)
+- [commentEditForm](app.md#commenteditform)
+- [commentForm](app.md#commentform)
 - [editEntryForm](app.md#editentryform)
 - [mainList](app.md#mainlist)
+- [messages](app.md#messages)
 - [newEntryForm](app.md#newentryform)
+- [profile](app.md#profile)
+- [user](app.md#user)
+- [viewUserForm](app.md#viewuserform)
 
 ### Functions
 
 - [InvalidContentMsg](app.md#invalidcontentmsg)
+- [getAllUserBtns](app.md#getalluserbtns)
+- [hideAll](app.md#hideall)
 
 ## Variables
 
@@ -38,31 +46,55 @@ setting $ to any
 
 #### Defined in
 
-[app.ts:5](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-5)
+[app.ts:6](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-6)
 
 ___
 
 ### backendUrl
 
-• `Const` **backendUrl**: ``"localhost:8998"``
+• `Const` **backendUrl**: ``""``
 
 Backend server link to dokku
 
 #### Defined in
 
-[app.ts:16](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-16)
+[app.ts:18](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-18)
 
 ___
 
-### componentName
+### comment
 
-• `Const` **componentName**: ``"messages"``
+• `Const` **comment**: ``"comment"``
 
 Component name to fetch resources
 
 #### Defined in
 
-[app.ts:22](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-22)
+[app.ts:34](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-34)
+
+___
+
+### commentEditForm
+
+• **commentEditForm**: [`CommentEditForm`](../classes/app.CommentEditForm.md)
+
+Global variable to be referenced for commentEditForm
+
+#### Defined in
+
+[app.ts:1202](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-1202)
+
+___
+
+### commentForm
+
+• **commentForm**: [`CommentForm`](../classes/app.CommentForm.md)
+
+Global variable to be referenced for CommentForm
+
+#### Defined in
+
+[app.ts:938](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-938)
 
 ___
 
@@ -74,7 +106,7 @@ Global variable to be referenced for ElementList
 
 #### Defined in
 
-[app.ts:162](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-162)
+[app.ts:156](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-156)
 
 ___
 
@@ -86,7 +118,19 @@ Global variable to be referenced for ElementList
 
 #### Defined in
 
-[app.ts:339](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-339)
+[app.ts:323](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-323)
+
+___
+
+### messages
+
+• `Const` **messages**: ``"messages"``
+
+Component name to fetch resources
+
+#### Defined in
+
+[app.ts:24](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-24)
 
 ___
 
@@ -98,15 +142,58 @@ Global variable to be referenced for newEntryForm
 
 #### Defined in
 
-[app.ts:10](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-10)
+[app.ts:12](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-12)
+
+___
+
+### profile
+
+• **profile**: [`Profile`](../classes/app.Profile.md)
+
+Global variable to be referenced for Profile
+
+#### Defined in
+
+[app.ts:740](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-740)
+
+___
+
+### user
+
+• `Const` **user**: ``"user"``
+
+Component name to fetch resources
+
+#### Defined in
+
+[app.ts:29](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-29)
+
+___
+
+### viewUserForm
+
+• **viewUserForm**: [`ViewUserForm`](../classes/app.ViewUserForm.md)
+
+Global variable to be referenced for commentEditForm
+
+#### Defined in
+
+[app.ts:1361](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-1361)
 
 ## Functions
 
 ### InvalidContentMsg
 
-▸ **InvalidContentMsg**(): `void`
+▸ **InvalidContentMsg**(`message`, `error`): `void`
 
-Unhide error message from HTML index for a moment
+Display error message from HTML index for a moment
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `message` | `any` |
+| `error` | `any` |
 
 #### Returns
 
@@ -114,4 +201,36 @@ Unhide error message from HTML index for a moment
 
 #### Defined in
 
-[app.ts:758](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-758)
+[app.ts:1539](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-1539)
+
+___
+
+### getAllUserBtns
+
+▸ **getAllUserBtns**(): `void`
+
+Gets all user links to link it to a user page
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[app.ts:1505](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-1505)
+
+___
+
+### hideAll
+
+▸ **hideAll**(): `void`
+
+Hides every module
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[app.ts:1525](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-1525)

@@ -12,15 +12,20 @@ ElementList provides a way to see the data stored in server
 
 - [constructor](app.ElementList.md#constructor)
 
+### Properties
+
+- [container](app.ElementList.md#container)
+
 ### Methods
 
-- [buttons](app.ElementList.md#buttons)
+- [clickComment](app.ElementList.md#clickcomment)
 - [clickDelete](app.ElementList.md#clickdelete)
-- [clickDislike](app.ElementList.md#clickdislike)
+- [clickDownvote](app.ElementList.md#clickdownvote)
 - [clickEdit](app.ElementList.md#clickedit)
-- [clickLike](app.ElementList.md#clicklike)
+- [clickUpvote](app.ElementList.md#clickupvote)
+- [getMyProfile](app.ElementList.md#getmyprofile)
+- [getUser](app.ElementList.md#getuser)
 - [refresh](app.ElementList.md#refresh)
-- [submitComment](app.ElementList.md#submitcomment)
 - [update](app.ElementList.md#update)
 
 ## Constructors
@@ -33,29 +38,39 @@ ElementList provides a way to see the data stored in server
 
 [`ElementList`](app.ElementList.md)
 
-## Methods
+## Properties
 
-### buttons
+### container
 
-▸ **buttons**(`id`): `DocumentFragment`
+• **container**: `HTMLElement`
 
-Adds a delete, edit button to the HTML for each row
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `id` | `string` |
-
-#### Returns
-
-`DocumentFragment`
-
-a new button
+The HTML element for the container of the entire module
 
 #### Defined in
 
-[app.ts:488](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-488)
+[app.ts:334](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-334)
+
+## Methods
+
+### clickComment
+
+▸ **clickComment**(`e`): `void`
+
+clickComment is the code we run in response to a click of a comment button
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `e` | `Event` | Event to get the message to be commented |
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[app.ts:703](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-703)
 
 ___
 
@@ -63,13 +78,13 @@ ___
 
 ▸ **clickDelete**(`e`): `void`
 
-Delete the item off the table
+clickDelete is the code we run in response to a click of a delete button
 
 #### Parameters
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `e` | `Event` | to be deleted |
+| `e` | `Event` | Event to get the message to be deleted |
 
 #### Returns
 
@@ -77,21 +92,21 @@ Delete the item off the table
 
 #### Defined in
 
-[app.ts:532](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-532)
+[app.ts:560](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-560)
 
 ___
 
-### clickDislike
+### clickDownvote
 
-▸ **clickDislike**(`e`): `void`
+▸ **clickDownvote**(`e`): `void`
 
-Ajax function that sends HTTP function to update like count (by decrementing)
+clickDownvote is the code we run in response to a click of a downvote button
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `e` | `Event` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `e` | `Event` | Event to get the message to be downvoted |
 
 #### Returns
 
@@ -99,7 +114,7 @@ Ajax function that sends HTTP function to update like count (by decrementing)
 
 #### Defined in
 
-[app.ts:609](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-609)
+[app.ts:631](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-631)
 
 ___
 
@@ -107,13 +122,13 @@ ___
 
 ▸ **clickEdit**(`e`): `void`
 
-clickEdit is the code we run in response to a click of a delete button
+clickEdit is the code we run in response to a click of a edit button
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `e` | `Event` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `e` | `Event` | Event to get the message to be editGender |
 
 #### Returns
 
@@ -121,21 +136,21 @@ clickEdit is the code we run in response to a click of a delete button
 
 #### Defined in
 
-[app.ts:650](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-650)
+[app.ts:666](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-666)
 
 ___
 
-### clickLike
+### clickUpvote
 
-▸ **clickLike**(`e`): `void`
+▸ **clickUpvote**(`e`): `void`
 
-Ajax function that sends HTTP function to update like count
+clickUpvote is the code we run in response to a click of a upvote button
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `e` | `Event` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `e` | `Event` | Event to get the message to be upvoted |
 
 #### Returns
 
@@ -143,7 +158,49 @@ Ajax function that sends HTTP function to update like count
 
 #### Defined in
 
-[app.ts:571](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-571)
+[app.ts:595](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-595)
+
+___
+
+### getMyProfile
+
+▸ **getMyProfile**(): `Promise`\<`number`\>
+
+Simple ajax to call current user profile
+
+#### Returns
+
+`Promise`\<`number`\>
+
+UserData of email, username, gender, SO, and note
+
+#### Defined in
+
+[app.ts:406](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-406)
+
+___
+
+### getUser
+
+▸ **getUser**(`userid`): `Promise`\<`any`\>
+
+Simple ajax to call user information based on user id
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `userid` | `any` | the userid to find information |
+
+#### Returns
+
+`Promise`\<`any`\>
+
+UserDataLite of email, username, and note
+
+#### Defined in
+
+[app.ts:371](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-371)
 
 ___
 
@@ -151,26 +208,29 @@ ___
 
 ▸ **refresh**(): `void`
 
+Refresh updates the messageList
+
 #### Returns
 
 `void`
 
 #### Defined in
 
-[app.ts:365](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-365)
+[app.ts:339](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-339)
 
 ___
 
-### submitComment
+### update
 
-▸ **submitComment**(`postId`, `comment`): `Promise`\<`void`\>
+▸ **update**(`data`): `Promise`\<`void`\>
+
+Simple ajax to update current user profile
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `postId` | `string` |
-| `comment` | `string` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `data` | `any` | the /messages JSON object to parse information |
 
 #### Returns
 
@@ -178,26 +238,4 @@ ___
 
 #### Defined in
 
-[app.ts:346](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-346)
-
-___
-
-### update
-
-▸ **update**(`data`): `void`
-
-Update the data
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `data` | `any` | to be updated |
-
-#### Returns
-
-`void`
-
-#### Defined in
-
-[app.ts:400](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-400)
+[app.ts:435](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-435)
