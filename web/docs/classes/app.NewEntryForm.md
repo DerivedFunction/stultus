@@ -12,12 +12,17 @@ NewEntryForm has all the code for the form for adding an entry
 
 - [constructor](app.NewEntryForm.md#constructor)
 
+### Properties
+
+- [container](app.NewEntryForm.md#container)
+- [message](app.NewEntryForm.md#message)
+- [title](app.NewEntryForm.md#title)
+
 ### Methods
 
 - [clearForm](app.NewEntryForm.md#clearform)
 - [onSubmitResponse](app.NewEntryForm.md#onsubmitresponse)
 - [submitForm](app.NewEntryForm.md#submitform)
-- [updateUserProfile](app.NewEntryForm.md#updateuserprofile)
 
 ## Constructors
 
@@ -33,7 +38,43 @@ Intialize the object  setting buttons to do actions when clicked
 
 #### Defined in
 
-[app.ts:41](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-41)
+[app.ts:59](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-59)
+
+## Properties
+
+### container
+
+• **container**: `HTMLElement`
+
+The HTML element for the container of the entire module
+
+#### Defined in
+
+[app.ts:54](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-54)
+
+___
+
+### message
+
+• **message**: `HTMLInputElement`
+
+The HTML element for message
+
+#### Defined in
+
+[app.ts:49](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-49)
+
+___
+
+### title
+
+• **title**: `HTMLInputElement`
+
+The HTML element for title
+
+#### Defined in
+
+[app.ts:44](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-44)
 
 ## Methods
 
@@ -49,7 +90,7 @@ Clear the input fields
 
 #### Defined in
 
-[app.ts:54](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-54)
+[app.ts:72](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-72)
 
 ___
 
@@ -71,7 +112,7 @@ Runs when AJAX call in submitForm() returns a result
 
 #### Defined in
 
-[app.ts:128](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-128)
+[app.ts:136](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-136)
 
 ___
 
@@ -87,24 +128,4 @@ Check if input is valid before submitting with AJAX call
 
 #### Defined in
 
-[app.ts:69](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-69)
-
-___
-
-### updateUserProfile
-
-▸ **updateUserProfile**(`data`): `void`
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `data` | [`UserProfile`](../interfaces/app.UserProfile.md) |
-
-#### Returns
-
-`void`
-
-#### Defined in
-
-[app.ts:140](https://bitbucket.org/sml3/cse216_sp24_team_21/src/f7eaa97199e35a778ae71827ae32941978a60f29/web/app.ts#lines-140)
+[app.ts:84](https://bitbucket.org/sml3/cse216_sp24_team_21/src/da9d4b71a0cdbaa79f676d5395242a23f3c049fb/web/app.ts#lines-84)

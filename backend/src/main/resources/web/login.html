@@ -1,65 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Stultus</title>
+    <title>Stultus - Social Media Platform</title>
+    <link rel="stylesheet" href="login.css" />
     <script src="app.js"></script>
-    <link rel="stylesheet" href="app.css" />
-    <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
-    <link href='https://fonts.googleapis.com/css?family=Madimi One' rel='stylesheet'>
-    <link href='https://fonts.googleapis.com/css?family=Sumana' rel='stylesheet'>
     <script src="https://accounts.google.com/gsi/client" async></script>
-</head>
-
-<body>
-<div id="g_id_onload"
+  </head>
+  <body>
+    <div class="container">
+      <h1>Stultus - Social Media Platform</h1>
+      <p>
+        Welcome to Stultus! Stultus is a social media platform where you can
+        connect with others, share posts, and engage in discussions. It provides
+        authentication and authorization features, allows users to like or vote
+        on posts, comment on posts, and manage their user profiles.
+      </p>
+      <p>Features:</p>
+      <ul>
+        <li>Authentication and authorization</li>
+        <li>Voting mechanism for posts</li>
+        <li>Text-based commenting system</li>
+        <li>User profile management</li>
+        <li>Post creation and editing</li>
+      </ul>
+      <div
+        id="g_id_onload"
         data-client_id="732167497663-u42guu2ktqercj2ic4ippp4nkfkobjfu.apps.googleusercontent.com"
-        data-login_uri="https://team-stultus.dokku.cse.lehigh.edu/authenticate"
-        data-callback="handleCredentialResponse">
-    </div>
-    <div class="g_id_signin"
+        data-login_uri="http://localhost:8998/authenticate"
+      ></div>
+      <div
+        class="g_id_signin"
         data-type="standard"
         data-size="large"
         data-theme="outline"
-        data-text="sign_in_with"
+        data-text="Sign in with Google"
         data-shape="rectangular"
-        data-logo_alignment="left">
+        data-logo_alignment="left"
+      ></div>
     </div>
-    <div class="email-login">
-        <h2>Login with Email</h2>
-        <form id="emailLoginForm" action="https://team-stultus.dokku.cse.lehigh.edu/authenticate" method="POST">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit">Login</button>
-        </form>
-    </div>
-    <script>
-        function onSignIn(googleUser){
-
-            const responsePayload = decodeJwtResponse(googleUser.getAuthResponse().id_token);
-                console.log("ID: " + responsePayload.sub);
-                console.log("Full Name: " + responsePayload.name);
-                console.log("Given Name: " + responsePayload.given_name);
-                console.log("Family Name: " + responsePayload.family_name);
-                console.log("Image URL: " + responsePayload.picture);
-                console.log("Email: " + responsePayload.email);
-                console.log("OAuth token: " + googleUser.getAuthResponse().id_token);
-        }
-
-        //Decode JWT
-        function decodeJwtResponse(data){
-            var tokens = data.split(".");
-            return JSON.parse(atob(tokens[1]));
-        }
-    </script>
-</body>
+  </body>
 </html>

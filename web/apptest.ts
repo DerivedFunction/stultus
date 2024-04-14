@@ -1,282 +1,286 @@
-
-/** 
+/**
  * Global vars
  * @type {function}
-*/
-var describe: any; 
+ */
+let describe: any;
 
-/** 
- * Testis Functionality
+/**
+ * Testing Functionality
  * @type {function}
-*/
-var it: any;
+ */
+let it: any;
 
-/** 
+/**
  * Global vars
  * @type {function}
-*/
-var expect: any;
+ */
+let expect: any;
 
-/** 
+/**
  * Allows backend to sync
  * @type {function}
-*/
-var beforeEach: any;
+ */
+let beforeEach: any;
 
-/** 
+/**
  * Initializes values
  * @type {function}
-*/
-var beforeAll: any;
+ */
+let beforeAll: any;
 
-/** 
+/**
  * Executes after all the tests are complete that resets the system
  * @type {function}
-*/
-var afterAll: any;
+ */
+let afterAll: any;
 
-/** 
+/**
  * Waiting after executing each test
  * @type {function}
-*/
-var afterEach: any;
+ */
+let afterEach: any;
 
-
-/** 
- * Delay of one second to be used to make the tests viewable 
+/**
+ * Delay of one second to be used to make the tests viewable
  * @type {number}
-*/
-const delay = 1000;
+ */
+const delay = 1750;
 
-/** 
+/**
  * Backup for original title element
  * @type {HTMLElement}
-*/
+ */
 let originalTitle: any;
-/** 
+/**
  * Backup for original message element
  * @type {HTMLElement}
-*/
+ */
 let originalMsg: any;
 
+/**
+ * @type {HTMLInputElement} - find where the message box is
+ */
+let newMessage = <HTMLInputElement>document.getElementById("newMessage");
 
 /**
- * Test #1: 
- * Edit Preexisting Idea Using The Edit Functionality
- * @type {function(){}}
-*/
-describe("Edit Tests", function () {
-
-  //post/idea values
-  let msg_string = "Testing msg";
-  let title_string = "Testing title";
-
-  // Our HTML elements
-  let editTitle: any;
-  let editMessage: any;
-  let editButton: any;
-  let editElements: any;
-  let showElements: any;
-  let editCancel: any;
-  let dislikeButton: any;
-
-  /**
-  * Function to initialize values 
-  * @type {function(){}}
-  */
-  beforeAll(function (done: () => void) {
-    editTitle = <HTMLInputElement>document.getElementById("editTitle"); //find where the title box is
-    editMessage = <HTMLInputElement>document.getElementById("editMessage"); //find where the message box is
-    editButton = <HTMLButtonElement>document.getElementById("editButton"); //find where the edit button is 
-    showElements = document.getElementById("showElements"); //find where the show elements procedure in app.ts is
-    editElements = document.getElementById("editElement"); //find where the edit elements div in the index is 
-    editCancel = document.getElementById("editCancel"); //find where the cancel button is
-    getOriginal();
-    wait(done); //pause for viewer
-  });
-
-  /**
-  * Function to run before each test to allow backend to sync
-  * @type {function(){}}
-  */
-  beforeEach(function (done: () => void) {
-    clickEditBtn(); //click the button
-    wait(done); //pause for viewer
-  });
-
-  /**
-  * Tests if edit button works with valid title and message
-  * @type {function(){}}
-  */
-  it("Edit success", function (done: () => void) {
-    // fill in the text boxes
-    editMessage.value = msg_string;
-    editTitle.value = title_string;
-
-
-    // See if idea values work
-    expect(editMessage.value).toEqual(msg_string);
-    expect(editTitle.value).toEqual(title_string);
-
-
-    // The edit Element form (title, msg) is shown
-    expect(editElements.style.display).toEqual("block");
-    // The data table is hidden
-    expect(showElements.style.display).toEqual("none");
-
-
-    // PUT our changes by clicking the submit edit button
-    editButton.click();
-    done();
-  });
-
-  /**
-  * Check edit button works and then edit it 
-  * @type {function(){}}
-  */
-  it("Edit fail: blank", function (done: () => void) {
-    // Fill out text boxes, but leave the title blank
-    editMessage.value = msg_string;
-    editTitle.value = "";
-
-
-    // See if values set works
-    expect(editMessage.value).toEqual(msg_string);
-    expect(editTitle.value).toEqual("");
-
-
-    // The edit Element form (title, msg) is shown
-    // Because we failed (empty title)
-    expect(editElements.style.display).toEqual("block");
-    // The data table is hidden
-    expect(showElements.style.display).toEqual("none");
-
-
-    // PUT our changes by clicking the submit edit button
-    editButton.click();
-
-    setTimeout(function () {
-      // The edit Element form (title, msg) is still shown
-      expect(editElements.style.display).toEqual("block");
-      // Cancel it
-      editCancel.click();
-      done();
-    }, delay);
-  });
-
-  /**
-  * Function  sure to wait after executing each test
-  * @type {function(){}}
-  */
-  afterEach(function (done: () => void) {
-    wait(done);
-  });
-
-  /**
-  * Function to execute after all the tests are complete that resets the system
-  * @type {function(){}}
-  */
-  afterAll(function (done: () => void) {
-    clickEditBtn(); //click button to get edit screen to appear
-
-    // Replace our edited elements with the previous value
-    setTimeout(function () {
-      editMessage.value = originalMsg; //get old message before edits
-      editTitle.value = originalTitle; //get old title before edts 
-      editButton.click(); // PUT our changes by clicking the submit edit button
-      done();
-    }, delay);
-  });
-});
-
-
-
+ * @type {HTMLInputElement} - find where the title box is
+ */
+let newTitle = <HTMLInputElement>document.getElementById("newTitle");
 
 /**
- * Test #2: 
- * Create New Idea Using Add Button Functionality
+ * @type {HTMLButtonElement} - find where the add button is
+ */
+let showFormButton = <HTMLButtonElement>(
+  document.getElementById("showFormButton")
+);
+
+/**
+ * @type {HTMLDivElement} - find where the submit button is
+ */
+let addElement = <HTMLDivElement>document.getElementById("addElement");
+
+/**
+ * @type {HTMLButtonElement} - find where the submit button is
+ */
+let addCancel = <HTMLButtonElement>document.getElementById("addCancel");
+
+/**
+ * @type {HTMLDivElement} - find where cancel button is
+ */
+let showElements = <HTMLDivElement>document.getElementById("showElements");
+
+/**
+ * @type {HTMLButtonElement} - find where the add button is
+ */
+let addButton = <HTMLButtonElement>document.getElementById("addButton");
+
+/**
+ * @type {HTMLInputElement} - find where the title box is
+ */
+let editTitle = <HTMLInputElement>document.getElementById("editTitle");
+
+/**
+ * @type {HTMLInputElement} - find where the message box is
+ */
+let editMessage = <HTMLInputElement>document.getElementById("editMessage");
+
+/**
+ * @type {HTMLButtonElement} - find where the edit button is
+ */
+let editButton = <HTMLButtonElement>document.getElementById("editButton");
+
+/**
+ * @type {HTMLDivElement} - find where the edit elements div in the index is
+ */
+let editElements = <HTMLDivElement>document.getElementById("editElement");
+
+/**
+ * @type {HTMLButtonElement} - find where the cancel button is
+ */
+let editCancel = <HTMLButtonElement>document.getElementById("editCancel");
+
+/**
+ * @type {HTMLButtonElement} - find where showing profile button is
+ */
+let showProfileButton = <HTMLButtonElement>(
+  document.getElementById("showProfileButton")
+);
+
+/**
+ * @type {HTMLDivElement} - find where showing profile container is
+ */
+let profileForm = <HTMLDivElement>document.getElementById("profileForm");
+
+/**
+ * @type {HTMLButtonElement} - find where canceling profile button is
+ */
+let profileCancel = <HTMLButtonElement>document.getElementById("UserCancel");
+
+/**
+ * @type {HTMLDivElement} - find comment container
+ */
+let showComment = <HTMLDivElement>document.getElementById("showComment");
+
+/**
+ * @type {HTMLButtonElement} - find where canceling comment button is
+ */
+let commentCancel = <HTMLButtonElement>document.getElementById("commentCancel");
+
+/**
+ * @type {string} - Message string for adding
+ */
+let msg_string = "Adding msg";
+
+/**
+ * @type {string} - Title string for adding
+ */
+let title_string = "Adding title";
+
+/**
+ * Test #2:
+ * Create New Idea Using Add/Edit Button Functionality
  * @type {function(){}}
-*/
-describe("Add Button Tests", function () {
-  //initialize data 
-  let title_string = "Hey Howdy"; //Title To be Added
-  let msg_string = "It's Me The Title"; //Message To Be Added (Don't ask why they are reversed)
-  
-  //initialize html elements  
-  let newMessage: any;
-  let newTitle: any;
-  let showFormButton: any;
-  let addElement: any;
-  let showElements: any;
-  let addButton: any;
+ */
+describe("Add and Edit Button Tests", function () {
   let mId: any;
-
   /**
-  * Function to initialize values 
-  * @type {function(){}}
-  */
+   * Function to initialize values
+   * @type {function(){}}
+   */
   beforeAll(function (done: () => void) {
-    newMessage = <HTMLInputElement>document.getElementById("newMessage"); //find where the message box is
-    newTitle = <HTMLInputElement>document.getElementById("newTitle"); //find where the title box is
-    showFormButton = document.getElementById("showFormButton"); //find where the add button is
-    addElement = document.getElementById("addElement"); //find where the submit button is
-    showElements = document.getElementById("showElements"); //find where cancel button is
-    addButton = <HTMLButtonElement>document.getElementById("addButton"); //find where the add button is 
     wait(done); //wait for backend
   });
 
   /**
-  * Function to run before each test to allow backend to sync
-  * @type {function(){}}
-  */
+   * Function to run before each test to allow backend to sync
+   * @type {function(){}}
+   */
   beforeEach(function (done: () => void) {
     wait(done);
   });
 
   /**
-  * Tests if add button works with valid title and message and add it
-  * @type {function(){}}
-  */
-  it("Add button hides lists", function (done: () => void) {
+   * Tests if add button works with valid title and message and add it
+   * @type {function(){}}
+   */
+  it("Add button and Edit button", function (done: () => void) {
+    //click add button
+    testAdd();
+    testEdit();
+
+    function testAdd() {
+      showFormButton.click();
+
+      //set message and title to global vars
+      newMessage.value = title_string;
+      newTitle.value = msg_string;
+
+      // Check if the message and title is valid
+      expect(newMessage.value).toEqual(title_string);
+      expect(newTitle.value).toEqual(msg_string);
+      // The add Element form (newTitle, Message) is shown
+      expect(addElement.style.display).toEqual("block");
+      // The data table is hidden
+      expect(showElements.style.display).toEqual("none");
+      // Refresh the UI to main table by clicking add
+      addButton.click();
+    }
+
+    function testEdit() {
+      setTimeout(function () {
+        // Lets set our old title and message to test
+        let old_title =
+          document.getElementsByClassName("postTitle")[0].textContent;
+        let old_message =
+          document.getElementsByClassName("postBody")[0].textContent;
+        // Let's edit our newly created element
+        let ebtn = <HTMLButtonElement>(
+          document.getElementsByClassName("editbtn")[0]
+        );
+        ebtn.click();
+        setTimeout(function () {
+          // Make sure our edit container contains the right one to edit
+          expect(editTitle.value).toEqual(old_title?.split(":")[1].trim());
+          expect(editMessage.value).toEqual(old_message);
+          editTitle.value = "Editing Test";
+          editMessage.value = "Editing Message";
+          editButton.click();
+          // Check to see if edits are successful
+          setTimeout(function () {
+            expect(
+              document.getElementsByClassName("postTitle")[0].textContent
+            ).not.toEqual(old_title);
+            expect(
+              document.getElementsByClassName("postBody")[0].textContent
+            ).not.toEqual(old_message);
+            mId = document
+              .getElementsByClassName("delbtn")[0]
+              .getAttribute("data-value");
+            done();
+          }, delay);
+        }, delay);
+      }, delay);
+    }
+  }, 10000); // We expect a long time to finish this test
+
+  /**
+   * Tests if add button works with valid title and message and add it
+   * @type {function(){}}
+   */
+  it("Add button fail on empty", function (done: () => void) {
     //click add button
     showFormButton.click();
 
     //set message and title to global vars
-    newMessage.value = title_string;
-    newTitle.value = msg_string;
-
-    // Check if the message and title is valid
-    expect(newMessage.value).toEqual(title_string);
-    expect(newTitle.value).toEqual(msg_string);
+    newMessage.value = "";
+    newTitle.value = "";
     // The add Element form (newTitle, Message) is shown
     expect(addElement.style.display).toEqual("block");
     // The data table is hidden
     expect(showElements.style.display).toEqual("none");
     // Refresh the UI to main table by clicking add
     addButton.click();
-
-
-    // 
+    // The data table is hidden
+    expect(showElements.style.display).toEqual("none");
+    //
     setTimeout(function () {
-      mId = document
-        .getElementsByClassName("delbtn")[0]
-        .getAttribute("data-value");
+      addCancel.click();
       done();
     }, delay);
   });
-  
+
   /**
-  * Function to wait after executing each test
-  * @type {function(){}}
-  */
+   * Function to wait after executing each test
+   * @type {function(){}}
+   */
   afterEach(function (done: () => void) {
     wait(done);
   });
 
   /**
-  * Function to execute after all the tests are complete that resets the system
-  * @type {function(){}}
-  */
+   * Function to execute after all the tests are complete that resets the system
+   * @type {function(){}}
+   */
   afterAll(function (done: () => void) {
     // Replace our edited elements with the previous value
     setTimeout(function () {
@@ -291,121 +295,227 @@ describe("Add Button Tests", function () {
 });
 
 /**
- * Test #3: 
+ * Test #3:
  * Like Idea Using Like Button
  * @type {function(){}}
- * 
-*/
-describe("Like Button Tests", function () {
+ *
+ */
+describe("Vote Button Tests", function () {
   /**
-  * Function to initialize values (There are none so just wait for backend)
-  * @type {function(){}}
-  */
+   * Function to initialize values (There are none so just wait for backend)
+   * @type {function(){}}
+   */
   beforeAll(function (done: () => void) {
     wait(done);
   });
 
   /**
-  * Function to run before each test to allow backend to sync
-  * @type {function(){}}
-  */
+   * Function to run before each test to allow backend to sync
+   * @type {function(){}}
+   */
   beforeEach(function (done: () => void) {
     wait(done);
   });
 
-
   /**
-  * Tests if like button works
-  * @type {function(){}}
-  */
-  it("Check like button", function (done: () => void) {
+   * Tests if like button works
+   * @type {function(){}}
+   */
+  it("Check upvote button", function (done: () => void) {
     // Grab the first like value in the first element
-    let oldLike = document.getElementsByTagName("td")[0].textContent;
-
+    let oldLike = document.getElementsByClassName("totalVote")[0].textContent;
 
     // Click the like button
     let lbtns = document.getElementsByClassName("likebtn");
     let lbtn = <HTMLButtonElement>lbtns[0];
     lbtn.click();
 
-    let dbtns = document.getElementsByClassName("dislikebtn");
-    let dbtn = <HTMLButtonElement>dbtns[0];
-    dbtn.click();
-
     //check if everything works
     setTimeout(function () {
       // The like value should be different after a short delay
       expect(oldLike).not.toEqual(
-        document.getElementsByTagName("td")[0].textContent
+        document.getElementsByClassName("totalVote")[0].textContent
       );
-
 
       // Click the like button again (assuming it toggles the like state)
       lbtn.click();
 
-
       // Wait for another short period for the like count to update
       setTimeout(function () {
         expect(oldLike).toEqual(
-          document.getElementsByTagName("td")[0].textContent
+          document.getElementsByClassName("totalVote")[0].textContent
         );
-
-
         done();
       }, delay);
     }, delay);
   });
 
   /**
-  * Function to wait after executing each test
-  * @type {function(){}}
-  */
+   * Tests if downvote button works
+   * @type {function(){}}
+   */
+  it("Check downvote button", function (done: () => void) {
+    // Grab the first like value in the first element
+    let oldLike = document.getElementsByClassName("totalVote")[0].textContent;
+
+    // Click the like button
+    let lbtns = document.getElementsByClassName("dislikebtn");
+    let lbtn = <HTMLButtonElement>lbtns[0];
+    lbtn.click();
+
+    //check if everything works
+    setTimeout(function () {
+      // The like value should be different after a short delay
+      expect(oldLike).not.toEqual(
+        document.getElementsByClassName("totalVote")[0].textContent
+      );
+
+      // Click the like button again (assuming it toggles the like state)
+      lbtn.click();
+
+      // Wait for another short period for the like count to update
+      setTimeout(function () {
+        expect(oldLike).toEqual(
+          document.getElementsByClassName("totalVote")[0].textContent
+        );
+        done();
+      }, delay);
+    }, delay);
+  });
+
+  /**
+   * Function to wait after executing each test
+   * @type {function(){}}
+   */
   afterEach(function (done: () => void) {
     wait(done);
   });
 
   /**
-  * Function to execute after all the tests are complete that resets the system there's nothing to reset
-  * @type {function(){}}
-  */
+   * Function to execute after all the tests are complete that resets the system there's nothing to reset
+   * @type {function(){}}
+   */
   afterAll(function (done: () => void) {
     wait(done);
   });
-
-
 });
 
-
 /**
- * TEST FUNCTION: 
- * GET THE ORIGINAL MESSAGE AND TITLE STRING
+ * Test #4:
+ * Click user profile
  * @type {function(){}}
-*/
-function getOriginal() {
-  setTimeout(function () {
-    originalTitle = document.getElementById("postTitle")?.textContent; //get title of original post
-    originalMsg = document.getElementById("postBody")?.textContent; //get message of original post
-  }, delay);
-}
+ *
+ */
+describe("User profile test", function () {
+  /**
+   * Function to initialize values (There are none so just wait for backend)
+   * @type {function(){}}
+   */
+  beforeAll(function (done: () => void) {
+    wait(done);
+  });
+
+  /**
+   * Function to run before each test to allow backend to sync
+   * @type {function(){}}
+   */
+  beforeEach(function (done: () => void) {
+    wait(done);
+  });
+
+  /**
+   * Function to check if the profile function is working without submitting any changes
+   * @type {function(){}}
+   */
+  it("Click on my profile", function (done: () => void) {
+    showProfileButton.click();
+    expect(profileForm.style.display).toEqual("block");
+    expect(showElements.style.display).toEqual("none");
+    profileCancel.click();
+    expect(showElements.style.display).toEqual("block");
+    wait(done);
+  });
+
+  /**
+   * Function to wait after executing each test
+   * @type {function(){}}
+   */
+  afterEach(function (done: () => void) {
+    wait(done);
+  });
+
+  /**
+   * Function to execute after all the tests are complete that resets the system there's nothing to reset
+   * @type {function(){}}
+   */
+  afterAll(function (done: () => void) {
+    wait(done);
+  });
+});
 
 /**
- * TEST FUNCTION: 
+ * Test #5:
+ * Click comments
+ * @type {function(){}}
+ *
+ */
+describe("Comment test", function () {
+  /**
+   * Function to initialize values (There are none so just wait for backend)
+   * @type {function(){}}
+   */
+  beforeAll(function (done: () => void) {
+    wait(done);
+  });
+
+  /**
+   * Function to run before each test to allow backend to sync
+   * @type {function(){}}
+   */
+  beforeEach(function (done: () => void) {
+    wait(done);
+  });
+  /**
+   * Function to check if the comment function is working without submitting any comments
+   * @type {function(){}}
+   */
+  it("Comment a post", function (done: () => void) {
+    let commentbtn = <HTMLButtonElement>(
+      document.getElementsByClassName("commentbtn")[0]
+    );
+    commentbtn.click();
+    setTimeout(function () {
+      expect(showComment.style.display).toEqual("block");
+      expect(showElements.style.display).toEqual("none");
+      commentCancel.click();
+      expect(showElements.style.display).toEqual("block");
+      done();
+    }, delay);
+  });
+  /**
+   * Function to wait after executing each test
+   * @type {function(){}}
+   */
+  afterEach(function (done: () => void) {
+    wait(done);
+  });
+
+  /**
+   * Function to execute after all the tests are complete that resets the system there's nothing to reset
+   * @type {function(){}}
+   */
+  afterAll(function (done: () => void) {
+    wait(done);
+  });
+});
+
+/**
+ * TEST FUNCTION:
  * PAUSE PROGRAM FOR 1 SECOND TO BE VIEWED BY USER/TESTER
  * @type {function(){}}
-*/
+ */
 function wait(done: () => void) {
   setTimeout(function () {
     done(); //finish after pause
-  }, delay); //pause 
-}
-
-/**
- * TEST FUNCTION: 
- * CLICK EDIT BUTTON AND WAIT FOR BACKEND
- * @type {function(){}}
-*/
-function clickEditBtn() {
-  let ebtns = document.getElementsByClassName("editbtn"); //get edit button
-  let ebtn = <HTMLButtonElement>ebtns[0];
-  ebtn.click(); //click button
+  }, delay); //pause
 }

@@ -11,19 +11,16 @@ mkdir $TARGETFOLDER
 mkdir $TARGETFOLDER/$WEBFOLDERNAME
 
 # there are many more steps to be done.  For now, we will just copy an HTML file
-echo "copying index_simple.html to $TARGETFOLDER/$WEBFOLDERNAME/index.html"
-cp index_simple.html $TARGETFOLDER/$WEBFOLDERNAME/home.html
-cp login.html $TARGETFOLDER/$WEBFOLDERNAME
-
-
+echo "copying html to $TARGETFOLDER/$WEBFOLDERNAME"
+cp *.html $TARGETFOLDER/$WEBFOLDERNAME/
+rm $TARGETFOLDER/$WEBFOLDERNAME/spec_runner.html
 # step 2: update our npm dependencies
 echo "updating npm dependencies"
 npm update
 
 # step 4: copy css files
-echo "copying app.css and styles.cssto $TARGETFOLDER/$WEBFOLDERNAME"
-cp app.css $TARGETFOLDER/$WEBFOLDERNAME
-cp styles.css $TARGETFOLDER/$WEBFOLDERNAME
+echo "copying css to $TARGETFOLDER/$WEBFOLDERNAME"
+cp *.css $TARGETFOLDER/$WEBFOLDERNAME
 
 # step 5: compile TypeScript files
 echo "Compiling typescript files"

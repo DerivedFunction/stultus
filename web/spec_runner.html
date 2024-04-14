@@ -1,73 +1,194 @@
-<!DOCTYPE html />
+<!doctype html>
 <html lang="en">
-
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- included for testing web frontend -->
-    <script src="jasmine.js"></script>
-    <script src="jasmine-html.js"></script>
-    <script src="boot0.js"></script>
-    <script src="boot1.js"></script>
-    <link rel="stylesheet" href="jasmine.css">
-
-
-    <script src="apptest.js"></script>
-    <!-- End of tests -->
     <title>Stultus</title>
     <script src="app.js"></script>
-    <link rel="stylesheet" href="app.css" />
-    <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
-    <link href='https://fonts.googleapis.com/css?family=Madimi One' rel='stylesheet'>
-</head>
-
-
-<body>
-    
+    <link rel="stylesheet" href="home.css" />
+    <script src="https://accounts.google.com/gsi/client" async></script>
+  </head>
+  <body>
+    <ul class="navbar">
+      <li>
+        <button id="refreshFormButton" class="navbuttons navbutton">
+          Home
+        </button>
+      </li>
+      <li>
+        <button id="showFormButton" class="navbuttons navbutton">
+          New Post
+        </button>
+      </li>
+      <li>
+        <button id="showProfileButton" class="navbuttons navbutton">
+          My Profile
+        </button>
+      </li>
+      <li>
+        <button id="accountStatus" class="navbuttons navbutton">
+          Login/Logout
+        </button>
+      </li>
+    </ul>
+    <div id="InvalidContent">
+      Something went wrong: Please check your inputs and try again
+    </div>
     <div id="addElement">
-        <div id="scrollTitle">
-            <h3>Create A New Idea</h3>
+      <div class="scrollTitle">
+        <h3>Create A New Idea</h3>
+      </div>
+      <div style="height: 100"></div>
+      <div class="messageBox">
+        <div class="form-row">
+          <label id="Title">Title</label> <input type="text" id="newTitle" />
         </div>
-        <div style="height: 100;"></div>
-        <label>Title</label>
-        <input type="text" id="newTitle" />
-        <label>Message</label>
+        <label id="Message">Message</label>
         <textarea id="newMessage"></textarea>
         <button id="addButton">Add</button>
         <button id="addCancel">Cancel</button>
+      </div>
     </div>
     <div id="editElement">
-        <div id="scrollTitle">
-            <h3>Edit Your Idea</h3>
+      <div class="scrollTitle">
+        <h3>Edit Your Idea</h3>
+      </div>
+      <div class="messageBox">
+        <div style="height: 100"></div>
+        <div class="form-row">
+          <label> Title </label>
+          <input type="text" id="editTitle" />
         </div>
-        <div style="height: 100;"></div>
-        <label>Title</label>
-        <input type="text" id="editTitle" />
-        <label>Message</label>
-        <textarea id="editMessage"></textarea>
+        <label>
+          Message
+          <textarea id="editMessage"></textarea>
+        </label>
         <span id="editCreated"></span>
         <input type="hidden" id="editId" />
         <button id="editButton">Update</button>
         <button id="editCancel">Cancel</button>
-        <button id="dislikebtn">Dislike</button>
+      </div>
     </div>
     <div id="showElements">
-        <div id="scrollTitle">
-            <h3>Stultus</h3>
-            <button id="showFormButton">New Post</button>
+      <div class="scrollTitle">
+        <h3>Main Page</h3>
+      </div>
+      <div style="height: 100"></div>
+      <div id="messageList"></div>
+    </div>
+    <div id="profileForm">
+      <div class="scrollTitle">
+        <h3>My User Profile</h3>
+      </div>
+      <div class="messageBox">
+        <div style="height: 100"></div>
+        <div class="form-row">
+          <label for="editUsername">Username</label>
+          <input type="text" id="editUsername" />
         </div>
-        <div style="height: 100;"></div>
-        <!--<button id="refreshFormButton">Refresh</button> -->
-        <div id="messageList"></div>
+        <div class="form-row">
+          <label for="editGender">Gender</label>
+          <select id="editGender">
+            <option value="0">Unknown/Other</option>
+            <option value="1">Male</option>
+            <option value="2">Female</option>
+          </select>
         </div>
+        <div class="form-row">
+          <label for="editSO">Sexual Orientation</label>
+          <select id="editSO">
+            <option value="private">private</option>
+            <option value="straight">Straight</option>
+            <option value="lesbian">Lesbian</option>
+            <option value="gay">Gay</option>
+            <option value="bisexual">Bisexual</option>
+            <option value="transgender">Transgender</option>
+          </select>
         </div>
-        <div id="InvalidContent">
-            Invalid Title/Message: Please Try Again
-        </div>
-    </body>
 
-
-    </html>
+        <label for="editNote">Note</label>
+        <textarea id="editNote"></textarea>
+        <div class="form-row">
+          <input type="hidden" id="userId" />
+          <button id="editUser">Update</button>
+          <button id="UserCancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div id="showComment">
+      <div class="scrollTitle">
+        <h3>Comment a Post</h3>
+      </div>
+      <div style="height: 100"></div>
+      <div class="messageBox">
+        <div id="selectMessage">
+          <table>
+            <tr>
+              <td>
+                <div id="messageTitle">Post Title</div>
+                <div id="messageAuthor">
+                  By <a href="mailto:author@example.com">Author Name</a>
+                </div>
+                <div id="messageBody">Post Body</div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <label>
+          Add a comment
+          <textarea id="addComment"></textarea>
+        </label>
+        <input type="hidden" id="messageId" />
+        <button id="commentButton">Comment</button>
+        <button id="commentCancel">Cancel</button>
+        <div id="commentList"></div>
+      </div>
+    </div>
+    <div id="editComment">
+      <div class="scrollTitle">
+        <h3>Edit Your Comment</h3>
+      </div>
+      <div class="messageBox">
+        <div style="height: 100"></div>
+        <label>
+          Message
+          <textarea id="editCommentMessage"></textarea>
+        </label>
+        <input type="hidden" id="commentEditId" />
+        <button id="editCommentUpdate">Update</button>
+        <button id="editCommentCancel">Cancel</button>
+      </div>
+    </div>
+    <div id="userForm">
+      <div class="scrollTitle">
+        <h3>View User Profile</h3>
+      </div>
+      <div class="messageBox">
+        <div style="height: 100"></div>
+        <div class="form-row">
+          <label for="viewUsername">Username</label>
+          <span id="viewUsername">Sample</span>
+        </div>
+        <div class="form-row">
+          <label for="viewEmail">Email</label>
+          <div id="viewEmail">
+            <a href="mailto:author@example.com">email</a>
+          </div>
+        </div>
+        <label for="viewNote">Note</label>
+        <div id="viewNote"></div>
+        <div class="form-row">
+          <input type="hidden" id="viewUserId" />
+          <button id="viewReturn">Back to Home</button>
+        </div>
+      </div>
+    </div>
+    <script src="jasmine.js"></script>
+    <script src="jasmine-html.js"></script>
+    <script src="boot0.js"></script>
+    <script src="boot1.js"></script>
+    <link rel="stylesheet" href="jasmine.css" />
+    <script src="apptest.js"></script>
+  </body>
+</html>
