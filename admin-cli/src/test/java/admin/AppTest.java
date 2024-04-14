@@ -64,47 +64,33 @@ public class AppTest extends TestCase {
     Database db = Database.getDatabase(ip, port, user, pass);
     ArrayList<RowData> sub = new ArrayList<>();
     ArrayList<UserRowData> subU = new ArrayList<>();
-    ArrayList<CommentRowData> subC = new ArrayList<>();
-    
+    //ArrayList<CommentRowData> subC = new ArrayList<>();
 
+    //Create User
+    String username = "Test User" + rngString();
+    String email = "email@yahoo" + rngString();
+    String subv = rngString();
+    assertTrue(db.insertUser(username, email, subv, "Test Notes") == 1);
+    subU = db.selectAllUsers();
+    int maxUser = subU.get(subU.size() - 1).uId;
+
+    //Create Idea Element Using New User
+    sub = db.selectAll();
+    int maxId = sub.get(sub.size() - 1).mId;
     for (int i = 0; i < num; i++) {
       String subject = "Subject" + rngString();
       String message = "Message" + rngString();
-      sub.add(new RowData(i, subject, message, 7, 1));
-      assertTrue(db.insertRow(subject, message, 7) == 1); // add new element
+      assertTrue(db.insertRow(subject, message, maxUser) == 1); // add new element
     }
 
-    // Check if database contains all elements we just added
-    
-    ArrayList<RowData> res = db.selectAll();
-    assertTrue(res.containsAll(sub));
+    //Comment message on Post with same user
+    sub = db.selectAll();
+    maxId = sub.get(sub.size() - 1).mId;
+    assertTrue(db.insertComment("Test Message", maxId, maxUser) == 1);
 
-    /* 
-    for(int i = 0; i < num; i++){
-      String email = "Email" + rngString();
-      String username = "Username" + rngString();
-      subU.add(new UserRowData(i, username, email, 0, "None"));
-      assertTrue(db.insertUser(username, email) == 1);
-    }
-    */
-    
+    //Delete User and All It's Content
+    assertTrue(db.deleteRowUser(maxUser) == 1);
 
-    /**
-     * Get the maxId, the id of the last element we just added
-     * It is in last element of the res ArrayList
-     */
-    /*
-     * int maxId = res.get(res.size() - 1).mId;
-    // Delete the test elements from out Database
-    for (int i = 0; i < num; i++) {
-      assertTrue(db.deleteRow(maxId - i) > 0);
-    }
-     
-    
-    // The test elements should no longer be in our database
-    res = db.selectAll();
-    assertFalse(res.containsAll(sub));
-    */
     db.disconnect();
 
   }
