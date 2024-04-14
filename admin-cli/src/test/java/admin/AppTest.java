@@ -64,7 +64,7 @@ public class AppTest extends TestCase {
     Database db = Database.getDatabase(ip, port, user, pass);
     ArrayList<RowData> sub = new ArrayList<>();
     ArrayList<UserRowData> subU = new ArrayList<>();
-    ArrayList<CommentRowData> subC = new ArrayList<>();
+    //ArrayList<CommentRowData> subC = new ArrayList<>();
 
     //Create User
     String username = "Test User" + rngString();
