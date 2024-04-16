@@ -231,6 +231,7 @@ public class Database {
      * @param subject the user-inputted subject/title of their message
      * @param message the user-inputted message/content of their post
      * @param uid the number of likes a message has
+     * @param stat the visability a message has
      */
     public RowData(int id, String subject, String message, int uid, int stat) {
       mId = id;
@@ -305,6 +306,9 @@ public class Database {
      * @param email the user's email
      * @param gender   the users gender
      * @param SO the users gender orientation
+     * @param su the users sub value for oauth
+     * @param not the users bio
+     * @param stat the users visability
      */
     public UserRowData(int id, String name, String email, int gender, String SO, String su, String not, int stat) {
       uId = id;
@@ -421,6 +425,7 @@ public class Database {
      * @param com      the value of the comment
      * @param mid      the id of the message being commented on
      * @param uid      the id of the user commenting
+     * @param stat      the visability of the user commenting
      */
     public CommentRowData(int cid, String com, int mid, int uid, int stat) {
       cId = cid;
@@ -544,7 +549,7 @@ public class Database {
       //Create Comment Table
       db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE commentData  ("
                                                         + "id SERIAL PRIMARY KEY,"
-                                                        + "comMessage VARCHAR(2048) NOT NULL,"
+                                                        + "message VARCHAR(2048) NOT NULL,"
                                                         + "post_id INT,"
                                                         + "userid INT,"
                                                         + "status INT DEFAULT 1,"
@@ -603,8 +608,8 @@ public class Database {
       db.cSelectAllCommentsForAUserANDPost = db.mConnection.prepareStatement("SELECT * FROM commentData  WHERE post_id=? AND userid=? ORDER BY ID DESC");
       db.cSelectComment = db.mConnection.prepareStatement("SELECT * commentData  WHERE id=?");
       db.cDeleteComment = db.mConnection.prepareStatement("DELETE commentData  WHERE id=? and userid=?");
-      db.cUpdateComment = db.mConnection.prepareStatement("UPDATE commentData  SET comMessage=? WHERE id=? AND userid=?");
-      db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO commentData (comMessage, post_id, userid) VALUES (?,?,?)");
+      db.cUpdateComment = db.mConnection.prepareStatement("UPDATE commentData  SET message=? WHERE id=? AND userid=?");
+      db.cInsertComment = db.mConnection.prepareStatement("INSERT INTO commentData (message, post_id, userid) VALUES (?,?,?)");
       db.cMakePublic=db.mConnection.prepareStatement("UPDATE commentData SET status=status+1 WHERE id=? AND status=0");
       db.cHidePublic=db.mConnection.prepareStatement("UPDATE commentData SET status=status-1 WHERE id=? AND status=1");
 
@@ -883,6 +888,8 @@ public class Database {
    *
    * @param username The subject for this new row
    * @param email The message body for this new row
+   * @param sub The sub for this new row
+   * @param note The note for this new row
    * @return The number of rows that were inserted
    */
   int insertUser(String username, String email, String sub, String note) {
@@ -922,6 +929,7 @@ public class Database {
    * @param username The name of the new user
    * @param gender The gender of the new user
    * @param so The so of the new user
+   * @param note The bio/note of the new user
    * @param id The id of the new user
    * @return the number of users deleted, -1 if error
    */
@@ -1009,15 +1017,15 @@ public class Database {
   /**
    * Method that updates a comment  in the database
    *
-   * @param comMessage The message of the comment to that will replace an old one
+   * @param message  The message of the comment to that will replace an old one
    * @param id The id of the comment to be replaced 
    * @param userid The user who left this comment 
    * @return the number of rows udpated, -1 on error
    */
-  int updateComment(String comMessage, int id, int userid) {
+  int updateComment(String message , int id, int userid) {
     int res = -1;
     try {
-      cUpdateComment.setString(1, comMessage);
+      cUpdateComment.setString(1, message );
       cUpdateComment.setInt(2, id);
       cUpdateComment.setInt(3, userid);
       res = mUpdateOne.executeUpdate();
@@ -1058,7 +1066,7 @@ public class Database {
       cSelectComment.setInt(1, id);
       ResultSet rs = cSelectComment.executeQuery();
       if (rs.next()) {
-        res =new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
+        res =new CommentRowData(rs.getInt("id"), rs.getString("message "),
           rs.getInt("post_id"), rs.getInt("userid"), rs.getInt("status"));
       }
     } catch (SQLException e) {
@@ -1080,7 +1088,7 @@ public class Database {
       cSelectAllCommentsForAPost.setInt(1, post_id);
       ResultSet rs = cSelectAllCommentsForAPost.executeQuery();
       while (rs.next()) {
-        res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
+        res.add(new CommentRowData(rs.getInt("id"), rs.getString("message "),
             rs.getInt("post_id"), rs.getInt("userid"), rs.getInt("status")));
       }
       rs.close();
@@ -1102,7 +1110,7 @@ public class Database {
       cSelectAllCommentsForAUser.setInt(1, userid);
       ResultSet rs = cSelectAllCommentsForAUser.executeQuery();
       while (rs.next()) {
-        res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
+        res.add(new CommentRowData(rs.getInt("id"), rs.getString("message "),
             rs.getInt("post_id"), rs.getInt("userid"), rs.getInt("status")));
       }
       rs.close();
@@ -1127,7 +1135,7 @@ public class Database {
       cSelectAllCommentsForAUserANDPost.setInt(2, userid );
       ResultSet rs = cSelectAllCommentsForAUserANDPost.executeQuery();
       while (rs.next()) {
-        res.add(new CommentRowData(rs.getInt("id"), rs.getString("comMessage"),
+        res.add(new CommentRowData(rs.getInt("id"), rs.getString("message "),
             rs.getInt("post_id"), rs.getInt("userid"), rs.getInt("status")));
       }
       rs.close();
