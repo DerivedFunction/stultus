@@ -12,7 +12,8 @@
 
 ## Admin FSM
 
-![Admin FSM Diagram](img-assets/phase3/AdminFSM-phase2.png)
+![Admin FSM Diagram](img-assets/phase3/AdminFSM-phase3.png)
+
 
 ## Web FSM
 
@@ -283,7 +284,7 @@ Automated unit testing of prepared statement
 
 As an admin
 
-I want to be able to view uploaded documents with acess information
+I want to be able to view uploaded documents with access information
 
 So I can see what is being used
 
