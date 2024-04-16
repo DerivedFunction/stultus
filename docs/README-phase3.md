@@ -173,6 +173,38 @@ Integration test manual
 
 ---
 
+As an authorized User
+ 
+I don't want to be logged out for server issues
+
+so that I don't need to log in again
+
+Testing of this requires messing with docker instances, so must be manual
+
+Other caching includes and enables automated testing
+
+---
+
+As an authorized User
+
+I want to be able to upload files
+
+So that I can share images and other information
+
+This testing can be automated on front and backends
+
+---
+
+As an authorized User
+
+I want to be able to add links to posts
+
+So that I can make references and share work
+
+This testing can be manual on web
+
+---
+
 (All manual integration tests could be replaced if we have a test DB, but should not be replaced unless this is true)
 
 ---
@@ -238,6 +270,34 @@ To allow information to persist across transfers
 Manual or Automated Testing of prepared statments to post to all tables
 
 ---
+
+As an admin
+
+I want to be able to invalidate messages and reverse this
+
+To hold them for review without removing them
+
+Automated unit testing of prepared statement
+
+---
+
+As an admin
+
+I want to be able to view uploaded documents with acess information
+
+So I can see what is being used
+
+Automated unit testing of prepared statement
+
+---
+
+As an admin
+
+I want to be able to remove uploaded documents
+
+So I can free up limited sapce
+
+Automated unit test if also add uploads, otherwise this must be manual
 
 ## Description of Tests (Automated)
 
