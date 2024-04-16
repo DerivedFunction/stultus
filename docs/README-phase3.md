@@ -16,7 +16,7 @@
 
 ## Web FSM
 
-![Web FSM Diagram](img-assets/phase3/WebFSM_phase2.png)
+![Web FSM Diagram](img-assets/phase3/WebFSM_phase3.png)
 
 ## Idea FSm
 
@@ -24,14 +24,14 @@
 
 ## Mock User Interface
 
-![Main UI](img-assets/phase3/webUI/MainUI-phase2.png)
-![Edit UI](img-assets/phase3/webUI/EditUI-phase2.png)
-![Login UI](img-assets/phase3/webUI/LoginUI-phase2.png)
-![Login Fail](img-assets/phase3/webUI/LoginFail-phase2.png)
-![Profile UI](img-assets/phase3/webUI/ProfileUI-phase2.png)
-![Profile Edit UI](img-assets/phase3/webUI/ProfileEditUI-phase2.png)
-
-Comment operations and profile will maintain visual consistency with the site
+![Login Screen](img-assets/phase3/webUI/login.jpg)
+![Main Page](img-assets/phase3/webUI/mainPage.jpg)
+![View my profile](img-assets/phase3/webUI/myProfile.jpg)
+![View user profile](img-assets/phase3/webUI/userProfile.jpg)
+![Create a post](img-assets/phase3/webUI/newPost.jpg)
+![Comment a post](img-assets/phase3/webUI/commentPost.jpg)
+![Edit a comment](img-assets/phase3/webUI/editComment.jpg)
+![Display an image](img-assets/phase3/webUI/displayImage.jpg)
 
 ## User Stories
 
@@ -174,7 +174,7 @@ Integration test manual
 ---
 
 As an authorized User
- 
+
 I don't want to be logged out for server issues
 
 so that I don't need to log in again
