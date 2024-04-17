@@ -57,6 +57,14 @@
         <label id="Message">
           <span class="lblName">Message</span>
           <textarea id="newMessage"></textarea>
+          <span>
+            Upload Image:
+            <input
+              type="file"
+              class="fileInput"
+              parent="addElement"
+              accept="image/*"
+          /></span>
         </label>
         <button id="addButton">Add</button>
         <button id="addCancel">Cancel</button>
@@ -77,6 +85,14 @@
         <label>
           <span class="lblName"> Message </span>
           <textarea id="editMessage"></textarea>
+          <span>
+            Upload Image:
+            <input
+              type="file"
+              class="fileInput"
+              parent="editElement"
+              accept="image/*"
+          /></span>
         </label>
         <span id="editCreated"></span>
         <input type="hidden" id="editId" />
@@ -129,6 +145,14 @@
         <label for="editNote">
           <span class="lblName">Note</span>
           <textarea id="editNote"></textarea>
+          <span>
+            Upload Image:
+            <input
+              type="file"
+              class="fileInput"
+              parent="profileForm"
+              accept="image/*"
+          /></span>
         </label>
         <div class="form-row">
           <input type="hidden" id="userId" />
@@ -159,6 +183,14 @@
         <label
           ><span class="lblName"> Add a comment</span>
           <textarea id="addComment"></textarea>
+          <span>
+            Upload Image:
+            <input
+              type="file"
+              class="fileInput"
+              parent="showComment"
+              accept="image/*"
+          /></span>
         </label>
         <input type="hidden" id="messageId" />
         <button id="commentButton">Comment</button>
@@ -175,6 +207,14 @@
         <label>
           <span class="lblName"> Message</span>
           <textarea id="editCommentMessage"></textarea>
+          <span>
+            Upload Image:
+            <input
+              type="file"
+              class="fileInput"
+              parent="editComment"
+              accept="image/*"
+          /></span>
         </label>
         <input type="hidden" id="commentEditId" />
         <button id="editCommentUpdate">Update</button>
