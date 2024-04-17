@@ -21,7 +21,7 @@
 
 ## Idea FSm
 
-![Idea FSM diagram](img-assets/phase3/IdeasFSM-phase2.png)
+![Idea FSM diagram](img-assets/phase3/IdeasFSM.png)
 
 ## Mock User Interface
 
