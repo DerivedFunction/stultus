@@ -8,7 +8,7 @@
 
 ## UML Diagram
 
-![UML Diagram](img-assets/phase3/UML-phase2.png)
+![UML Diagram](img-assets/phase3/UML-phase3.png)
 
 ## Admin FSM
 
