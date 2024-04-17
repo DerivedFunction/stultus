@@ -72,7 +72,11 @@ ul.navbar li a {
 label {
   display: block;
   margin-bottom: 5px;
+  width: 100%;
+}
+.lblName {
   font-weight: bold;
+  width: auto;
 }
 
 input[type="text"],
