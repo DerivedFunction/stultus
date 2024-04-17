@@ -11,6 +11,7 @@
     "license": "MIT",
     "devDependencies": {
         "jasmine-core": "^5.1.2",
+        "quill": "^2.0.0",
         "typedoc": "^0.25.12",
         "typedoc-plugin-markdown": "^3.17.1",
         "typescript": "^5.3.3"

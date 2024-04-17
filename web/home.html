@@ -5,13 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stultus</title>
+    <!-- Main Quill library -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.js"></script>
 
-    <script
-      src="//js.nicedit.com/nicEdit-latest.js"
-      type="text/javascript"
-    ></script>
-    <script type="text/javascript">
-      bkLib.onDomLoaded(nicEditors.allTextAreas);
+    <!-- Theme included stylesheets -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.snow.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.bubble.css"
+      rel="stylesheet"
+    />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize Quill editors
+        var quillEditors = document.querySelectorAll(".editor");
+        for (const element of quillEditors) {
+          var editor = new Quill(element, {
+            modules: {
+              toolbar: [
+                [{ header: [1, 2, false] }],
+                ["bold", "italic", "underline"],
+                ["image", "code-block"],
+              ],
+            },
+            placeholder: "Compose an epic...",
+            theme: "snow", // or 'bubble'
+          });
+        }
+      });
     </script>
     <script src="app.js"></script>
     <link rel="stylesheet" href="home.css" />
@@ -56,7 +79,7 @@
         </div>
         <label id="Message">
           <span class="lblName">Message</span>
-          <textarea id="newMessage"></textarea>
+          <div class="editor" id="newMessage"></div>
           <span>
             Upload Image:
             <input
@@ -84,7 +107,7 @@
         </div>
         <label>
           <span class="lblName"> Message </span>
-          <textarea id="editMessage"></textarea>
+          <div class="editor" id="editMessage"></div>
           <span>
             Upload Image:
             <input
@@ -144,7 +167,7 @@
         </div>
         <label for="editNote">
           <span class="lblName">Note</span>
-          <textarea id="editNote"></textarea>
+          <div class="editor" id="editNote"></div>
           <span>
             Upload Image:
             <input
@@ -182,7 +205,7 @@
         </div>
         <label
           ><span class="lblName"> Add a comment</span>
-          <textarea id="addComment"></textarea>
+          <div class="editor" id="addComment"></div>
           <span>
             Upload Image:
             <input
@@ -206,7 +229,7 @@
         <div style="height: 100"></div>
         <label>
           <span class="lblName"> Message</span>
-          <textarea id="editCommentMessage"></textarea>
+          <div class="editor" id="editCommentMessage"></div>
           <span>
             Upload Image:
             <input

@@ -32,6 +32,8 @@ const user = "user";
  * @type {string}
  */
 const comment = "comment";
+
+const blankText = "<p><br></p>";
 /**
  * NewEntryForm has all the code for the form for adding an entry
  * @type {class NewEntryForm}
@@ -46,7 +48,7 @@ class NewEntryForm {
    * The HTML element for message
    * @type {HTMLDivElement}
    */
-  message = <HTMLDivElement>document.querySelector("#addElement .nicEdit-main");
+  message = <HTMLDivElement>document.querySelector("#addElement .ql-editor");
   /**
    * The HTML element for the container of the entire module
    * @type {HTMLElement}
@@ -87,7 +89,7 @@ class NewEntryForm {
     // Check for bad input
     let title = "" + newEntryForm.title.value;
     let msg = `${newEntryForm.message.innerHTML}`;
-    if (title === "" || msg === "") {
+    if (title === "" || msg === blankText) {
       InvalidContentMsg("Error: title/msg is not valid", null);
       return;
     }
@@ -169,9 +171,7 @@ class EditEntryForm {
    * The HTML element for message
    * @type {HTMLDivElement}
    */
-  message = <HTMLDivElement>(
-    document.querySelector("#editElement .nicEdit-main")
-  );
+  message = <HTMLDivElement>document.querySelector("#editElement .ql-editor");
   /**
    * The HTML element for id
    * @type {HTMLInputElement}
@@ -247,7 +247,7 @@ class EditEntryForm {
     let title = "" + editEntryForm.title.value;
     let msg = `${editEntryForm.message.innerHTML}`;
     let id = "" + editEntryForm.id.value;
-    if (title === "" || msg === "" || id === "") {
+    if (title === "" || msg === blankText || id === "") {
       InvalidContentMsg("Error: title, message, or id is not valid", null);
       return;
     }
@@ -764,9 +764,7 @@ class Profile {
    * The HTML element for user note
    * @type {HTMLDivElement}
    */
-  noteBox = <HTMLDivElement>(
-    document.querySelector("#profileForm .nicEdit-main")
-  );
+  noteBox = <HTMLDivElement>document.querySelector("#profileForm .ql-editor");
   /**
    * The HTML element for the container of the entire module
    * @type {HTMLElement}
@@ -974,9 +972,7 @@ class CommentForm {
    * The HTML element for comment body
    * @type {HTMLDivElement}
    */
-  textbox = <HTMLDivElement>(
-    document.querySelector("#showComment .nicEdit-main")
-  );
+  textbox = <HTMLDivElement>document.querySelector("#showComment .ql-editor");
   /**
    * Intialize the object b setting buttons to do actions
    * when clicked
@@ -1169,10 +1165,10 @@ class CommentForm {
   }
   submitForm() {
     console.log("Submit comment form called.");
-    const commentText = commentForm.textbox.innerHTML;
+    const msg = commentForm.textbox.innerHTML;
     const msgID = commentForm.id.value;
     // Check if the comment text is not empty
-    if (!commentText.trim()) {
+    if (msg === blankText) {
       InvalidContentMsg("Error: Comment text is empty", null);
       return;
     }
@@ -1180,7 +1176,7 @@ class CommentForm {
     fetch(`${backendUrl}/${user}/comment/${msgID}`, {
       method: "POST",
       body: JSON.stringify({
-        mMessage: commentText,
+        mMessage: msg,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -1215,9 +1211,7 @@ class CommentEditForm {
    * The HTML element for comment message
    * @type {HTMLDivElement}
    */
-  message = <HTMLDivElement>(
-    document.querySelector("#editComment .nicEdit-main")
-  );
+  message = <HTMLDivElement>document.querySelector("#editComment .ql-editor");
   /**
    * The HTML element for comment id
    * @type {HTMLInputElement}
@@ -1294,7 +1288,7 @@ class CommentEditForm {
     // that neither is empty
     let msg = `${commentEditForm.message.innerHTML}`;
     let id = "" + commentEditForm.id.value;
-    if (msg === "" || id === "") {
+    if (msg === blankText || id === "") {
       InvalidContentMsg("Error: comment message, or id is not valid", null);
       return;
     }
@@ -1557,7 +1551,7 @@ async function uploadImage(dataFile: any, location: any) {
     generated_at: new Date().toISOString(),
     png: base64,
   };
-  let area = <HTMLElement>document.querySelector(`#${location} .nicEdit-main`);
+  let area = <HTMLElement>document.querySelector(`#${location} .ql-editor`);
   await fetch(`${backendUrl}/uploadImage`, {
     method: "POST",
     body: JSON.stringify(body),
