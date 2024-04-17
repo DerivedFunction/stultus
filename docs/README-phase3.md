@@ -4,7 +4,7 @@
 
 ## Entity Relationship Diagram
 
-![Entity Relationship Diagram](img-assets/phase3/ERD-phase2.png)
+![Entity Relationship Diagram](img-assets/phase3/ERD-phase3.png)
 
 ## UML Diagram
 
@@ -17,7 +17,7 @@
 
 ## Web FSM
 
-![Web FSM Diagram](img-assets/phase3/WebFSM_phase3.png)
+![Web FSM Diagram](img-assets/phase3/WebFSM-phase3.png)
 
 ## Idea FSm
 
