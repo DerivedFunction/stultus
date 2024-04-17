@@ -44,9 +44,9 @@ class NewEntryForm {
   title = <HTMLInputElement>document.getElementById("newTitle");
   /**
    * The HTML element for message
-   * @type {HTMLInputElement}
+   * @type {HTMLDivElement}
    */
-  message = <HTMLInputElement>document.getElementById("newMessage");
+  message = <HTMLDivElement>document.querySelector("#addElement .nicEdit-main");
   /**
    * The HTML element for the container of the entire module
    * @type {HTMLElement}
@@ -71,7 +71,7 @@ class NewEntryForm {
    */
   clearForm() {
     newEntryForm.title.value = "";
-    newEntryForm.message.value = "";
+    newEntryForm.message.innerHTML = "";
     // reset the UI
     hideAll();
     mainList.container.style.display = "block";
@@ -86,7 +86,7 @@ class NewEntryForm {
     // Get the values of the fields and convert to strings
     // Check for bad input
     let title = "" + newEntryForm.title.value;
-    let msg = "" + newEntryForm.message.value;
+    let msg = `${newEntryForm.message.innerHTML}`;
     if (title === "" || msg === "") {
       InvalidContentMsg("Error: title/msg is not valid", null);
       return;
