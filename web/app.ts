@@ -167,9 +167,11 @@ class EditEntryForm {
   title = <HTMLInputElement>document.getElementById("editTitle");
   /**
    * The HTML element for message
-   * @type {HTMLInputElement}
+   * @type {HTMLDivElement}
    */
-  message = <HTMLInputElement>document.getElementById("editMessage");
+  message = <HTMLDivElement>(
+    document.querySelector("#editElement .nicEdit-main")
+  );
   /**
    * The HTML element for id
    * @type {HTMLInputElement}
@@ -204,7 +206,7 @@ class EditEntryForm {
     // Fill the edit form when we receive ok
     if (data.mStatus === "ok") {
       editEntryForm.title.value = data.mData.mSubject;
-      editEntryForm.message.value = data.mData.mMessage;
+      editEntryForm.message.innerHTML = data.mData.mMessage;
       editEntryForm.id.value = data.mData.mId;
     } else if (data.mStatus === "err") {
       InvalidContentMsg(
@@ -227,7 +229,7 @@ class EditEntryForm {
    */
   clearForm() {
     editEntryForm.title.value = "";
-    editEntryForm.message.value = "";
+    editEntryForm.message.innerHTML = "";
     editEntryForm.id.value = "";
     // reset the UI
     hideAll();
@@ -243,7 +245,7 @@ class EditEntryForm {
     // get the values of the two fields, force them to be strings, and check
     // that neither is empty
     let title = "" + editEntryForm.title.value;
-    let msg = "" + editEntryForm.message.value;
+    let msg = `${editEntryForm.message.innerHTML}`;
     let id = "" + editEntryForm.id.value;
     if (title === "" || msg === "" || id === "") {
       InvalidContentMsg("Error: title, message, or id is not valid", null);
@@ -760,9 +762,11 @@ class Profile {
   soMenu = <HTMLSelectElement>document.getElementById("editSO");
   /**
    * The HTML element for user note
-   * @type {HTMLTextAreaElement}
+   * @type {HTMLDivElement}
    */
-  noteBox = <HTMLTextAreaElement>document.getElementById("editNote");
+  noteBox = <HTMLDivElement>(
+    document.querySelector("#profileForm .nicEdit-main")
+  );
   /**
    * The HTML element for the container of the entire module
    * @type {HTMLElement}
@@ -817,7 +821,7 @@ class Profile {
       const sO = data.mData.uSO.toLowerCase(); // Convert to lowercase for case-insensitive comparison
       fillSO(sO);
       // Get the note
-      profile.noteBox.value = data.mData.uNote;
+      profile.noteBox.innerHTML = data.mData.uNote;
     } else if (data.mStatus === "err") {
       InvalidContentMsg(
         "The server replied with an error:\n" + data.mMessage,
@@ -875,7 +879,7 @@ class Profile {
     const username = profile.nameBox.value;
     const userGender = profile.genderMenu.value;
     const userSO = profile.soMenu.value;
-    const userNote = profile.noteBox.value;
+    const userNote = profile.noteBox.innerHTML;
     // Make the AJAX PUT request
     fetch(`${backendUrl}/${user}`, {
       method: "PUT",
@@ -968,9 +972,11 @@ class CommentForm {
   container = <HTMLElement>document.getElementById("showComment");
   /**
    * The HTML element for comment body
-   * @type {HTMLTextAreaElement}
+   * @type {HTMLDivElement}
    */
-  textbox = <HTMLTextAreaElement>document.getElementById("addComment");
+  textbox = <HTMLDivElement>(
+    document.querySelector("#showComment .nicEdit-main")
+  );
   /**
    * Intialize the object b setting buttons to do actions
    * when clicked
@@ -1155,7 +1161,7 @@ class CommentForm {
     commentForm.title.innerText = "";
     commentForm.body.innerText = "";
     commentForm.author.innerHTML = "";
-    commentForm.textbox.value = "";
+    commentForm.textbox.innerHTML = "";
     (<HTMLElement>document.getElementById("commentList")).innerHTML = "";
     // Reset the UI
     hideAll();
@@ -1163,7 +1169,7 @@ class CommentForm {
   }
   submitForm() {
     console.log("Submit comment form called.");
-    const commentText = commentForm.textbox.value;
+    const commentText = commentForm.textbox.innerHTML;
     const msgID = commentForm.id.value;
     // Check if the comment text is not empty
     if (!commentText.trim()) {
@@ -1207,9 +1213,11 @@ let commentEditForm: CommentEditForm;
 class CommentEditForm {
   /**
    * The HTML element for comment message
-   * @type {HTMLElement}
+   * @type {HTMLDivElement}
    */
-  message = <HTMLInputElement>document.getElementById("editCommentMessage");
+  message = <HTMLDivElement>(
+    document.querySelector("#editComment .nicEdit-main")
+  );
   /**
    * The HTML element for comment id
    * @type {HTMLInputElement}
@@ -1247,7 +1255,7 @@ class CommentEditForm {
   init(data: any) {
     // Fill the edit form when we receive ok
     if (data.mStatus === "ok") {
-      commentEditForm.message.value = data.mData.cMessage;
+      commentEditForm.message.innerHTML = data.mData.cMessage;
       commentEditForm.id.value = data.mData.cId;
     } else if (data.mStatus === "err") {
       InvalidContentMsg(
@@ -1269,7 +1277,7 @@ class CommentEditForm {
    * @type {function}
    */
   clearForm() {
-    commentEditForm.message.value = "";
+    commentEditForm.message.innerHTML = "";
     commentEditForm.id.value = "";
     // reset the UI
     hideAll();
@@ -1284,7 +1292,7 @@ class CommentEditForm {
     console.log("Submit edit comment called.");
     // get the values of the two fields, force them to be strings, and check
     // that neither is empty
-    let msg = "" + commentEditForm.message.value;
+    let msg = `${commentEditForm.message.innerHTML}`;
     let id = "" + commentEditForm.id.value;
     if (msg === "" || id === "") {
       InvalidContentMsg("Error: comment message, or id is not valid", null);
