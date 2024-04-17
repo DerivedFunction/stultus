@@ -31,6 +31,12 @@ All tests are on the backend methods, not the json handling, so there are more s
 - Tests for selecting a specific comment by post or by user
 - Tests for deleting a comment
 
+### 'Additional Phase 3 Tests to be implemented'
+
+- Tests for posting/commenting other media, such as pictures and audio files
+- Tests for correct Google Drive response
+- Tests for memcachier
+
 ## Documentation
 
 Javadocs found at [`docs/apidocs/`](./docs/apidocs/)
