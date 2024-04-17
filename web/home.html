@@ -49,10 +49,15 @@
       <div style="height: 100"></div>
       <div class="messageBox">
         <div class="form-row">
-          <label id="Title">Title</label> <input type="text" id="newTitle" />
+          <label id="Title">
+            <span class="lblName">Title</span>
+            <input type="text" id="newTitle" />
+          </label>
         </div>
-        <label id="Message">Message</label>
-        <textarea id="newMessage"></textarea>
+        <label id="Message">
+          <span class="lblName">Message</span>
+          <textarea id="newMessage"></textarea>
+        </label>
         <button id="addButton">Add</button>
         <button id="addCancel">Cancel</button>
       </div>
@@ -64,11 +69,13 @@
       <div class="messageBox">
         <div style="height: 100"></div>
         <div class="form-row">
-          <label> Title </label>
-          <input type="text" id="editTitle" />
+          <label>
+            <span class="lblName">Title</span>
+            <input type="text" id="editTitle" />
+          </label>
         </div>
         <label>
-          Message
+          <span class="lblName"> Message </span>
           <textarea id="editMessage"></textarea>
         </label>
         <span id="editCreated"></span>
@@ -91,31 +98,38 @@
       <div class="messageBox">
         <div style="height: 100"></div>
         <div class="form-row">
-          <label for="editUsername">Username</label>
-          <input type="text" id="editUsername" />
+          <label for="editUsername">
+            <span class="lblName"> Username </span>
+            <input type="text" id="editUsername" />
+          </label>
         </div>
         <div class="form-row">
-          <label for="editGender">Gender</label>
-          <select id="editGender">
-            <option value="0">Unknown/Other</option>
-            <option value="1">Male</option>
-            <option value="2">Female</option>
-          </select>
+          <label for="editGender">
+            <span class="lblName">Gender</span>
+            <select id="editGender">
+              <option value="0">Unknown/Other</option>
+              <option value="1">Male</option>
+              <option value="2">Female</option>
+            </select>
+          </label>
         </div>
         <div class="form-row">
-          <label for="editSO">Sexual Orientation</label>
-          <select id="editSO">
-            <option value="private">private</option>
-            <option value="straight">Straight</option>
-            <option value="lesbian">Lesbian</option>
-            <option value="gay">Gay</option>
-            <option value="bisexual">Bisexual</option>
-            <option value="transgender">Transgender</option>
-          </select>
+          <label for="editSO">
+            <span class="lblName">Sexual Orientation</span>
+            <select id="editSO">
+              <option value="private">private</option>
+              <option value="straight">Straight</option>
+              <option value="lesbian">Lesbian</option>
+              <option value="gay">Gay</option>
+              <option value="bisexual">Bisexual</option>
+              <option value="transgender">Transgender</option>
+            </select>
+          </label>
         </div>
-
-        <label for="editNote">Note</label>
-        <textarea id="editNote"></textarea>
+        <label for="editNote">
+          <span class="lblName">Note</span>
+          <textarea id="editNote"></textarea>
+        </label>
         <div class="form-row">
           <input type="hidden" id="userId" />
           <button id="editUser">Update</button>
@@ -142,8 +156,8 @@
             </tr>
           </table>
         </div>
-        <label>
-          Add a comment
+        <label
+          ><span class="lblName"> Add a comment</span>
           <textarea id="addComment"></textarea>
         </label>
         <input type="hidden" id="messageId" />
@@ -159,7 +173,7 @@
       <div class="messageBox">
         <div style="height: 100"></div>
         <label>
-          Message
+          <span class="lblName"> Message</span>
           <textarea id="editCommentMessage"></textarea>
         </label>
         <input type="hidden" id="commentEditId" />
@@ -174,17 +188,23 @@
       <div class="messageBox">
         <div style="height: 100"></div>
         <div class="form-row">
-          <label for="viewUsername">Username</label>
-          <span id="viewUsername">Sample</span>
+          <label for="viewUsername">
+            <span class="lblName">Username</span>
+            <span id="viewUsername">Sample</span>
+          </label>
         </div>
         <div class="form-row">
-          <label for="viewEmail">Email</label>
-          <div id="viewEmail">
-            <a href="mailto:author@example.com">email</a>
-          </div>
+          <label for="viewEmail">
+            <span class="lblName">Email</span>
+            <span id="viewEmail">
+              <a href="mailto:author@example.com">email</a>
+            </span>
+          </label>
         </div>
-        <label for="viewNote">Note</label>
-        <div id="viewNote"></div>
+        <label for="viewNote"
+          ><span class="lblName">Note</span>
+          <div id="viewNote"></div>
+        </label>
         <div class="form-row">
           <input type="hidden" id="viewUserId" />
           <button id="viewReturn">Back to Home</button>
