@@ -89,12 +89,13 @@ textarea {
   box-sizing: border-box;
 }
 textarea {
-  height: 8em;
+  height: 20em;
 }
 
 .messageBox {
   border: 1px solid #999999; /* Light gray border */
   border-radius: 10px;
+  width: auto;
   padding: 20px;
 }
 
