@@ -1500,7 +1500,7 @@ document.addEventListener(
           InvalidContentMsg("Something went wrong. ", error);
         }
       });
-
+    getAllFileInput();
     console.log("DOMContentLoaded");
   },
   false
@@ -1525,7 +1525,62 @@ function getAllUserBtns() {
     });
   }
 }
+function getAllFileInput() {
+  const allFileUploads = Array.from(
+    document.getElementsByClassName("fileInput")
+  ) as HTMLInputElement[];
+  for (const fileInput of allFileUploads) {
+    fileInput.addEventListener("change", async (e) => {
+      const file = fileInput.files ? fileInput.files[0] : null;
+      if (file) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async () => {
+          // Ensure that reader.result is not null
+          if (reader.result) {
+            await uploadImage(reader.result, fileInput.getAttribute("parent"));
+            fileInput.value = "";
+          } else {
+            console.error("Failed to read the file.");
+          }
+        };
+      } else {
+        console.error("No file selected.");
+      }
+    });
+  }
+}
 
+async function uploadImage(dataFile: any, location: any) {
+  const base64 = dataFile.split(",")[1];
+  const body = {
+    generated_at: new Date().toISOString(),
+    png: base64,
+  };
+  let area = <HTMLElement>document.querySelector(`#${location} .nicEdit-main`);
+  await fetch(`${backendUrl}/uploadImage`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        // Return the json after ok message
+        return Promise.resolve(response.json());
+      } else {
+        InvalidContentMsg("The server replied not ok:", response);
+      }
+      return Promise.reject(response);
+    })
+    .then((data) => {
+      area.innerHTML += `<img _moz_dirty="" src="${data.mMessage}" width="50%" >.`;
+    })
+    .catch((error: any) => {
+      area.innerHTML += `<img _moz_dirty="" src="${dataFile}" width="50%" alt="${error.statusText}">.`;
+    });
+}
 /**
  * Hides every module
  * @type {function}
