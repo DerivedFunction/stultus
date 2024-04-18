@@ -1,8 +1,10 @@
 {
-    "compilerOptions": {
-        "target": "ES6",
-        "module": "CommonJS",
-        "sourceMap": true,
-        "lib": ["es2018","DOM"]
-    }
+  "compilerOptions": {
+    "target": "ES6",
+    "sourceMap": false,
+    "lib": ["es2018", "DOM"],
+    "outFile": "../backend/src/main/resources/web/app.js",
+    "strict": true
+  },
+  "exclude": ["apptest.ts"]
 }

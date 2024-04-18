@@ -24,4 +24,4 @@ cp *.css $TARGETFOLDER/$WEBFOLDERNAME
 
 # step 5: compile TypeScript files
 echo "Compiling typescript files"
-node_modules/typescript/bin/tsc app.ts --lib "es2015","dom" --target es5 --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/app.js
+npx tsc
