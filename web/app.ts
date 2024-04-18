@@ -1405,7 +1405,7 @@ class ViewUserForm {
   init(data: any) {
     if (data.mStatus === "ok") {
       viewUserForm.username.innerText = data.mData.uUsername;
-      viewUserForm.note.innerText = data.mData.uNote;
+      viewUserForm.note.innerHTML = data.mData.uNote;
       viewUserForm.email.innerHTML = `<a href="mailto:${data.mData.uEmail}">${data.mData.uEmail}</a>`;
     } else if (data.mStatus === "err") {
       InvalidContentMsg(
@@ -1426,7 +1426,7 @@ class ViewUserForm {
   clearForm() {
     // Clearing inner text of elements
     viewUserForm.username.innerText = "";
-    viewUserForm.note.innerText = "";
+    viewUserForm.note.innerHTML = "";
     viewUserForm.email.innerHTML = "";
     hideAll();
     mainList.container.style.display = "block";
