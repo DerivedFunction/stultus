@@ -637,6 +637,10 @@ class ElementList {
     // post AJAX values to console
     doAjax().then().catch(console.log);
   }
+  /**
+   * Updates the vote count for the post
+   * @param id the id of post
+   */
   private updateVote(id: any) {
     const doAjax = async () => {
       await fetch(`${backendUrl}/${messages}/${id}`, {
