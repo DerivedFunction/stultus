@@ -161,7 +161,7 @@ let title_string = "Adding title";
  * Create New Idea Using Add/Edit Button Functionality
  * @type {function(){}}
  */
-describe("Add and Edit Button Tests", function () {
+describe("Add Button Tests", function () {
   let mId: any;
   /**
    * Function to initialize values
@@ -194,6 +194,7 @@ describe("Add and Edit Button Tests", function () {
       expect(showElements.style.display).toEqual("none");
       // Refresh the UI to main table by clicking add
       addCancel.click();
+      done();
     }
   });
 
@@ -208,15 +209,13 @@ describe("Add and Edit Button Tests", function () {
     expect(addElement.style.display).toEqual("block");
     // The data table is hidden
     expect(showElements.style.display).toEqual("none");
-    // Refresh the UI to main table by clicking add
+    // Refresh the UI to main ta  ble by clicking add
     addButton.click();
     // The data table is hidden
     expect(showElements.style.display).toEqual("none");
     //
-    setTimeout(function () {
-      addCancel.click();
-      done();
-    }, delay);
+    addCancel.click();
+    done();
   });
 
   /**
