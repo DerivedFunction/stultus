@@ -23,7 +23,7 @@ cp *.css $TARGETFOLDER/$WEBFOLDERNAME
 
 # step 5: compile TypeScript files
 echo "Compiling typescript files"
-node_modules/typescript/bin/tsc app.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/app.js
+npx tsc
 # step 7: set up Jasmine
 echo "Compiling jasmine tests"
 node_modules/typescript/bin/tsc apptest.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/apptest.js
