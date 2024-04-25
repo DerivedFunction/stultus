@@ -364,40 +364,50 @@ class ElementList {
     // post AJAX values to console
     doAjax().then().catch(console.log);
   }
-  /**
-   * Simple ajax to call user information based on user id
-   * @param userid the userid to find information
-   * @return UserDataLite of email, username, and note
-   * @type {function}
-   */
+
   getUser(userid: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      const doAjax = async () => {
-        try {
-          const response = await fetch(`${backendUrl}/${user}/${userid}`, {
-            method: "GET",
-            headers: {
-              "Content-type": "application/json; charset=UTF-8",
-            },
-          });
+      const cacheKey = `userData_${userid}`;
+      const cachedData = localStorage.getItem(cacheKey);
+      const currentTime = new Date().getTime();
 
-          if (!response.ok) {
+      if (cachedData) {
+        const { data, timestamp } = JSON.parse(cachedData);
+        if (currentTime - timestamp < 10 * 60 * 1000) {
+          // Data found in cache and within expiration time, return it
+          resolve(data);
+          return;
+        }
+      }
+
+      // Cache expired or not found, fetch data from server
+      fetch(`${backendUrl}/user/${userid}`, {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
             InvalidContentMsg("The server replied not ok:", response);
           }
-          const data = await response.json();
-
+          return Promise.reject(response);
+        })
+        .then((data) => {
           if (data.mStatus === "ok" && data.mData) {
+            // Store data in cache along with timestamp
+            const cacheData = { data, timestamp: currentTime };
+            localStorage.setItem(cacheKey, JSON.stringify(cacheData));
             resolve(data);
           } else {
             throw new Error("User not found or data structure incorrect");
           }
-        } catch (error: any) {
+        })
+        .catch((error) => {
           reject(error);
-        }
-      };
-
-      // Execute AJAX call
-      doAjax();
+        });
     });
   }
   /**
@@ -423,7 +433,10 @@ class ElementList {
           if (data.mStatus === "ok" && data.mData?.uID) {
             resolve(data.mData.uID);
           } else {
-            throw new Error("User ID not found or data structure incorrect");
+            InvalidContentMsg(
+              "User ID not found or data structure incorrect",
+              null
+            );
           }
         })
         .catch((error: any) => reject(error));
@@ -466,7 +479,7 @@ class ElementList {
             <div class="voting-container">
               <ul class="voting">
                 <li><button class="likebtn" data-value="${rowData.mId}">&#8593;</button></li>
-                <li class="totalVote">${rowData.numLikes}</li>
+                <li class="totalVote" data-value="${rowData.mId}">${rowData.numLikes}</li>
                 <li><button class="dislikebtn" data-value="${rowData.mId}">&#8595;</button></li>
               </ul>
             </div>
@@ -614,8 +627,8 @@ class ElementList {
           }
           return Promise.reject(response);
         })
-        .then((data) => {
-          mainList.refresh();
+        .then(() => {
+          mainList.updateVote(id);
         })
         .catch((error: any) => {
           InvalidContentMsg("Error: ", error);
@@ -623,6 +636,35 @@ class ElementList {
     };
     // post AJAX values to console
     doAjax().then().catch(console.log);
+  }
+  private updateVote(id: any) {
+    const doAjax = async () => {
+      await fetch(`${backendUrl}/${messages}/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return Promise.resolve(response.json());
+          } else {
+            InvalidContentMsg("The server replied not ok:", response);
+          }
+          return Promise.reject(response);
+        })
+        .then((data) => {
+          (<HTMLElement>(
+            document.querySelector(
+              `li.totalVote[data-value="${data.mData.mId}"]`
+            )
+          )).innerHTML = data.mData.numLikes;
+        })
+        .catch((error: any) => {
+          InvalidContentMsg("Error: ", error);
+        });
+    };
+    doAjax();
   }
 
   /**
@@ -659,7 +701,6 @@ class ElementList {
     // post AJAX values to console
     doAjax().then().catch(console.log);
   }
-
   /**
    * clickEdit is the code we run in response to a click of a edit button
    * @param e Event to get the message to be editGender
@@ -1155,7 +1196,7 @@ class CommentForm {
   clearForm() {
     // Clear the values in it
     commentForm.title.innerText = "";
-    commentForm.body.innerText = "";
+    commentForm.body.innerHTML = "";
     commentForm.author.innerHTML = "";
     commentForm.textbox.innerHTML = "";
     (<HTMLElement>document.getElementById("commentList")).innerHTML = "";
@@ -1569,10 +1610,10 @@ async function uploadImage(dataFile: any, location: any) {
       return Promise.reject(response);
     })
     .then((data) => {
-      area.innerHTML += `<img _moz_dirty="" src="${data.mMessage}" width="50%" >.`;
+      area.innerHTML += `<img src="${data.mMessage}" width="50%" >.`;
     })
     .catch((error: any) => {
-      area.innerHTML += `<img _moz_dirty="" src="${dataFile}" width="50%" alt="${error.statusText}">.`;
+      area.innerHTML += `<img src="${dataFile}" width="50%" alt="${error.statusText}"> Error uploading Image`;
     });
 }
 /**
