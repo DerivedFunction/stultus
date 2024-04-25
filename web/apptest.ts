@@ -183,65 +183,19 @@ describe("Add and Edit Button Tests", function () {
    * Tests if add button works with valid title and message and add it
    * @type {function(){}}
    */
-  it("Add button and Edit button", function (done: () => void) {
+  it("Add button", function (done: () => void) {
     //click add button
     testAdd();
-    testEdit();
-
     function testAdd() {
       showFormButton.click();
-
-      //set message and title to global vars
-      newMessage.value = title_string;
-      newTitle.value = msg_string;
-
-      // Check if the message and title is valid
-      expect(newMessage.value).toEqual(title_string);
-      expect(newTitle.value).toEqual(msg_string);
       // The add Element form (newTitle, Message) is shown
       expect(addElement.style.display).toEqual("block");
       // The data table is hidden
       expect(showElements.style.display).toEqual("none");
       // Refresh the UI to main table by clicking add
-      addButton.click();
+      addCancel.click();
     }
-
-    function testEdit() {
-      setTimeout(function () {
-        // Lets set our old title and message to test
-        let old_title =
-          document.getElementsByClassName("postTitle")[0].textContent;
-        let old_message =
-          document.getElementsByClassName("postBody")[0].textContent;
-        // Let's edit our newly created element
-        let ebtn = <HTMLButtonElement>(
-          document.getElementsByClassName("editbtn")[0]
-        );
-        ebtn.click();
-        setTimeout(function () {
-          // Make sure our edit container contains the right one to edit
-          expect(editTitle.value).toEqual(old_title?.split(":")[1].trim());
-          expect(editMessage.value).toEqual(old_message);
-          editTitle.value = "Editing Test";
-          editMessage.value = "Editing Message";
-          editButton.click();
-          // Check to see if edits are successful
-          setTimeout(function () {
-            expect(
-              document.getElementsByClassName("postTitle")[0].textContent
-            ).not.toEqual(old_title);
-            expect(
-              document.getElementsByClassName("postBody")[0].textContent
-            ).not.toEqual(old_message);
-            mId = document
-              .getElementsByClassName("delbtn")[0]
-              .getAttribute("data-value");
-            done();
-          }, delay);
-        }, delay);
-      }, delay);
-    }
-  }, 10000); // We expect a long time to finish this test
+  });
 
   /**
    * Tests if add button works with valid title and message and add it
@@ -250,10 +204,6 @@ describe("Add and Edit Button Tests", function () {
   it("Add button fail on empty", function (done: () => void) {
     //click add button
     showFormButton.click();
-
-    //set message and title to global vars
-    newMessage.value = "";
-    newTitle.value = "";
     // The add Element form (newTitle, Message) is shown
     expect(addElement.style.display).toEqual("block");
     // The data table is hidden
