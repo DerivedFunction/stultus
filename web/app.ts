@@ -1606,6 +1606,7 @@ async function uploadImage(dataFile: any, location: any) {
   })
     .then((response) => {
       if (response.ok) {
+        console.log("Response ok", response);
         // Return the json after ok message
         return Promise.resolve(response.json());
       } else {
@@ -1614,9 +1615,11 @@ async function uploadImage(dataFile: any, location: any) {
       return Promise.reject(response);
     })
     .then((data) => {
+      console.log("Success", data);
       area.innerHTML += `<img src="${data.mMessage}" width="50%" >.`;
     })
     .catch((error: any) => {
+      console.log("Error", error);
       area.innerHTML += `<img src="${dataFile}" width="50%" alt="${error.statusText}"> Error uploading Image`;
     });
 }
