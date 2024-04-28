@@ -5,6 +5,37 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stultus</title>
+    <!-- Main Quill library -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.js"></script>
+
+    <!-- Theme included stylesheets -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.snow.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.bubble.css"
+      rel="stylesheet"
+    />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize Quill editors
+        var quillEditors = document.querySelectorAll(".editor");
+        for (const element of quillEditors) {
+          var editor = new Quill(element, {
+            modules: {
+              toolbar: [
+                [{ header: [1, 2, false] }],
+                ["bold", "italic", "underline"],
+                ["image", "link"],
+              ],
+            },
+            placeholder: "What is on your mind...",
+            theme: "snow",
+          });
+        }
+      });
+    </script>
     <script src="app.js"></script>
     <link rel="stylesheet" href="home.css" />
   </head>
@@ -41,10 +72,23 @@
       <div style="height: 100"></div>
       <div class="messageBox">
         <div class="form-row">
-          <label id="Title">Title</label> <input type="text" id="newTitle" />
+          <label id="Title">
+            <span class="lblName">Title</span>
+            <input type="text" id="newTitle" />
+          </label>
         </div>
-        <label id="Message">Message</label>
-        <textarea id="newMessage"></textarea>
+        <label id="Message">
+          <span class="lblName">Message</span>
+          <div class="editor" id="newMessage"></div>
+          <span>
+            Upload Image:
+            <input
+              type="file"
+              class="fileInput"
+              parent="addElement"
+              accept="image/*"
+          /></span>
+        </label>
         <button id="addButton">Add</button>
         <button id="addCancel">Cancel</button>
       </div>
@@ -56,12 +100,22 @@
       <div class="messageBox">
         <div style="height: 100"></div>
         <div class="form-row">
-          <label> Title </label>
-          <input type="text" id="editTitle" />
+          <label>
+            <span class="lblName">Title</span>
+            <input type="text" id="editTitle" />
+          </label>
         </div>
         <label>
-          Message
-          <textarea id="editMessage"></textarea>
+          <span class="lblName"> Message </span>
+          <div class="editor" id="editMessage"></div>
+          <span>
+            Upload Image:
+            <input
+              type="file"
+              class="fileInput"
+              parent="editElement"
+              accept="image/*"
+          /></span>
         </label>
         <span id="editCreated"></span>
         <input type="hidden" id="editId" />
@@ -83,31 +137,46 @@
       <div class="messageBox">
         <div style="height: 100"></div>
         <div class="form-row">
-          <label for="editUsername">Username</label>
-          <input type="text" id="editUsername" />
+          <label for="editUsername">
+            <span class="lblName"> Username </span>
+            <input type="text" id="editUsername" />
+          </label>
         </div>
         <div class="form-row">
-          <label for="editGender">Gender</label>
-          <select id="editGender">
-            <option value="0">Unknown/Other</option>
-            <option value="1">Male</option>
-            <option value="2">Female</option>
-          </select>
+          <label for="editGender">
+            <span class="lblName">Gender</span>
+            <select id="editGender">
+              <option value="0">Unknown/Other</option>
+              <option value="1">Male</option>
+              <option value="2">Female</option>
+            </select>
+          </label>
         </div>
         <div class="form-row">
-          <label for="editSO">Sexual Orientation</label>
-          <select id="editSO">
-            <option value="private">private</option>
-            <option value="straight">Straight</option>
-            <option value="lesbian">Lesbian</option>
-            <option value="gay">Gay</option>
-            <option value="bisexual">Bisexual</option>
-            <option value="transgender">Transgender</option>
-          </select>
+          <label for="editSO">
+            <span class="lblName">Sexual Orientation</span>
+            <select id="editSO">
+              <option value="private">private</option>
+              <option value="straight">Straight</option>
+              <option value="lesbian">Lesbian</option>
+              <option value="gay">Gay</option>
+              <option value="bisexual">Bisexual</option>
+              <option value="transgender">Transgender</option>
+            </select>
+          </label>
         </div>
-
-        <label for="editNote">Note</label>
-        <textarea id="editNote"></textarea>
+        <label for="editNote">
+          <span class="lblName">Note</span>
+          <div class="editor" id="editNote"></div>
+          <span>
+            Upload Image:
+            <input
+              type="file"
+              class="fileInput"
+              parent="profileForm"
+              accept="image/*"
+          /></span>
+        </label>
         <div class="form-row">
           <input type="hidden" id="userId" />
           <button id="editUser">Update</button>
@@ -134,9 +203,17 @@
             </tr>
           </table>
         </div>
-        <label>
-          Add a comment
-          <textarea id="addComment"></textarea>
+        <label
+          ><span class="lblName"> Add a comment</span>
+          <div class="editor" id="addComment"></div>
+          <span>
+            Upload Image:
+            <input
+              type="file"
+              class="fileInput"
+              parent="showComment"
+              accept="image/*"
+          /></span>
         </label>
         <input type="hidden" id="messageId" />
         <button id="commentButton">Comment</button>
@@ -151,8 +228,16 @@
       <div class="messageBox">
         <div style="height: 100"></div>
         <label>
-          Message
-          <textarea id="editCommentMessage"></textarea>
+          <span class="lblName"> Message</span>
+          <div class="editor" id="editCommentMessage"></div>
+          <span>
+            Upload Image:
+            <input
+              type="file"
+              class="fileInput"
+              parent="editComment"
+              accept="image/*"
+          /></span>
         </label>
         <input type="hidden" id="commentEditId" />
         <button id="editCommentUpdate">Update</button>
@@ -166,17 +251,23 @@
       <div class="messageBox">
         <div style="height: 100"></div>
         <div class="form-row">
-          <label for="viewUsername">Username</label>
-          <span id="viewUsername">Sample</span>
+          <label for="viewUsername">
+            <span class="lblName">Username</span>
+            <span id="viewUsername">Sample</span>
+          </label>
         </div>
         <div class="form-row">
-          <label for="viewEmail">Email</label>
-          <div id="viewEmail">
-            <a href="mailto:author@example.com">email</a>
-          </div>
+          <label for="viewEmail">
+            <span class="lblName">Email</span>
+            <span id="viewEmail">
+              <a href="mailto:author@example.com">email</a>
+            </span>
+          </label>
         </div>
-        <label for="viewNote">Note</label>
-        <div id="viewNote"></div>
+        <label for="viewNote"
+          ><span class="lblName">Note</span>
+          <div id="viewNote"></div>
+        </label>
         <div class="form-row">
           <input type="hidden" id="viewUserId" />
           <button id="viewReturn">Back to Home</button>
