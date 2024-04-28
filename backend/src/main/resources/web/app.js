@@ -124,10 +124,27 @@ class NewEntryForm {
                 }
                 return Promise.reject(response);
             })
-                .then((data) => {
+                .then((data) => __awaiter(this, void 0, void 0, function* () {
                 newEntryForm.onSubmitResponse(data);
-                mainList.refresh(false);
-            })
+                // Update the local storage
+                const messageList = localStorage.getItem("messages");
+                if (messageList !== null) {
+                    const cacheData = JSON.parse(messageList);
+                    // Fetch mUserID asynchronously
+                    const mUserID = yield mainList.getMyProfileID();
+                    // Create a new row object
+                    const newData = {
+                        mSubject: title,
+                        mMessage: msg,
+                        numLikes: 0,
+                        mUserID: mUserID,
+                    };
+                    cacheData.data.mData.unshift(newData);
+                    // Update the localStorage with the modified cacheData
+                    localStorage.setItem("messages", JSON.stringify(cacheData));
+                }
+                mainList.refresh(true);
+            }))
                 .catch((error) => {
                 InvalidContentMsg("Error (Did you sign in?):", error);
             });
@@ -436,7 +453,7 @@ class ElementList {
      * @return UserData of email, username, gender, SO, and note
      * @type {function}
      */
-    getMyProfile() {
+    getMyProfileID() {
         return new Promise((resolve, reject) => {
             fetch(`${backendUrl}/${user}`, {
                 method: "GET",
@@ -471,7 +488,7 @@ class ElementList {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Updating main table");
             // Retrieve the logged-in user's ID
-            const myUserId = yield mainList.getMyProfile();
+            const myUserId = yield mainList.getMyProfileID();
             // Get the messageList div to store the table
             let elem_messageList = document.getElementById("messageList");
             if (elem_messageList !== null) {
@@ -1143,7 +1160,7 @@ class CommentForm {
     createTable(data) {
         return __awaiter(this, void 0, void 0, function* () {
             // Retrieve the logged-in user's ID
-            const myUserId = yield mainList.getMyProfile();
+            const myUserId = yield mainList.getMyProfileID();
             let comment_list = document.getElementById("commentList");
             if (comment_list !== null) {
                 let table = document.createElement("table"); // Create a new table element
