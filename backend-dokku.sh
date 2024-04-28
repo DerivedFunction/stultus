@@ -26,4 +26,4 @@ git checkout -b backend-dokku origin/backend-dokku
 git push -f dokku backend-dokku
 
 # Go back to backend
-git checkout backend
+git checkout web
