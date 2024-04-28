@@ -124,27 +124,10 @@ class NewEntryForm {
                 }
                 return Promise.reject(response);
             })
-                .then((data) => __awaiter(this, void 0, void 0, function* () {
+                .then((data) => {
                 newEntryForm.onSubmitResponse(data);
-                // Update the local storage
-                const messageList = localStorage.getItem("messages");
-                if (messageList !== null) {
-                    const cacheData = JSON.parse(messageList);
-                    // Fetch mUserID asynchronously
-                    const mUserID = yield mainList.getMyProfileID();
-                    // Create a new row object
-                    const newData = {
-                        mSubject: title,
-                        mMessage: msg,
-                        numLikes: 0,
-                        mUserID: mUserID,
-                    };
-                    cacheData.data.mData.unshift(newData);
-                    // Update the localStorage with the modified cacheData
-                    localStorage.setItem("messages", JSON.stringify(cacheData));
-                }
-                mainList.refresh(true);
-            }))
+                mainList.refresh(false);
+            })
                 .catch((error) => {
                 InvalidContentMsg("Error (Did you sign in?):", error);
             });
