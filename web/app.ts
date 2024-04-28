@@ -4,7 +4,10 @@
  * @type {Object}
  */
 let $: any;
-
+/**
+ * Set expiration date for cache data
+ */
+const ExpirationDate = 3 * 60 * 1000;
 /**
  * Global variable to be referenced for newEntryForm
  * @type {NewEntryForm}
@@ -362,7 +365,7 @@ class ElementList {
       const currentTime = new Date().getTime();
       if (cache && cachedData) {
         const { data, timestamp } = JSON.parse(cachedData);
-        if (currentTime - timestamp < 10 * 60 * 1000) {
+        if (currentTime - timestamp < ExpirationDate) {
           // Data found in cache and within expiration time, return it
           mainList.update(data);
           return;
@@ -404,7 +407,7 @@ class ElementList {
 
       if (cachedData) {
         const { data, timestamp } = JSON.parse(cachedData);
-        if (currentTime - timestamp < 10 * 60 * 1000) {
+        if (currentTime - timestamp < ExpirationDate) {
           // Data found in cache and within expiration time, return it
           resolve(data);
           return;
@@ -605,7 +608,7 @@ class ElementList {
    */
   private clickDelete(e: Event) {
     console.log("Delete called");
-    const id = (<HTMLElement>e.target).getAttribute("data-value");
+    const id = (<HTMLElement>e.target).getAttribute("data-value")!;
     const doAjax = async () => {
       await fetch(`${backendUrl}/${user}/deleteMessage/${id}`, {
         // Grab the element from "database"
@@ -629,7 +632,7 @@ class ElementList {
             const cacheData = JSON.parse(messageList);
             // Find the index of the item with the matching mId
             const index = cacheData.data.mData.findIndex(
-              (item: any) => item.mId === id
+              (item: any) => parseInt(item.mId) === parseInt(id)
             );
             if (index !== -1) {
               // If the item is found, remove it from the array
@@ -1048,6 +1051,7 @@ class Profile {
  * @type {CommentForm}
  */
 let commentForm: CommentForm;
+
 /**
  * CommentForm is all the code to add comments to a post
  * @type {class CommentForm}
@@ -1144,7 +1148,7 @@ class CommentForm {
 
     if (cachedData) {
       const { data, timestamp } = JSON.parse(cachedData);
-      if (currentTime - timestamp < 10 * 60 * 1000) {
+      if (currentTime - timestamp < ExpirationDate) {
         // Data found in cache and within expiration time, return it
         commentForm.createTable(data);
         return;
