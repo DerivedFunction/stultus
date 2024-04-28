@@ -118,18 +118,20 @@ class NewEntryForm {
           }
           return Promise.reject(response);
         })
-        .then((data) => {
+        .then(async (data) => {
           newEntryForm.onSubmitResponse(data);
           // Update the local storage
           const messageList = localStorage.getItem("messages");
           if (messageList !== null) {
             const cacheData = JSON.parse(messageList);
-            // attach a new row in front of cache.data.mData
+            // Fetch mUserID asynchronously
+            const mUserID = await mainList.getMyProfileID();
+            // Create a new row object
             const newData = {
               mSubject: title,
               mMessage: msg,
               numLikes: 0,
-              mUserID: mainList.getMyProfileID(),
+              mUserID: mUserID,
             };
             cacheData.data.mData.unshift(newData);
             // Update the localStorage with the modified cacheData
