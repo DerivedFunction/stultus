@@ -120,7 +120,22 @@ class NewEntryForm {
         })
         .then((data) => {
           newEntryForm.onSubmitResponse(data);
-          mainList.refresh(false);
+          // Update the local storage
+          const messageList = localStorage.getItem("messages");
+          if (messageList !== null) {
+            const cacheData = JSON.parse(messageList);
+            // attach a new row in front of cache.data.mData
+            const newData = {
+              mSubject: title,
+              mMessage: msg,
+              numLikes: 0,
+              mUserID: mainList.getMyProfileID(),
+            };
+            cacheData.data.mData.unshift(newData);
+            // Update the localStorage with the modified cacheData
+            localStorage.setItem("messages", JSON.stringify(cacheData));
+          }
+          mainList.refresh(true);
         })
         .catch((error: any) => {
           InvalidContentMsg("Error (Did you sign in?):", error);
@@ -446,7 +461,7 @@ class ElementList {
    * @return UserData of email, username, gender, SO, and note
    * @type {function}
    */
-  getMyProfile(): Promise<number> {
+  getMyProfileID(): Promise<number> {
     return new Promise<number>((resolve, reject) => {
       fetch(`${backendUrl}/${user}`, {
         method: "GET",
@@ -481,7 +496,7 @@ class ElementList {
   async update(data: any) {
     console.log("Updating main table");
     // Retrieve the logged-in user's ID
-    const myUserId = await mainList.getMyProfile();
+    const myUserId = await mainList.getMyProfileID();
     // Get the messageList div to store the table
     let elem_messageList = document.getElementById("messageList");
     if (elem_messageList !== null) {
@@ -1171,7 +1186,7 @@ class CommentForm {
    */
   async createTable(data: any) {
     // Retrieve the logged-in user's ID
-    const myUserId = await mainList.getMyProfile();
+    const myUserId = await mainList.getMyProfileID();
     let comment_list = document.getElementById("commentList");
     if (comment_list !== null) {
       let table = document.createElement("table"); // Create a new table element
