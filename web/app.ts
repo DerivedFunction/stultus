@@ -120,7 +120,7 @@ class NewEntryForm {
         })
         .then((data) => {
           newEntryForm.onSubmitResponse(data);
-          mainList.refresh();
+          mainList.refresh(false);
         })
         .catch((error: any) => {
           InvalidContentMsg("Error (Did you sign in?):", error);
@@ -280,6 +280,22 @@ class EditEntryForm {
           return Promise.reject(response);
         })
         .then((data) => {
+          // Update the local storage
+          const messageList = localStorage.getItem("messages");
+          if (messageList !== null) {
+            const cacheData = JSON.parse(messageList);
+            // Find the index of the item with the matching mId
+            const index = cacheData.data.mData.findIndex(
+              (item: any) => parseInt(item.mId) === parseInt(id)
+            );
+            if (index !== -1) {
+              // Update the mTitle and mMessage fields of the item at the found index
+              cacheData.data.mData[index].mSubject = title;
+              cacheData.data.mData[index].mMessage = msg;
+              // Update the localStorage with the modified cacheData
+              localStorage.setItem("messages", JSON.stringify(cacheData));
+            }
+          }
           editEntryForm.onSubmitResponse(data);
         })
         .catch((error: any) => {
@@ -302,7 +318,7 @@ class EditEntryForm {
     // listing of messages
     if (data.mStatus === "ok") {
       editEntryForm.clearForm();
-      mainList.refresh();
+      mainList.refresh(true);
     }
     // Handle explicit errors with a detailed popup message
     else if (data.mStatus === "err") {
@@ -336,10 +352,22 @@ class ElementList {
   container = <HTMLElement>document.getElementById("showElements");
   /**
    * Refresh updates the messageList
+   * @param cache true if using localstorage, false if call network
    * @type {function}
    */
-  refresh() {
+  refresh(cache: boolean) {
     const doAjax = async () => {
+      const cacheKey = `messages`;
+      const cachedData = localStorage.getItem(cacheKey);
+      const currentTime = new Date().getTime();
+      if (cache && cachedData) {
+        const { data, timestamp } = JSON.parse(cachedData);
+        if (currentTime - timestamp < 10 * 60 * 1000) {
+          // Data found in cache and within expiration time, return it
+          mainList.update(data);
+          return;
+        }
+      }
       await fetch(`${backendUrl}/${messages}`, {
         method: "GET",
         headers: {
@@ -355,6 +383,9 @@ class ElementList {
           return Promise.reject(response);
         })
         .then((data) => {
+          // Store data in cache along with timestamp
+          const cacheData = { data, timestamp: currentTime };
+          localStorage.setItem(cacheKey, JSON.stringify(cacheData));
           mainList.update(data);
         })
         .catch((error: any) => {
@@ -592,7 +623,22 @@ class ElementList {
           return Promise.reject(response);
         })
         .then((data) => {
-          mainList.refresh();
+          // Update the local storage
+          const messageList = localStorage.getItem("messages");
+          if (messageList !== null) {
+            const cacheData = JSON.parse(messageList);
+            // Find the index of the item with the matching mId
+            const index = cacheData.data.mData.findIndex(
+              (item: any) => item.mId === id
+            );
+            if (index !== -1) {
+              // If the item is found, remove it from the array
+              cacheData.data.mData.splice(index, 1);
+              // Update the localStorage with the modified cacheData
+              localStorage.setItem("messages", JSON.stringify(cacheData));
+            }
+          }
+          mainList.refresh(false);
         })
         .catch((error: any) => {
           InvalidContentMsg("Error: ", error);
@@ -643,32 +689,51 @@ class ElementList {
    */
   private updateVote(id: any) {
     const doAjax = async () => {
-      await fetch(`${backendUrl}/${messages}/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            return Promise.resolve(response.json());
-          } else {
-            InvalidContentMsg("The server replied not ok:", response);
+      try {
+        const data = await this.fetchPostData(id);
+        // Update totalVote element
+        const totalVoteElement = document.querySelector(
+          `li.totalVote[data-value="${data.mData.mId}"]`
+        );
+        if (totalVoteElement) {
+          totalVoteElement.innerHTML = data.mData.numLikes;
+          // Update localStorage
+          const messageList = localStorage.getItem("messages");
+          if (messageList != null) {
+            const cacheData = JSON.parse(messageList);
+            cacheData.data.mData.forEach((item: any) => {
+              if (item.mId === data.mData.mId) {
+                item.numLikes = data.mData.numLikes;
+              }
+            });
+            localStorage.setItem("messages", JSON.stringify(cacheData));
           }
-          return Promise.reject(response);
-        })
-        .then((data) => {
-          (<HTMLElement>(
-            document.querySelector(
-              `li.totalVote[data-value="${data.mData.mId}"]`
-            )
-          )).innerHTML = data.mData.numLikes;
-        })
-        .catch((error: any) => {
-          InvalidContentMsg("Error: ", error);
-        });
+        }
+      } catch (error) {
+        InvalidContentMsg("Error: ", error);
+      }
     };
+
     doAjax();
+  }
+
+  /**
+   * Fetches post data from the backend
+   * @param id the id of post
+   * @returns Promise<PostData>
+   */
+  private async fetchPostData(id: any): Promise<any> {
+    const response = await fetch(`${backendUrl}/${messages}/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error(`The server replied not ok: ${response.status}`);
+    }
   }
 
   /**
@@ -695,8 +760,8 @@ class ElementList {
           }
           return Promise.reject(response);
         })
-        .then((data) => {
-          mainList.refresh();
+        .then(() => {
+          mainList.updateVote(id);
         })
         .catch((error: any) => {
           InvalidContentMsg("Error: ", error);
@@ -963,7 +1028,7 @@ class Profile {
     // listing of messages
     if (data.mStatus === "ok") {
       profile.clearForm();
-      mainList.refresh();
+      mainList.refresh(true);
     }
     // Handle explicit errors with a detailed popup message
     else if (data.mStatus === "err") {
@@ -1386,7 +1451,7 @@ class CommentEditForm {
     // listing of messages
     if (data.mStatus === "ok") {
       commentEditForm.clearForm();
-      mainList.refresh();
+      mainList.refresh(true);
     }
     // Handle explicit errors with a detailed popup message
     else if (data.mStatus === "err") {
@@ -1493,7 +1558,7 @@ document.addEventListener(
     commentForm = new CommentForm();
     commentEditForm = new CommentEditForm();
     viewUserForm = new ViewUserForm();
-    mainList.refresh();
+    mainList.refresh(false);
     // set up initial UI state
     hideAll();
     mainList.container.style.display = "block";
@@ -1508,7 +1573,7 @@ document.addEventListener(
       ?.addEventListener("click", (e) => {
         hideAll();
         mainList.container.style.display = "block";
-        mainList.refresh();
+        mainList.refresh(false);
       });
     document
       .getElementById("showProfileButton")
