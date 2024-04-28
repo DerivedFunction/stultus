@@ -5,16 +5,22 @@ import java.util.Map;
 
 import com.google.gson.*;
 
+import okhttp3.*;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 import spark.Spark;
+import org.json.JSONObject;
 
 /**
  * Default backend App
  */
 public class App {
-
+  /**
+   * The client to connect to imgBB
+   */
+  private static final OkHttpClient client = new OkHttpClient();
+  private static final String IMGBB = System.getenv("IMGBB");
   /**
    * the HTML page for login
    */
@@ -315,6 +321,11 @@ public class App {
     Spark.post(DOWNVOTE_FORMAT, postDownVote(gson, db)); // "/user/downvote/:postID"
 
     /*
+     * POST route for uploading an image
+     */
+    Spark.post("/uploadImage", uploadImage(gson));
+
+    /*
      * PUT route for updating a row in database.
      */
     Spark.put(EDIT_FORMAT, putIdea(gson, db)); // "/user/editMessage/:postID"
@@ -343,6 +354,35 @@ public class App {
      */
     Spark.delete(LOGOUT_FORMAT, logout(db)); // "/logout"
 
+  }
+
+  /**
+   * Uploads an image to IMGBB
+   * 
+   * @param gson Gson object that handles shared serialization
+   * @return Returns the response from okhttp3's call to IMGBB
+   */
+  private static Route uploadImage(final Gson gson) {
+    return (req, res) -> {
+      JSONObject imageData = new JSONObject(req.body());
+      okhttp3.RequestBody reqBody = new MultipartBody.Builder()
+          .setType(
+              MultipartBody.FORM)
+          .addFormDataPart("image",
+              imageData.getString("image"))
+          .build();
+
+      okhttp3.Request request = new okhttp3.Request.Builder()
+          .url("https://api.imgbb.com/1/upload?key=" + IMGBB)
+          .post(reqBody)
+          .build();
+
+      okhttp3.Response response = client.newCall(request).execute();
+
+      return getJSONResponse(gson,
+          "Image upload failed", !response.isSuccessful(),
+          "Image upload Success", new JSONObject(response.body().string()), res);
+    };
   }
 
   /**

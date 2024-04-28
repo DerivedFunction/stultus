@@ -1593,8 +1593,7 @@ function getAllFileInput() {
 async function uploadImage(dataFile: any, location: any) {
   const base64 = dataFile.split(",")[1];
   const body = {
-    generated_at: new Date().toISOString(),
-    png: base64,
+    image: base64,
   };
   let area = <HTMLElement>document.querySelector(`#${location} .ql-editor`);
   await fetch(`${backendUrl}/uploadImage`, {
@@ -1606,7 +1605,6 @@ async function uploadImage(dataFile: any, location: any) {
   })
     .then((response) => {
       if (response.ok) {
-        console.log("Response ok", response);
         // Return the json after ok message
         return Promise.resolve(response.json());
       } else {
@@ -1615,8 +1613,8 @@ async function uploadImage(dataFile: any, location: any) {
       return Promise.reject(response);
     })
     .then((data) => {
-      console.log("Success", data);
-      area.innerHTML += `<img src="${data.mMessage}" width="50%" >.`;
+      console.log("Image upload success", data);
+      area.innerHTML += `<img src="${data.mData.map.data.map.display_url}" width="50%" >.`;
     })
     .catch((error: any) => {
       console.log("Error", error);
