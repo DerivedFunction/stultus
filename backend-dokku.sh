@@ -13,7 +13,7 @@ true | git mktree | xargs git commit-tree | xargs git branch backend-dokku
 # to fetch into the backend-dokku branch anything you want, for e.g. the backend directory from the backend branch:
 
 git checkout backend-dokku
-git read-tree backend:backend
+git read-tree web:backend
 git commit -m "treat backend as root of backend-dokku"
 git push origin backend-dokku
 
