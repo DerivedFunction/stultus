@@ -638,7 +638,7 @@ class ElementList {
               localStorage.setItem("messages", JSON.stringify(cacheData));
             }
           }
-          mainList.refresh(false);
+          mainList.refresh(true);
         })
         .catch((error: any) => {
           InvalidContentMsg("Error: ", error);
@@ -1090,7 +1090,7 @@ class CommentForm {
    */
   constructor() {
     document.getElementById("commentCancel")?.addEventListener("click", (e) => {
-      commentForm.clearForm();
+      commentForm.exitForm();
     });
     document.getElementById("commentButton")?.addEventListener("click", (e) => {
       commentForm.submitForm();
@@ -1138,6 +1138,18 @@ class CommentForm {
    */
   getComment(data: any) {
     const id = data.mData.mId;
+    const cacheKey = `comments_${id}`;
+    const cachedData = localStorage.getItem(cacheKey);
+    const currentTime = new Date().getTime();
+
+    if (cachedData) {
+      const { data, timestamp } = JSON.parse(cachedData);
+      if (currentTime - timestamp < 10 * 60 * 1000) {
+        // Data found in cache and within expiration time, return it
+        commentForm.createTable(data);
+        return;
+      }
+    }
     const doAjax = async () => {
       await fetch(`${backendUrl}/${messages}/${id}/comments`, {
         method: "GET",
@@ -1154,6 +1166,9 @@ class CommentForm {
           return Promise.reject(response);
         })
         .then((data) => {
+          // Store data in cache along with timestamp
+          const cacheData = { data, timestamp: currentTime };
+          localStorage.setItem(cacheKey, JSON.stringify(cacheData));
           commentForm.createTable(data);
         })
         .catch((error: any) => {
@@ -1263,6 +1278,13 @@ class CommentForm {
    * @type {function}
    */
   clearForm() {
+    commentForm.textbox.innerHTML = "";
+  }
+  /**
+   * clears the contents of the container
+   * @type {function}
+   */
+  exitForm() {
     // Clear the values in it
     commentForm.title.innerText = "";
     commentForm.body.innerHTML = "";
@@ -1296,10 +1318,44 @@ class CommentForm {
         if (response.ok) {
           // If the request is successful, clear the comment form
           commentForm.clearForm();
+          commentForm.getNewestComment(msgID);
           console.log("Comment submitted successfully");
         } else {
           // If there's an error, log the error message
           InvalidContentMsg("The server replied not ok:", response);
+        }
+      })
+      .catch((error: any) => {
+        InvalidContentMsg("Error: ", error);
+      });
+  }
+  async getNewestComment(msgID: any) {
+    // Make the AJAX POST request
+    const myID = await mainList.getMyProfileID();
+    fetch(`${backendUrl}/${messages}/${msgID}/comments/${myID}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          // If there's an error, log the error message
+          InvalidContentMsg("The server replied not ok:", response);
+        }
+      })
+      .then((data) => {
+        // Update the local storage
+        const commentsList = localStorage.getItem(`comments_${msgID}`);
+        if (commentsList !== null) {
+          const cacheData = JSON.parse(commentsList);
+          // Prepend the new row to the beginning of mData array
+          cacheData.data.mData.unshift(data.mData[0]);
+          // Update the localStorage with the modified cacheData
+          localStorage.setItem(`comments_${msgID}`, JSON.stringify(cacheData));
+          commentForm.createTable(cacheData.data);
         }
       })
       .catch((error: any) => {
@@ -1350,6 +1406,7 @@ class CommentEditForm {
       });
   }
 
+  msgID: any;
   /**
    * Intialize the object b setting buttons to do actions
    * when clicked
@@ -1361,6 +1418,7 @@ class CommentEditForm {
     if (data.mStatus === "ok") {
       commentEditForm.message.innerHTML = data.mData.cMessage;
       commentEditForm.id.value = data.mData.cId;
+      commentEditForm.msgID = data.mData.cPostID;
     } else if (data.mStatus === "err") {
       InvalidContentMsg(
         "The server replied with an error:\n" + data.mMessage,
@@ -1430,6 +1488,25 @@ class CommentEditForm {
           return Promise.reject(response);
         })
         .then((data) => {
+          const commentsList = localStorage.getItem(
+            `comments_${commentEditForm.msgID}`
+          );
+          if (commentsList !== null) {
+            const cacheData = JSON.parse(commentsList);
+            console.log(id);
+            cacheData.data.mData.forEach((item: any) => {
+              if (
+                parseInt(item.cId) === parseInt(id) &&
+                parseInt(item.cPostID) === parseInt(commentEditForm.msgID)
+              ) {
+                item.cMessage = msg;
+              }
+            });
+            localStorage.setItem(
+              `comments_${commentEditForm.msgID}`,
+              JSON.stringify(cacheData)
+            );
+          }
           commentEditForm.onSubmitResponse(data);
         })
         .catch((error: any) => {
