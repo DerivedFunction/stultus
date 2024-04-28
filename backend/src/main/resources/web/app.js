@@ -1459,7 +1459,6 @@ class CommentEditForm {
                 const commentsList = localStorage.getItem(`comments_${commentEditForm.msgID}`);
                 if (commentsList !== null) {
                     const cacheData = JSON.parse(commentsList);
-                    console.log(id);
                     cacheData.data.mData.forEach((item) => {
                         if (parseInt(item.cId) === parseInt(id) &&
                             parseInt(item.cPostID) === parseInt(commentEditForm.msgID)) {
