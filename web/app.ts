@@ -1497,7 +1497,6 @@ class CommentEditForm {
           );
           if (commentsList !== null) {
             const cacheData = JSON.parse(commentsList);
-            console.log(id);
             cacheData.data.mData.forEach((item: any) => {
               if (
                 parseInt(item.cId) === parseInt(id) &&
