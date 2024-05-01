@@ -95,31 +95,6 @@ let showElements = <HTMLDivElement>document.getElementById("showElements");
 let addButton = <HTMLButtonElement>document.getElementById("addButton");
 
 /**
- * @type {HTMLInputElement} - find where the title box is
- */
-let editTitle = <HTMLInputElement>document.getElementById("editTitle");
-
-/**
- * @type {HTMLInputElement} - find where the message box is
- */
-let editMessage = <HTMLInputElement>document.getElementById("editMessage");
-
-/**
- * @type {HTMLButtonElement} - find where the edit button is
- */
-let editButton = <HTMLButtonElement>document.getElementById("editButton");
-
-/**
- * @type {HTMLDivElement} - find where the edit elements div in the index is
- */
-let editElements = <HTMLDivElement>document.getElementById("editElement");
-
-/**
- * @type {HTMLButtonElement} - find where the cancel button is
- */
-let editCancel = <HTMLButtonElement>document.getElementById("editCancel");
-
-/**
  * @type {HTMLButtonElement} - find where showing profile button is
  */
 let showProfileButton = <HTMLButtonElement>(
@@ -147,22 +122,11 @@ let showComment = <HTMLDivElement>document.getElementById("showComment");
 let commentCancel = <HTMLButtonElement>document.getElementById("commentCancel");
 
 /**
- * @type {string} - Message string for adding
- */
-let msg_string = "Adding msg";
-
-/**
- * @type {string} - Title string for adding
- */
-let title_string = "Adding title";
-
-/**
  * Test #2:
  * Create New Idea Using Add/Edit Button Functionality
  * @type {function(){}}
  */
 describe("Add Button Tests", function () {
-  let mId: any;
   /**
    * Function to initialize values
    * @type {function(){}}
