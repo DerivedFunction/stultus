@@ -44,7 +44,7 @@ let afterEach: any;
  * Delay of one second to be used to make the tests viewable
  * @type {number}
  */
-const delay = 1750;
+const delay = 2000;
 
 /**
  * Backup for original title element
@@ -232,14 +232,7 @@ describe("Add Button Tests", function () {
    */
   afterAll(function (done: () => void) {
     // Replace our edited elements with the previous value
-    setTimeout(function () {
-      let dbtns = document.getElementsByClassName("delbtn");
-      let dbtn = <HTMLButtonElement>dbtns[0];
-      if (dbtn.getAttribute("data-value") === mId) {
-        dbtn.click();
-      }
-      done();
-    }, delay);
+    wait(done);
   });
 });
 
