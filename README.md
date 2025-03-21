@@ -10,19 +10,9 @@ other's ideas. All relavant information about new updates and releases are in [`
 - Semester: Spring 2024
 - Team Number: 21
 - Team Name: stultus
-- Bitbucket Repository:
-  - On the web: <https://bitbucket.org/sml3/cse216_sp24_team_21>
-  - SSH: `git clone git@bitbucket.org:sml3/cse216_sp24_team_21.git`
-  - https: `git clone https://del226@bitbucket.org/sml3/cse216_sp24_team_21.git`
-- Jira Link: <https://cse216-24sp-del226.atlassian.net/jira/software/projects/T2/boards/2>
-- Backend URL: <https://team-stultus.dokku.cse.lehigh.edu/>
 
 ## Team Members
-
-- Project Manger: **Patrick Boles**, [pjb325@lehigh.edu](mailto:pjb325@lehigh.edu)
-- Admin: **Robert Kilsdonk**, [rok326@lehigh.edu](mailto:rok326@lehigh.edu)
-- Backend: **Thomas Chakif**, [thc225@lehigh.edu](mailto:thc225@lehigh.edu)
-- Front End: **Denny Li**, [del226@lehigh.edu](mailto:del226@lehigh.edu)
+**Patrick Boles**, **Robert Kilsdonk**, **Thomas Chakif**, **Denny Li**
 
 ### How to build and run on Dokku
 
@@ -30,8 +20,6 @@ other's ideas. All relavant information about new updates and releases are in [`
 2. Create the requisite `Procfile`
 3. Create an executable `.jar` file with dependencies and manifest.
 4. Setup a new git branch `backend-dokku` for dokku.
-
-[CSE 216 Dokku tutorial link](https://www.cse.lehigh.edu/~stevelu/spear-tutorials/viewer.html#cse216_dokku/tut.md)
 
 ```bash
 # Delete the backend-dokku branch from remote and locally
@@ -68,7 +56,7 @@ git checkout backend
 
 ### Dokku configurations
 
-- `POSTGRES_URL`: <postgres://***:***@salt.db.elephantsql.com/***>
+- `POSTGRES_URL`: <postgres://***:***@****/***>
 - `POSTGRES_PORT`: 5432
 - `PORT`: 8998
 - `NUM_TESTS`: 3
@@ -81,7 +69,7 @@ git checkout backend
 
 ### Useful Dokku commands
 
-`ssh -i ~/.ssh/id_ed25519 -t dokku@dokku.cse.lehigh.edu '$COMMAND team-stultus'`
+`ssh -i ~/.ssh/id_ed25519 -t ***@***.lehigh.edu '$COMMAND team-stultus'`
 
 - `ps:start`: start app
 - `ps:stop`: stop app
